@@ -267,9 +267,17 @@ rules:
   # combining acute U+0301; no precomposed Unicode points exist for these).
   # The combining acute attaches to the preceding consonant token via the
   # same modifiers_attach_left mechanism rus uses for ь.
+  #
+  # The composed sequences с́, з́ are also listed in consonants so that ports
+  # working at different unit levels recognise them: Python and the JVM
+  # iterate codepoints (they see `с` and `́` separately, the latter handled
+  # by modifiers_attach_left); Swift iterates extended grapheme clusters
+  # and matches the composed Character `с́` directly. In Python and JVM the
+  # extra codepoints are redundant — modifier_attach_left fires first — but
+  # harmless.
   - lang: "cnr-cyrl"
     vowels: "аиуео"
-    consonants: "бвгдђжзјклљмнњпрстћфхцчџш"
+    consonants: "бвгдђжзјклљмнњпрстћфхцчџшс́з́"
     sonorants: "лљмнњрј"
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     dont_split_digraphs: []
