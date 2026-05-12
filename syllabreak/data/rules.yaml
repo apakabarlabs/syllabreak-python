@@ -62,9 +62,15 @@ rules:
   # Standard Turkic syllabification: only one consonant moves to the next
   # syllable, so clusters_keep_next is empty. Three-consonant clusters fall
   # apart 2|1 by the default long-cluster rule (boundary before the last
-  # consonant). Loanwords from Russian with three-consonant onsets
-  # (галстук, комплект) follow the same algorithm — not perfect, but
-  # consistent.
+  # consonant).
+  #
+  # Loanwords and proper names with foreign onset clusters (Қазақстан →
+  # Қа-зақ-стан, галстук → гал-стук) require lexical knowledge to split
+  # the normative way. Keeping a rule-based "no dictionary" stance we let
+  # them fall through the native algorithm (Қа-зақс-тан, галс-тук) at the
+  # cost of being incorrect on those specific words. Adding ст/сп/ск to
+  # clusters_keep_next would fix the loanwords but break native words like
+  # ұс-таз (would become ұ-стаз), which is worse.
   - lang: "kaz"
     vowels: "аәеёиоөуұүыіэюя"
     consonants: "бвгғджзйкқлмнңпрстфхһцчшщ"
@@ -82,10 +88,15 @@ rules:
   # (аа, ээ, оо, ии, уу, өө, үү) form a single nucleus and never split:
   # буу-дай, not бу-удай; тоо-луу, not то-олуу.
   #
-  # Note on auto-detect: Kyrgyz's extra letters {ң, ө, ү} are a subset of
-  # Kazakh's, so a Kyrgyz-only sample without Kazakh-unique letters will
-  # be detected as kaz by the character-based scorer. Pass lang="kir"
-  # explicitly to force Kyrgyz handling.
+  # Same loanword caveat as Kazakh: Кыргызстан → Кыр-гызс-тан under the
+  # native algorithm rather than the normative Кыр-гыз-стан, because that
+  # would require lexical knowledge.
+  #
+  # Auto-detect: a Kyrgyz sample built only from Cyrillic letters that also
+  # appear in Russian will be detected as `rus` (it comes first in the
+  # rules file). A sample containing ң/ө/ү will be detected as `kaz`, since
+  # Kazakh's alphabet is a superset of Kyrgyz's. Either way, callers
+  # wanting Kyrgyz handling should pass lang="kir" explicitly.
   - lang: "kir"
     vowels: "аеёиоөуүыэюя"
     consonants: "бвгджзйклмнңпрстфхцчшщ"
@@ -286,7 +297,9 @@ rules:
     consonants: "bcčdfgģhjkķlļmnņpršstvzž"
     sonorants: "lļmnņr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "kl", "kr", "pl", "pr", "tr"]
-    dont_split_digraphs: []
+    # dz and dž are affricates ([dz], [dʒ]) — one consonant phonemically,
+    # so they stay together at the syllable boundary (re-dzēt, džem-pe-ris).
+    dont_split_digraphs: ["dz", "dž"]
     digraph_vowels: ["ai", "au", "ei", "ie", "iu", "oi", "ui", "eu", "ou"]
     glides: "j"
     syllabic_consonants: ""

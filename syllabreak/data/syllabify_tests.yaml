@@ -502,6 +502,11 @@ tests:
       # Case preservation
       - text: "Алматы"
         want: "Ал-ма-ты"
+      - text: "ҚАЛА"
+        want: "ҚА-ЛА"
+      # kaz-unique letters (ұ, ғ, і)
+      - text: "мұғалім"
+        want: "мұ-ға-лім"
 
   - section: "Kyrgyz"
     lang: "kir"
@@ -530,6 +535,12 @@ tests:
         want: "тоо"
       - text: "журт"
         want: "журт"
+      # Uppercase preservation through long-vowel digraph
+      - text: "ТООЛУУ"
+        want: "ТОО-ЛУУ"
+      # 2-consonant cluster VC-CV
+      - text: "кыздар"
+        want: "кыз-дар"
 
   - section: "Latvian"
     lang: "lav"
@@ -567,6 +578,22 @@ tests:
         want: "draugs"
       - text: "skaists"
         want: "skaists"
+      # Latvian-unique cedilla letters
+      - text: "ļoti"
+        want: "ļo-ti"
+      - text: "puķes"
+        want: "pu-ķes"
+      - text: "saņem"
+        want: "sa-ņem"
+      - text: "ģimene"
+        want: "ģi-me-ne"
+      # dz / dž affricates — single consonant, don't split between
+      - text: "redzēt"
+        want: "re-dzēt"
+      - text: "daudz"
+        want: "daudz"
+      - text: "džemperis"
+        want: "džem-pe-ris"
 
   - section: "Hungarian"
     lang: "hun"
