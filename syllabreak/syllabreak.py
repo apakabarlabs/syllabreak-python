@@ -22,6 +22,10 @@ class Syllabreak:
         matching_rules = self.meta_rule.find_matches(text)
         return [rule.lang for rule in matching_rules]
 
+    def supported_languages(self) -> list[str]:
+        """Codes of every language the loaded rules cover, in rule-file order."""
+        return [rule.lang for rule in self.meta_rule.rules]
+
     def _auto_detect_rule(self, text: str) -> LanguageRule | None:
         """Auto-detect the first matching language rule for the text."""
         matching_rules = self.meta_rule.find_matches(text)

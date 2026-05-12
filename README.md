@@ -86,6 +86,15 @@ This is useful when:
 - You want consistent rules for a specific language
 - Processing text in a known language
 
+## Supported Languages (programmatic)
+
+```python
+>>> from syllabreak import Syllabreak
+>>> s = Syllabreak()
+>>> "hrv" in s.supported_languages()
+True
+```
+
 ## Language Detection
 
 The library returns all matching languages sorted by confidence:
