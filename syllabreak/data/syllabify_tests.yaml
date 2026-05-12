@@ -1111,6 +1111,63 @@ tests:
       - text: "patiënt"
         want: "pa-ti-ënt"
 
+  # Swedish (swe). Enkonsonantsprincipen — one consonant moves to the
+  # next syllable. Cross-referenced against sv.wiktionary.org.
+  - section: "Swedish"
+    lang: "swe"
+    cases:
+      # V-CV: one intervocalic consonant
+      - text: "skola"
+        want: "sko-la"
+      - text: "läsa"
+        want: "lä-sa"
+      - text: "röka"
+        want: "rö-ka"
+      - text: "Sverige"
+        want: "Sve-ri-ge"
+      - text: "tjugo"
+        want: "tju-go"
+
+      # VC-CV with geminate consonants
+      - text: "kvinna"
+        want: "kvin-na"
+      - text: "bygga"
+        want: "byg-ga"
+      - text: "känna"
+        want: "kän-na"
+
+      # VC-CV with other 2-cons clusters
+      - text: "pojke"
+        want: "poj-ke"
+      - text: "arbeta"
+        want: "ar-be-ta"
+      - text: "familjen"
+        want: "fa-mil-jen"
+      - text: "fiska"
+        want: "fis-ka"
+
+      # ck is the geminate of k; strict VC-CV gives vac-ker (SAOL also
+      # accepts vack-er via ordledsprincipen)
+      - text: "vacker"
+        want: "vac-ker"
+
+      # Multi-syllable with VC-CV throughout (människa confirmed by
+      # sv.wiktionary.org as män·nis·ka)
+      - text: "människa"
+        want: "män-nis-ka"
+      - text: "Helsingfors"
+        want: "Hel-sing-fors"
+
+      # Single-syllable words — no split
+      - text: "bok"
+        want: "bok"
+      - text: "sju"
+        want: "sju"
+      - text: "sjö"
+        want: "sjö"
+      - text: "röd"
+        want: "röd"
+
   - section: "Latin"
     lang: "lat"
     cases:

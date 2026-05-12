@@ -107,6 +107,15 @@ tests:
       - "ուսանող"
       - "շնորհակալություն"
 
+  - lang: "swe"
+    cases:
+      # Words containing å — unique to Swedish among supported rules.
+      - "år"
+      - "många"
+      - "språk"
+      - "från"
+      - "förstår"
+
   - lang: "deu"
     cases:
       - "straße"

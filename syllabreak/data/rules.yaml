@@ -397,6 +397,61 @@ rules:
     modifiers_separators: ""
     split_hiatus: true
 
+  # Swedish (swe) — Germanic, North Germanic. Standard orthographic
+  # syllabification per Svenska Akademiens Ordlista (SAOL) and the
+  # `enkonsonantsprincipen` ("one consonant moves to the next syllable"
+  # — Wikipedia, Avstavning).
+  #
+  # Rules:
+  #   - V-CV for one intervocalic consonant (sko-la, lä-sa, rö-ka)
+  #   - VC-CV for two or more (kvin-na, byg-ga, vac-ker) — the last
+  #     consonant moves, the rest stay with the previous syllable
+  #   - Swedish has no native vowel digraphs (no `aa`/`ee` doubling for
+  #     length — vowel quantity is signalled by the following consonant
+  #     count, not by writing the vowel twice)
+  #   - Adjacent unlike vowels split as hiatus
+  #
+  # SAOL also recognises the morphology-based `ordledsprincipen`, which
+  # splits at compound and derivational boundaries (`glas-ögon`,
+  # `mor-gon-tid-ning`). Our orthographic algorithm cannot detect those
+  # boundaries, so compounds syllabify by `enkonsonantsprincipen`
+  # (`gla-sö-gon` instead of `glas-ögon`). Both forms are listed as
+  # acceptable in Swedish style guides.
+  #
+  # Known limitations of the orthographic algorithm:
+  #   - `ck` is the geminate of `k`. SAOL allows both `vack-er` and
+  #     `vac-ker`; we produce `vac-ker` (strict VC-CV).
+  #   - `ng` representing /ŋ/ is by exception kept entirely in the
+  #     preceding coda (`ving-ar`); without phonetic input we split it
+  #     as plain VC-CV (`vin-gar`). Both are encountered in practice.
+  #   - `sj/sk/skj/stj/sch` and `tj/kj` digraphs for /ɧ/ and /ɕ/ stay
+  #     with the next syllable only when they precede a soft vowel.
+  #     Encoding that without phonetics would mishandle the hard-vowel
+  #     cases (`fis-ka`), so we keep strict VC-CV throughout.
+  #
+  # Auto-detect: words containing `å` are unique to Swedish among the
+  # supported rules; words with only `ä`/`ö` collide with German/Dutch/
+  # Finnish (alphabet overlap). Pass `lang="swe"` explicitly when only
+  # ä/ö is present.
+  #
+  # Sources:
+  #   - Svenska Akademiens Ordlista (SAOL, 1998 ed. onward)
+  #   - sv.wikipedia.org/wiki/Avstavning
+  #   - sprakkonsulterna.se/avstavning-enkla-regler/
+  - lang: "swe"
+    vowels: "aeiouyåäö"
+    consonants: "bcdfghjklmnpqrstvwxz"
+    sonorants: "lmnr"
+    clusters_keep_next: []
+    dont_split_digraphs: []
+    digraph_vowels: []
+    glides: "j"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   - lang: "fra"
     vowels: "aeiouyàâäéèêëïîôùûüœæ"
     consonants: "bcdfghjklmnpqrstvwxzç"
