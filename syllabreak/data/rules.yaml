@@ -452,6 +452,81 @@ rules:
     modifiers_separators: ""
     split_hiatus: true
 
+  # Swahili (swh / Kiswahili) — Niger-Congo, Bantu. Latin alphabet.
+  # Swahili phonotactics favour open CV syllables: every syllable ends
+  # in a vowel sound, with two systematic exceptions handled here.
+  #
+  # 1. Prenasalized consonants are written as digraphs and act as a
+  #    single consonant onset: mb, nd, nj, ng, mv, nz (mbu-zi, ja-mbo,
+  #    nde-ge, nyu-mba). Phonetically mb/nd/nj/ng are prenasalized
+  #    stops, mv/nz are prenasalized fricatives.
+  # 2. Syllabic m / n. When `m` or `n` precedes a non-prenasalising
+  #    consonant, the nasal forms its own syllable (mtoto → m-to-to,
+  #    nchi → n-chi, mpishi → m-pi-shi). Handled by `syllabic_consonants`
+  #    plus a small engine relaxation that treats "no vowel at all on
+  #    this side" as the buffer being satisfied (so a word-initial
+  #    syllabic m counts).
+  #
+  # The m/n + glide w/y onset clusters (mw, my) are kept as single
+  # tokens via `dont_split_digraphs` so the syllabic-m check does not
+  # fire — `mwana` is `mwa-na`, not `m-wa-na`. Other Cw / Cy onsets
+  # likewise list as `clusters_keep_next` so they glue with the
+  # following vowel (`Ki-swa-hi-li`, `bwa-na`, `kwa-he-ri`).
+  #
+  # Other single-phoneme digraphs: ch /tʃ/, sh /ʃ/, th /θ/, dh /ð/,
+  # gh /ɣ/, kh /x/, ny /ɲ/.
+  #
+  # Out of scope for this rule:
+  #   - `ng'` (U+0027 apostrophe) for word-initial /ŋ/. Non-letter
+  #     would break the word; supporting it would need treating the
+  #     apostrophe as an internal modifier and recognising the 3-char
+  #     digraph. Rare in practice; document and skip.
+  #   - Phonemic vowel length distinctions are not orthographic in
+  #     Swahili — adjacent identical vowels at morpheme boundaries
+  #     (`-aa`, `-ee`, `njoo`) split as hiatus.
+  #
+  # Sources:
+  #   - en.wikipedia.org/wiki/Swahili_grammar
+  #   - en.wiktionary.org/wiki/Appendix:Swahili_pronunciation
+  #   - Mwaliwa, H. (2014). An analysis of the syllable structure
+  #     of standard Kiswahili loanwords from modern standard Arabic.
+  #     Univ. of Nairobi.
+  - lang: "swh"
+    vowels: "aeiou"
+    consonants: "bcdfghjklmnpqrstvwxyz"
+    sonorants: "lmnr"
+    clusters_keep_next: [
+      # Cw onset clusters — /w/ glide forms a single onset with the
+      # preceding consonant
+      "bw", "dw", "fw", "gw", "hw", "jw", "kw", "lw", "pw", "rw",
+      "sw", "tw", "vw", "zw",
+      # Cy onset clusters — same with /y/ glide
+      "by", "fy", "ky", "ly", "py", "ry", "sy", "ty", "vy", "zy"
+    ]
+    dont_split_digraphs: [
+      # Prenasalized consonants — one consonant unit (mb/nd/nj/ng are
+      # stops; mv/nz are fricatives)
+      "mb", "nd", "nj", "ng", "mv", "nz",
+      # Palatal nasal
+      "ny",
+      # m/n + glide — kept whole so the syllabic-m/n check does not
+      # fire on these (`mwana` stays as `mwa-na`)
+      "mw", "my",
+      # Single-phoneme digraphs (loanwords and native)
+      "ch", "sh", "th", "dh", "gh", "kh"
+    ]
+    digraph_vowels: []
+    glides: "wy"
+    # m and n are syllabic before any non-digraph consonant
+    # (`mtoto`, `nchi`, `mpishi`). The engine treats a word-initial
+    # or word-final run of consonants as buffer-satisfied, so a
+    # word-initial syllabic m is recognised.
+    syllabic_consonants: "mn"
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   - lang: "fra"
     vowels: "aeiouyàâäéèêëïîôùûüœæ"
     consonants: "bcdfghjklmnpqrstvwxzç"

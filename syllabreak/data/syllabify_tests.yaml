@@ -92,6 +92,11 @@ tests:
         want: "krv"
       - text: "prst"
         want: "prst"
+      # Word-initial syllabic r with no vowel at all — confirms that the
+      # syllabic-consonant relaxation (which lets Swahili m-toto work)
+      # still passes BCMS rt = headland as a single syllable.
+      - text: "rt"
+        want: "rt"
       # Syllabic r - between consonants, with vowel before and after
       - text: "smrtno"
         want: "smrt-no"
@@ -1167,6 +1172,81 @@ tests:
         want: "sjö"
       - text: "röd"
         want: "röd"
+
+  # Swahili (swh / Kiswahili). Bantu CV syllables with syllabic m/n
+  # before non-prenasalising consonants and prenasalized stops as
+  # single onsets.
+  - section: "Swahili"
+    lang: "swh"
+    cases:
+      # Basic V-CV: most Swahili words are pure CV
+      - text: "karibu"
+        want: "ka-ri-bu"
+      - text: "safari"
+        want: "sa-fa-ri"
+      - text: "asante"
+        want: "a-san-te"
+      - text: "mama"
+        want: "ma-ma"
+      - text: "baba"
+        want: "ba-ba"
+
+      # Single-phoneme digraphs ch, sh, ny
+      - text: "chakula"
+        want: "cha-ku-la"
+      - text: "shule"
+        want: "shu-le"
+      - text: "nyumba"
+        want: "nyu-mba"
+
+      # Prenasalized consonants mb / nd / nj / ng — single consonant
+      # onset. Verifies that nj/ng/mb/nd do NOT fragment into syllabic
+      # nasal + stop (contrast with `n-chi` below, where `n` is
+      # syllabic because `ch` is not a prenasalising context).
+      - text: "mbuzi"
+        want: "mbu-zi"
+      - text: "jambo"
+        want: "ja-mbo"
+      - text: "ndege"
+        want: "nde-ge"
+      - text: "ngoma"
+        want: "ngo-ma"
+      - text: "njia"
+        want: "nji-a"
+
+      # Syllabic m / n — word-initial nasal forms its own syllable
+      # before a non-prenasalised consonant
+      - text: "mtoto"
+        want: "m-to-to"
+      - text: "mtu"
+        want: "m-tu"
+      - text: "mpishi"
+        want: "m-pi-shi"
+      - text: "nchi"
+        want: "n-chi"
+      - text: "mzee"
+        want: "m-ze-e"
+
+      # m / n + glide is a single onset (mw, my) — must NOT trigger
+      # syllabic m, otherwise mwana would split as m-wa-na.
+      - text: "mwana"
+        want: "mwa-na"
+      - text: "mwema"
+        want: "mwe-ma"
+
+      # Cw onset clusters (sw, kw, bw, pw) — kept with following vowel
+      - text: "Kiswahili"
+        want: "Ki-swa-hi-li"
+      - text: "bwana"
+        want: "bwa-na"
+      - text: "kwaheri"
+        want: "kwa-he-ri"
+
+      # Vowel hiatus (no native vowel digraphs)
+      - text: "nguo"
+        want: "ngu-o"
+      - text: "njoo"
+        want: "njo-o"
 
   - section: "Latin"
     lang: "lat"

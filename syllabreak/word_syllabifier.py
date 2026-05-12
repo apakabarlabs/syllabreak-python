@@ -63,22 +63,27 @@ class WordSyllabifier:
                 )
                 if not (prev_is_consonant and next_is_consonant):
                     continue
-                # Find distance to nearest vowel before (or word start)
-                dist_to_prev_vowel = i + 1  # default: distance to word start
+                # Find distance to nearest vowel before (or None if no vowel
+                # exists on that side — word starts with this run of cons).
+                dist_to_prev_vowel: int | None = None
                 for j in range(i - 1, -1, -1):
                     if self.tokens[j].token_class == TokenClass.VOWEL:
                         dist_to_prev_vowel = i - j
                         break
-                # Find distance to nearest vowel after (or word end)
-                dist_to_next_vowel = len(self.tokens) - i  # default: distance to word end
+                # Find distance to nearest vowel after (or None if word ends
+                # here without any further vowel).
+                dist_to_next_vowel: int | None = None
                 for j in range(i + 1, len(self.tokens)):
                     if self.tokens[j].token_class == TokenClass.VOWEL:
                         dist_to_next_vowel = j - i
                         break
-                # Syllabic consonant only if there's at least one consonant between
-                # it and nearest vowel on BOTH sides (distance > 1)
-                has_buffer_before = dist_to_prev_vowel > 1
-                has_buffer_after = dist_to_next_vowel > 1
+                # Syllabic consonant only if there's at least one consonant
+                # between it and the nearest vowel on BOTH sides. The "no
+                # vowel at all on that side" case (word-initial or word-final
+                # run of consonants) counts as the buffer being satisfied —
+                # Swahili `mtoto` → `m-to-to`, BCMS `prst`/`vrh`.
+                has_buffer_before = dist_to_prev_vowel is None or dist_to_prev_vowel > 1
+                has_buffer_after = dist_to_next_vowel is None or dist_to_next_vowel > 1
                 if has_buffer_before and has_buffer_after:
                     syllabic_nuclei.append(i)
             # Merge syllabic consonant nuclei with vowel nuclei
