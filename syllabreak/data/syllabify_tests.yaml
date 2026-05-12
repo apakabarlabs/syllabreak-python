@@ -476,6 +476,61 @@ tests:
       - text: "przyjaciel"
         want: "przy-ja-ciel"
 
+  - section: "Kazakh"
+    lang: "kaz"
+    cases:
+      # Standard Turkic V-CV / VC-CV rule: only one consonant moves to next syllable
+      - text: "алма"
+        want: "ал-ма"
+      - text: "қала"
+        want: "қа-ла"
+      - text: "ағаш"
+        want: "а-ғаш"
+      - text: "тағам"
+        want: "та-ғам"
+      - text: "балық"
+        want: "ба-лық"
+      - text: "балалар"
+        want: "ба-ла-лар"
+      # 2-consonant cluster splits VC-CV
+      - text: "мектеп"
+        want: "мек-теп"
+      - text: "сөздер"
+        want: "сөз-дер"
+      - text: "ұстаз"
+        want: "ұс-таз"
+      # Case preservation
+      - text: "Алматы"
+        want: "Ал-ма-ты"
+
+  - section: "Kyrgyz"
+    lang: "kir"
+    cases:
+      # Single consonant V-CV
+      - text: "алма"
+        want: "ал-ма"
+      - text: "китеп"
+        want: "ки-теп"
+      - text: "кызыл"
+        want: "кы-зыл"
+      - text: "балык"
+        want: "ба-лык"
+      # 2-consonant cluster VC-CV
+      - text: "жакшы"
+        want: "жак-шы"
+      # Long vowels (digraph) — never split; combined with normal CV rules
+      - text: "буудай"
+        want: "буу-дай"
+      - text: "тоолуу"
+        want: "тоо-луу"
+      - text: "сүйлөшүү"
+        want: "сүй-лө-шүү"
+      # Single-syllable words
+      - text: "тоо"
+        want: "тоо"
+      - text: "журт"
+        want: "журт"
+
   - section: "Hungarian"
     lang: "hun"
     cases:

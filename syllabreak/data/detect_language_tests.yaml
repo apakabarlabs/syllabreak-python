@@ -50,6 +50,14 @@ tests:
       - "ČOVEK"
       - "ŠUMA"
   
+  - lang: "kaz"
+    cases:
+      # Words with kaz-unique letters (ұ, қ, ғ, і, ә, һ — none of these in rus or kir)
+      - "ұстаз"
+      - "Қазақстан"
+      - "ғылым"
+      - "Қазақ"
+
   - lang: "kat"
     cases:
       - "გამარჯობა"

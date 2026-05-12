@@ -58,6 +58,47 @@ rules:
     modifiers_attach_right: ""
     modifiers_separators: ""
 
+  # Kazakh — Cyrillic alphabet with Turkic extras (ә, і, ң, ө, ұ, ү, ғ, қ, һ).
+  # Standard Turkic syllabification: only one consonant moves to the next
+  # syllable, so clusters_keep_next is empty. Three-consonant clusters fall
+  # apart 2|1 by the default long-cluster rule (boundary before the last
+  # consonant). Loanwords from Russian with three-consonant onsets
+  # (галстук, комплект) follow the same algorithm — not perfect, but
+  # consistent.
+  - lang: "kaz"
+    vowels: "аәеёиоөуұүыіэюя"
+    consonants: "бвгғджзйкқлмнңпрстфхһцчшщ"
+    sonorants: "лмнңрй"
+    clusters_keep_next: []
+    dont_split_digraphs: []
+    digraph_vowels: []
+    glides: "й"
+    syllabic_consonants: ""
+    modifiers_attach_left: "ь"
+    modifiers_attach_right: ""
+    modifiers_separators: "ъ"
+
+  # Kyrgyz — Cyrillic alphabet with Turkic extras (ң, ө, ү). Long vowels
+  # (аа, ээ, оо, ии, уу, өө, үү) form a single nucleus and never split:
+  # буу-дай, not бу-удай; тоо-луу, not то-олуу.
+  #
+  # Note on auto-detect: Kyrgyz's extra letters {ң, ө, ү} are a subset of
+  # Kazakh's, so a Kyrgyz-only sample without Kazakh-unique letters will
+  # be detected as kaz by the character-based scorer. Pass lang="kir"
+  # explicitly to force Kyrgyz handling.
+  - lang: "kir"
+    vowels: "аеёиоөуүыэюя"
+    consonants: "бвгджзйклмнңпрстфхцчшщ"
+    sonorants: "лмнңрй"
+    clusters_keep_next: []
+    dont_split_digraphs: []
+    digraph_vowels: ["аа", "ээ", "оо", "ии", "уу", "өө", "үү"]
+    glides: "й"
+    syllabic_consonants: ""
+    modifiers_attach_left: "ь"
+    modifiers_attach_right: ""
+    modifiers_separators: "ъ"
+
   - lang: "tur"
     vowels: "aeıioöuü"
     consonants: "bcçdfgğhjklmnprsştvyz"

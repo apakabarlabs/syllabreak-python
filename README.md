@@ -15,6 +15,8 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇲🇪 Montenegrin Latin (`cnr-latn`)
 - 🇲🇪 Montenegrin Cyrillic (`cnr-cyrl`)
 - 🇹🇷 Turkish (`tur`)
+- 🇰🇿 Kazakh (`kaz`)
+- 🇰🇬 Kyrgyz (`kir`)
 - 🇬🇪 Georgian (`kat`)
 - 🇭🇺 Hungarian (`hun`)
 - 🇩🇪 German (`deu`)
@@ -37,6 +39,7 @@ A few language-specific quirks the algorithm has to encode. Each one would other
 - **Latin** — hiatus is mandatory: `po-e-ta`, `phi-lo-so-phi-a`.
 - **Polish** — digraphs `sz`, `cz`, `rz`, `dz`, `ch` stay together inside a syllable.
 - **Hungarian** — only one consonant moves to the next syllable, so even valid onset clusters split (`ab-lak`, not `a-blak`). Geminate digraphs are written compactly (`ssz`, `ggy`, `nny`, `lly`, `tty`, `ccs`, `zzs`, `ddz`, `ddzs`) and restored in full at the break per AkH 12 §226: `asszony` → `asz-szony`, `mennyi` → `meny-nyi`, `poggyász` → `pogy-gyász`.
+- **Turkic Cyrillic (kaz, kir)** — strict V-CV/VC-CV: only one consonant moves to the next syllable, three-consonant clusters split 2|1. Kyrgyz long vowels (`аа`, `ээ`, `оо`, `ии`, `уу`, `өө`, `үү`) form a single nucleus: `буу-дай`, not `бу-удай`. Note: Kyrgyz auto-detect is unreliable because its extra letters {ң, ө, ү} are a subset of Kazakh's — pass `lang="kir"` explicitly.
 - **BCMS** — syllabic `r` between consonants is a syllable nucleus: `prst` and `krv` are one syllable, `smrt-no` splits around it.
 - **Georgian** — no digraphs, sequences of consonants split unless they appear on a small whitelist of valid onsets.
 
