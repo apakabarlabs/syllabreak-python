@@ -17,6 +17,7 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇹🇷 Turkish (`tur`)
 - 🇰🇿 Kazakh (`kaz`)
 - 🇰🇬 Kyrgyz (`kir`)
+- 🇬🇷 Modern Greek (`ell`)
 - 🇬🇪 Georgian (`kat`)
 - 🇭🇺 Hungarian (`hun`)
 - 🇩🇪 German (`deu`)
@@ -41,6 +42,7 @@ A few language-specific quirks the algorithm has to encode. Each one would other
 - **Polish** — digraphs `sz`, `cz`, `rz`, `dz`, `ch` stay together inside a syllable.
 - **Hungarian** — only one consonant moves to the next syllable, so even valid onset clusters split (`ab-lak`, not `a-blak`). Geminate digraphs are written compactly (`ssz`, `ggy`, `nny`, `lly`, `tty`, `ccs`, `zzs`, `ddz`, `ddzs`) and restored in full at the break per AkH 12 §226: `asszony` → `asz-szony`, `mennyi` → `meny-nyi`, `poggyász` → `pogy-gyász`.
 - **Turkic Cyrillic (kaz, kir)** — strict V-CV/VC-CV: only one consonant moves to the next syllable, three-consonant clusters split 2|1. Kyrgyz long vowels (`аа`, `ээ`, `оо`, `ии`, `уу`, `өө`, `үү`) form a single nucleus: `буу-дай`, not `бу-удай`. Loanwords with foreign onset clusters fall through to the native algorithm (`Қазақстан` → `Қа-зақс-тан`, `галстук` → `галс-тук`) — fixing them would require lexical knowledge. Auto-detect caveat: a sample using only Cyrillic letters shared with Russian will detect as `rus` (it sits first in the rules); a sample with ң/ө/ү will detect as `kaz` (Kyrgyz's extras are a subset of Kazakh's). Pass `lang="kir"` explicitly for Kyrgyz.
+- **Modern Greek** — V-CV; consonant clusters keep together with the following nucleus only if they form a valid Greek word-initial onset, up to length 3 (`βι-βλί-ο` with βλ, `ά-στρο` with στρ, `άν-θρω-πος` with θρ). Identical doubled consonants always split (`ελ-λη-νι-κά`, `θά-λασ-σα`). Vowel digraphs αι/ει/οι/υι/αυ/ευ/ηυ/ου (with all accent positions, e.g. `άι` in `τσάι`) are a single nucleus; consonant digraphs μπ/ντ/γκ/γγ/τζ/τσ are a single consonant (school orthographic convention). Adjacent vowels not forming a digraph split as hiatus (`λα-ός`, `α-έ-ρας`, `βι-βλί-ο`). **Synizesis** (modern phonetic merging of η/ι/υ with a following vowel after a consonant, e.g. `ά-γνοια` 2 syllables) is **not** applied — the algorithm follows the orthographic 3-syllable split `ά-γνοι-α`.
 - **Latvian** — V-CV/VC-CV with muta-cum-liquida kept (`la-brīt`). Diphthongs `ai`, `au`, `ei`, `ie`, `iu`, `oi`, `ui`, `eu`, `ou` form a single nucleus (`lie-li`, `pal-dies`, `draugs`). Note: macron vowels (`ā`, `ē`, `ī`, `ū`) are shared with Latin, so a Latvian word without a cedilla letter (`ļ`, `ķ`, `ģ`, `ņ`) cannot be reliably auto-detected — the detector keeps `lat` first.
 - **BCMS** — syllabic `r` between consonants is a syllable nucleus: `prst` and `krv` are one syllable, `smrt-no` splits around it.
 - **Georgian** — no digraphs, sequences of consonants split unless they appear on a small whitelist of valid onsets.

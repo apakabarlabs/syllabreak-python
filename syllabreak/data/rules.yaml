@@ -123,6 +123,61 @@ rules:
     modifiers_attach_right: ""
     modifiers_separators: ""
 
+  # Modern Greek (ell). School orthographic syllabification:
+  #   - one vowel/diphthong per syllable
+  #   - a single consonant goes with the following vowel (V-CV)
+  #   - two/three consonants stay with the following vowel only if they
+  #     form a valid Greek word-initial onset (βιβλίο → βι-βλίο because
+  #     βλ- is a valid onset; ά-στρο because στρ- is too). Otherwise the
+  #     cluster splits VC-CV / VCC-CV (πορ-το-κά-λι, άν-θρω-πος).
+  #   - identical doubled consonants always split (ελ-λη-νι-κά, θά-λασ-σα,
+  #     γράμ-μα)
+  #   - vowel digraphs αι, ει, οι, υι, αυ, ευ, ηυ, ου (with all accent
+  #     positions) are a single nucleus
+  #   - consonant digraphs μπ, ντ, γκ, γγ, τζ, τσ are a single consonant
+  #     (school orthographic convention — phonetically μπ/ντ/γκ are
+  #     sometimes two consonants mid-word, but the spelling rule treats
+  #     them as one)
+  #   - adjacent vowels not forming a digraph are hiatus and split
+  #     (λα-ός, βι-βλί-ο). Modern phonetic synizesis (η/ι/υ + V coalescing
+  #     after a consonant in unaccented positions, e.g. ά-γνοια as 2 syll)
+  #     is NOT applied — the orthographic 3-syllable ά-γνοι-α is produced.
+  - lang: "ell"
+    vowels: "αεηιουωϊϋΐΰάέήίόύώ"
+    consonants: "βγδζθκλμνξπρστφχψς"
+    sonorants: "λμνρ"
+    clusters_keep_next: [
+      "βλ", "βρ",
+      "γλ", "γν", "γρ",
+      "δρ",
+      "θλ", "θν", "θρ",
+      "κλ", "κν", "κρ", "κτ",
+      "μν",
+      "πλ", "πν", "πρ", "πτ",
+      "σβ", "σγ", "σθ", "σκ", "σλ", "σμ", "σν", "σπ", "στ", "σφ", "σχ",
+      "τλ", "τμ", "τρ",
+      "φθ", "φλ", "φρ", "φτ",
+      "χθ", "χλ", "χν", "χρ", "χτ",
+      # 3-letter onsets
+      "σπρ", "στρ", "σκρ",
+      # Consonant-digraph + consonant. μπ/ντ/γκ tokenise as one consonant,
+      # so a cluster like [γκ, ρ] is checked as the 3-character onset "γκρ"
+      # in συ-γκρί-νω; μπλε / ντροπή work too.
+      "γκλ", "γκρ", "μπλ", "μπρ", "ντρ"
+    ]
+    dont_split_digraphs: ["μπ", "ντ", "γκ", "γγ", "τζ", "τσ"]
+    digraph_vowels: [
+      "αι", "ει", "οι", "υι", "αυ", "ευ", "ηυ", "ου",
+      "αί", "εί", "οί", "υί", "αύ", "εύ", "ηύ", "ού",
+      "άι", "έι", "όι", "ύι"
+    ]
+    glides: ""
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   # Hungarian (AkH 12 §226). Key rules encoded here:
   #
   #   1. Only one consonant moves to the next syllable, regardless of which
@@ -164,8 +219,11 @@ rules:
     vowels: "aeiouyäöü"
     consonants: "bcdfghjklmnpqrstvwxzß"
     sonorants: "lmnr"
-    # Allowable onset clusters; st stays here, gating is done by 'short nucleus' rule
-    clusters_keep_next: ["sp","st","sch","tr","dr","kr","gr","pr","br","fr","fl","kl","gl","pl","bl","sn","sm","sw","sk","spr","str","skr"]
+    # Allowable onset clusters; st stays here, gating is done by 'short nucleus' rule.
+    # 3-letter clusters spr/str/skr were intentionally dropped: with 3-letter
+    # onset support active across the engine they would push Astronomie to
+    # A-stro-no-mie, but Duden prefers As-tro-no-mie via the 2-letter "tr".
+    clusters_keep_next: ["sp","st","sch","tr","dr","kr","gr","pr","br","fr","fl","kl","gl","pl","bl","sn","sm","sw","sk"]
     dont_split_digraphs: ["sch","ch","qu","ph","th"]
     # Treat these as single (long) nuclei: diphthongs + double vowels + vowel+h lengthening
     digraph_vowels: ["ie","ei","ai","au","eu","äu","aa","ee","oo","ah","eh","ih","oh","uh","äh","öh","üh"]
@@ -240,7 +298,10 @@ rules:
     vowels: "aeiouyąęó"
     consonants: "bcćdfghjklłmnńprsśtwzźż"
     sonorants: "lłmnńrj"
-    clusters_keep_next: ["br", "bl", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st", "skr", "spr", "str"]
+    # 3-letter clusters skr/spr/str dropped — see the Polish/German notes;
+    # with 3-letter onset support active they over-keep clusters that
+    # school hyphenation splits at the 2-letter boundary.
+    clusters_keep_next: ["br", "bl", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st"]
     dont_split_digraphs: ["sz", "cz", "rz", "dz", "ch"]
     digraph_vowels: []
     glides: "j"

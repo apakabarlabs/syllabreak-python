@@ -332,6 +332,12 @@ tests:
         want: "spie-len"
       - text: "frühstück"
         want: "früh-stück"
+      # Locks the 2-letter onset behaviour after 3-letter onset support
+      # landed in the engine: Duden splits mid-word "str" as VC-CCV
+      # (As-tro-no-mie), not as V-CCCV (A-stro-no-mie). The deu rule
+      # therefore lists "tr" but not "str" in clusters_keep_next.
+      - text: "Astronomie"
+        want: "As-tro-no-mie"
 
   - section: "French"
     lang: "fra"
@@ -594,6 +600,92 @@ tests:
         want: "daudz"
       - text: "džemperis"
         want: "džem-pe-ris"
+
+  - section: "Modern Greek"
+    lang: "ell"
+    cases:
+      # Single consonant — V-CV
+      - text: "καλημέρα"
+        want: "κα-λη-μέ-ρα"
+      - text: "αγάπη"
+        want: "α-γά-πη"
+      - text: "πατέρας"
+        want: "πα-τέ-ρας"
+      - text: "Αθήνα"
+        want: "Α-θή-να"
+      # Word-initial onset clusters stay with the first nucleus
+      - text: "γνώμη"
+        want: "γνώ-μη"
+      - text: "μνήμη"
+        want: "μνή-μη"
+      - text: "σμήνος"
+        want: "σμή-νος"
+      # Mid-word 2-consonant cluster kept (valid onset βλ, στρ)
+      - text: "βιβλίο"
+        want: "βι-βλί-ο"
+      # Mid-word 3-consonant cluster: longest valid onset wins
+      - text: "άστρο"
+        want: "ά-στρο"
+      - text: "άνθρωπος"
+        want: "άν-θρω-πος"
+      # Mid-word cluster splits when not a valid onset (γράμμα also covers
+      # initial γρ)
+      - text: "γράμμα"
+        want: "γράμ-μα"
+      # Identical doubled consonants always split (λλ, σσ)
+      - text: "ελληνικά"
+        want: "ελ-λη-νι-κά"
+      - text: "θάλασσα"
+        want: "θά-λασ-σα"
+      - text: "Έλληνας"
+        want: "Έλ-λη-νας"
+      # Standard VC-CV (no kept onset)
+      - text: "πορτοκάλι"
+        want: "πορ-το-κά-λι"
+      # Vowel digraphs (diphthongs) — never split. αι/ει/οι/υι appear with
+      # accents on the first vowel (άι etc.) as well as on the second.
+      - text: "παιδί"
+        want: "παι-δί"
+      - text: "καιρός"
+        want: "και-ρός"
+      - text: "αυτός"
+        want: "αυ-τός"
+      - text: "τσάι"
+        want: "τσάι"
+      # Hiatus (adjacent vowels that don't form a diphthong) — split.
+      # Orthographic policy: synizesis (modern phonetic merging of η/ι/υ
+      # with a following vowel after a consonant) is NOT applied —
+      # ά-γνοι-α (3 syllables), not the phonetic ά-γνοια.
+      - text: "λαός"
+        want: "λα-ός"
+      - text: "αέρας"
+        want: "α-έ-ρας"
+      # Consonant digraphs treated as a single consonant (μπ, ντ, γγ, γκ,
+      # τζ, τσ) — school orthographic convention
+      - text: "μπαμπάς"
+        want: "μπα-μπάς"
+      - text: "άγγελος"
+        want: "ά-γγε-λος"
+      - text: "πάντα"
+        want: "πά-ντα"
+      - text: "γκρίζος"
+        want: "γκρί-ζος"
+      - text: "τζάμι"
+        want: "τζά-μι"
+      # Mid-word: consonant-digraph + consonant onset (γκρ, μπλ, ντρ)
+      - text: "συγκρίνω"
+        want: "συ-γκρί-νω"
+      - text: "μπλε"
+        want: "μπλε"
+      - text: "ντροπή"
+        want: "ντρο-πή"
+      # Vowel-digraph accent variants and hiatus around them
+      - text: "εικόνα"
+        want: "ει-κό-να"
+      - text: "βοήθεια"
+        want: "βο-ή-θει-α"
+      - text: "οικογένεια"
+        want: "οι-κο-γέ-νει-α"
 
   - section: "Hungarian"
     lang: "hun"

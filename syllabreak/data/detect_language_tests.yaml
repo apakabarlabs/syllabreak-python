@@ -58,6 +58,16 @@ tests:
       - "ғылым"
       - "Қазақ"
 
+  - lang: "ell"
+    cases:
+      # Greek script — entire alphabet is unique to ell/grc among supported
+      # languages. (grc is only added once we implement #8.)
+      - "καλημέρα"
+      - "Έλληνας"
+      - "Αθήνα"
+      - "ελληνικά"
+      - "γράμμα"
+
   - lang: "lav"
     cases:
       # Latvian and Latin share macron vowels (ā ē ī ū). Only the cedilla

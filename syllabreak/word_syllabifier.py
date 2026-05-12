@@ -213,9 +213,18 @@ class WordSyllabifier:
     def _find_boundary_for_long_cluster(
         self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: int | None = None
     ) -> int:
-        """Determine boundary for cluster with 3+ consonants."""
-        boundary_idx = cluster_indices[-1]
+        """Determine boundary for cluster with 3+ consonants.
 
+        Prefer the longest tail that forms a valid word-initial onset. Greek
+        στρ in "ά-στρο" requires a 3-letter onset match; falling back to the
+        2-letter check would give "άσ-τρο".
+        """
+        if len(cluster) >= 3:
+            onset3 = (cluster[-3].surface + cluster[-2].surface + cluster[-1].surface).lower()
+            if onset3 in self.rule.clusters_keep_next:
+                return cluster_indices[-3]
+
+        boundary_idx = cluster_indices[-1]
         if len(cluster) >= 2 and self._is_valid_onset(cluster[-2].surface, cluster[-1].surface, prev_nucleus_idx):
             boundary_idx = cluster_indices[-2]
 
