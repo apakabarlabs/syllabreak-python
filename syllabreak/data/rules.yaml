@@ -270,6 +270,30 @@ rules:
     modifiers_separators: ""
     split_hiatus: true
 
+  # Latvian — Latin alphabet with macron (ā ē ī ū) and cedilla
+  # (ģ ķ ļ ņ š č ž) marks. Standard syllabification: V-CV / VC-CV, with
+  # muta-cum-liquida onset clusters kept together (la-brīt, an-tre-sols).
+  # Diphthongs ai/au/ei/ie/iu/oi/ui/eu/ou form a single nucleus and never
+  # split (lie-li, pal-dies, draugs).
+  #
+  # Placed after lat to preserve historical Latin detection: macron vowels
+  # (ā, ē, ī, ū) are shared between Latvian and Latin, so a sample without
+  # Latvian-unique cedilla letters (ģ, ķ, ļ, ņ) is indistinguishable.
+  # Stable sort keeps lat first for shared-character samples; users get lav
+  # by explicit lang= or by a cedilla letter in the text.
+  - lang: "lav"
+    vowels: "aāeēiīouū"
+    consonants: "bcčdfgģhjkķlļmnņpršstvzž"
+    sonorants: "lļmnņr"
+    clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "kl", "kr", "pl", "pr", "tr"]
+    dont_split_digraphs: []
+    digraph_vowels: ["ai", "au", "ei", "ie", "iu", "oi", "ui", "eu", "ou"]
+    glides: "j"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+
   # Bosnian, Croatian, Montenegrin (BCMS) share the orthography with Serbian
   # but differ in two systematic ways encoded below:
   #

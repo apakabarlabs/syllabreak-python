@@ -58,6 +58,16 @@ tests:
       - "ғылым"
       - "Қазақ"
 
+  - lang: "lav"
+    cases:
+      # Latvian and Latin share macron vowels (ā ē ī ū). Only the cedilla
+      # letters ļ, ķ, ģ, ņ are truly unique to Latvian among supported
+      # languages — words without them cannot be reliably detected.
+      - "ļoti"
+      - "Ģimene"
+      - "puķes"
+      - "saņem"
+
   - lang: "kat"
     cases:
       - "გამარჯობა"

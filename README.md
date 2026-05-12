@@ -25,6 +25,7 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇪🇸 Spanish (`spa`)
 - 🇵🇹 Portuguese (`por`)
 - 🇵🇱 Polish (`pol`)
+- 🇱🇻 Latvian (`lav`)
 - 🏛️ Latin (`lat`)
 
 ## Why syllabification isn't trivial
@@ -40,6 +41,7 @@ A few language-specific quirks the algorithm has to encode. Each one would other
 - **Polish** — digraphs `sz`, `cz`, `rz`, `dz`, `ch` stay together inside a syllable.
 - **Hungarian** — only one consonant moves to the next syllable, so even valid onset clusters split (`ab-lak`, not `a-blak`). Geminate digraphs are written compactly (`ssz`, `ggy`, `nny`, `lly`, `tty`, `ccs`, `zzs`, `ddz`, `ddzs`) and restored in full at the break per AkH 12 §226: `asszony` → `asz-szony`, `mennyi` → `meny-nyi`, `poggyász` → `pogy-gyász`.
 - **Turkic Cyrillic (kaz, kir)** — strict V-CV/VC-CV: only one consonant moves to the next syllable, three-consonant clusters split 2|1. Kyrgyz long vowels (`аа`, `ээ`, `оо`, `ии`, `уу`, `өө`, `үү`) form a single nucleus: `буу-дай`, not `бу-удай`. Note: Kyrgyz auto-detect is unreliable because its extra letters {ң, ө, ү} are a subset of Kazakh's — pass `lang="kir"` explicitly.
+- **Latvian** — V-CV/VC-CV with muta-cum-liquida kept (`la-brīt`). Diphthongs `ai`, `au`, `ei`, `ie`, `iu`, `oi`, `ui`, `eu`, `ou` form a single nucleus (`lie-li`, `pal-dies`, `draugs`). Note: macron vowels (`ā`, `ē`, `ī`, `ū`) are shared with Latin, so a Latvian word without a cedilla letter (`ļ`, `ķ`, `ģ`, `ņ`) cannot be reliably auto-detected — the detector keeps `lat` first.
 - **BCMS** — syllabic `r` between consonants is a syllable nucleus: `prst` and `krv` are one syllable, `smrt-no` splits around it.
 - **Georgian** — no digraphs, sequences of consonants split unless they appear on a small whitelist of valid onsets.
 

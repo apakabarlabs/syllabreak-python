@@ -531,6 +531,43 @@ tests:
       - text: "журт"
         want: "журт"
 
+  - section: "Latvian"
+    lang: "lav"
+    cases:
+      # Single consonant V-CV
+      - text: "māte"
+        want: "mā-te"
+      - text: "māja"
+        want: "mā-ja"
+      - text: "uguns"
+        want: "u-guns"
+      - text: "Latvija"
+        want: "Lat-vi-ja"
+      # 2-consonant cluster VC-CV (no kept onset)
+      - text: "tirgus"
+        want: "tir-gus"
+      - text: "balti"
+        want: "bal-ti"
+      # 2-consonant cluster — muta-cum-liquida kept (br)
+      - text: "labrīt"
+        want: "la-brīt"
+      # Diphthongs as single nucleus
+      - text: "lieli"
+        want: "lie-li"
+      - text: "paldies"
+        want: "pal-dies"
+      # Single-syllable words with diphthong / consonant cluster
+      - text: "tēvs"
+        want: "tēvs"
+      - text: "miers"
+        want: "miers"
+      - text: "augs"
+        want: "augs"
+      - text: "draugs"
+        want: "draugs"
+      - text: "skaists"
+        want: "skaists"
+
   - section: "Hungarian"
     lang: "hun"
     cases:
