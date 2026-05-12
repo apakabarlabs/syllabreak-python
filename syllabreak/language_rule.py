@@ -74,6 +74,7 @@ class LanguageRule:
     suffixes_break_vre: set[str]
     suffixes_keep_vre: set[str]
     exceptions: dict[str, str]
+    geminate_digraphs: dict[str, str]
     _all_chars: set[str]
 
     def __init__(self, data: dict):
@@ -99,6 +100,12 @@ class LanguageRule:
         # for individual words that escape the general rules (e.g. BCMS "dvije",
         # "prije" — graphic -ije- not from jat, see Matešić 2015 rule P11).
         self.exceptions = dict(data.get("exceptions", {}))
+        # Compact-form digraph geminates -> expanded form, applied before
+        # tokenisation. Hungarian writes long double digraphs in a simplified
+        # form (ssz=sz+sz, ggy=gy+gy, ...) but at a line break both halves
+        # are restored in full (asz-szony, meny-nyi). Expanding here makes
+        # the boundary algorithm produce the correct surface automatically.
+        self.geminate_digraphs = dict(data.get("geminate_digraphs", {}))
 
         self._all_chars = self.vowels | self.consonants
 
@@ -114,6 +121,49 @@ class LanguageRule:
 
     def contains_char(self, char: str) -> bool:
         return char in self._all_chars
+
+    def expand_geminate_digraphs(self, word: str) -> tuple[str, list[tuple[int, int, str]]]:
+        """Expand compact-form digraph geminates (Hungarian ssz, ggy, ...).
+
+        Returns (expanded_word, spans). Each span is (start_in_expanded,
+        length_in_expanded, original_compact_text); the spans let the caller
+        decide whether to render the expanded form (when a boundary falls
+        inside the span — AkH 12 §226 line-break behaviour) or restore the
+        compact form (when the geminate is not actually split).
+
+        Case is preserved per match: an ALL-UPPER compact stretch expands to
+        all-upper, a single-cap-prefix to title-case, otherwise lowercase.
+        """
+        if not self.geminate_digraphs:
+            return word, []
+        patterns = sorted(self.geminate_digraphs.items(), key=lambda kv: -len(kv[0]))
+        word_lower = word.lower()
+        result: list[str] = []
+        spans: list[tuple[int, int, str]] = []
+        i = 0
+        expanded_pos = 0
+        while i < len(word):
+            matched = False
+            for short, long in patterns:
+                if word_lower[i : i + len(short)] == short:
+                    original_compact = word[i : i + len(short)]
+                    if original_compact.isupper():
+                        expansion = long.upper()
+                    elif original_compact[0].isupper():
+                        expansion = long[0].upper() + long[1:].lower()
+                    else:
+                        expansion = long
+                    spans.append((expanded_pos, len(expansion), original_compact))
+                    result.append(expansion)
+                    expanded_pos += len(expansion)
+                    i += len(short)
+                    matched = True
+                    break
+            if not matched:
+                result.append(word[i])
+                expanded_pos += 1
+                i += 1
+        return "".join(result), spans
 
     def is_word_char(self, char: str) -> bool:
         """Whether a character extends a word — letter or any tokenizer-attaching mark."""

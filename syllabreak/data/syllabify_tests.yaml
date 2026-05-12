@@ -476,6 +476,105 @@ tests:
       - text: "przyjaciel"
         want: "przy-ja-ciel"
 
+  - section: "Hungarian"
+    lang: "hun"
+    cases:
+      # AkH 12 rule: only one consonant moves to the next syllable;
+      # double digraphs are simplified in writing (ssz, ggy, nny, lly, tty,
+      # ccs, zzs, ddz, ddzs) but the FULL form is restored on both sides
+      # when split — see Sulinet (https://tudasbazis.sulinet.hu/hu/magyar-nyelv-es-irodalom/magyar-nyelv/nyelvtan-4-osztaly/toldalekos-szavak-elvalasztasa/kettozott-massalhangzot-tartalmazo-szavak-elvalasztasa)
+      # and AkH 12 §226.
+
+      # Single consonant — V-CV
+      - text: "alma"
+        want: "al-ma"
+      - text: "lakás"
+        want: "la-kás"
+      - text: "három"
+        want: "há-rom"
+      - text: "repülőgép"
+        want: "re-pü-lő-gép"
+
+      # Digraphs as a single consonant
+      - text: "magyar"
+        want: "ma-gyar"
+      - text: "gyerek"
+        want: "gye-rek"
+      - text: "konyha"
+        want: "kony-ha"
+      - text: "köszönöm"
+        want: "kö-szö-nöm"
+
+      # Two-consonant cluster — only one moves to the next syllable
+      - text: "macska"
+        want: "macs-ka"
+      - text: "lámpa"
+        want: "lám-pa"
+      - text: "ablak"
+        want: "ab-lak"
+      - text: "asztal"
+        want: "asz-tal"
+      - text: "ország"
+        want: "or-szág"
+      - text: "ember"
+        want: "em-ber"
+      - text: "iskola"
+        want: "is-ko-la"
+      - text: "egyenlő"
+        want: "e-gyen-lő"
+      - text: "játszik"
+        want: "ját-szik"
+
+      # Initial three-consonant cluster, mid-word boundary splits
+      - text: "struktúra"
+        want: "struk-tú-ra"
+
+      # Simple geminate consonants — split between
+      - text: "kettő"
+        want: "ket-tő"
+      - text: "vállal"
+        want: "vál-lal"
+
+      # Geminate digraphs — written short (ssz/ggy/nny/...) but restored
+      # to full form (sz-sz, gy-gy, ny-ny, ...) at the split
+      - text: "asszony"
+        want: "asz-szony"
+      - text: "mennyi"
+        want: "meny-nyi"
+      - text: "vissza"
+        want: "visz-sza"
+      - text: "poggyász"
+        want: "pogy-gyász"
+
+      # Single-syllable words — no split, geminate digraph NOT expanded
+      - text: "egy"
+        want: "egy"
+      - text: "nyolc"
+        want: "nyolc"
+      - text: "fütty"
+        want: "fütty"
+
+      # Case preservation
+      - text: "Asszony"
+        want: "Asz-szony"
+      - text: "MAGYAR"
+        want: "MA-GYAR"
+      # All-caps geminate digraph: full uppercase must be preserved through
+      # the expansion/render pipeline
+      - text: "ASSZONY"
+        want: "ASZ-SZONY"
+      - text: "POGGYÁSZ"
+        want: "POGY-GYÁSZ"
+      - text: "MENNYI"
+        want: "MENY-NYI"
+      # Boundary OUTSIDE the geminate: the expanded form must NOT leak —
+      # "fütty" stays compact, only the morpheme boundary shows
+      - text: "füttyben"
+        want: "fütty-ben"
+      # Boundary inside the geminate AND a separate suffix boundary
+      - text: "asszonyban"
+        want: "asz-szony-ban"
+
   - section: "Latin"
     lang: "lat"
     cases:

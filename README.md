@@ -16,6 +16,7 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇲🇪 Montenegrin Cyrillic (`cnr-cyrl`)
 - 🇹🇷 Turkish (`tur`)
 - 🇬🇪 Georgian (`kat`)
+- 🇭🇺 Hungarian (`hun`)
 - 🇩🇪 German (`deu`)
 - 🇫🇷 French (`fra`)
 - 🇷🇴 Romanian (`ron`)
@@ -35,6 +36,7 @@ A few language-specific quirks the algorithm has to encode. Each one would other
 - **German** — `st` between vowels splits after a short nucleus but stays together after a long one (`stra-ße` vs `kin-der`-class cases).
 - **Latin** — hiatus is mandatory: `po-e-ta`, `phi-lo-so-phi-a`.
 - **Polish** — digraphs `sz`, `cz`, `rz`, `dz`, `ch` stay together inside a syllable.
+- **Hungarian** — only one consonant moves to the next syllable, so even valid onset clusters split (`ab-lak`, not `a-blak`). Geminate digraphs are written compactly (`ssz`, `ggy`, `nny`, `lly`, `tty`, `ccs`, `zzs`, `ddz`, `ddzs`) and restored in full at the break per AkH 12 §226: `asszony` → `asz-szony`, `mennyi` → `meny-nyi`, `poggyász` → `pogy-gyász`.
 - **BCMS** — syllabic `r` between consonants is a syllable nucleus: `prst` and `krv` are one syllable, `smrt-no` splits around it.
 - **Georgian** — no digraphs, sequences of consonants split unless they appear on a small whitelist of valid onsets.
 

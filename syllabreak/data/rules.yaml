@@ -71,6 +71,43 @@ rules:
     modifiers_attach_right: ""
     modifiers_separators: ""
 
+  # Hungarian (AkH 12 §226). Key rules encoded here:
+  #
+  #   1. Only one consonant moves to the next syllable, regardless of which
+  #      cluster it forms. So clusters_keep_next is empty — "ablak" splits
+  #      as "ab-lak", not "a-blak"; "macska" as "macs-ka"; "asztal" as
+  #      "asz-tal".
+  #   2. cs, dz, dzs, gy, ly, ny, sz, ty, zs are single consonants and
+  #      cannot be split.
+  #   3. Geminate digraphs are written in a simplified form
+  #      (ssz=sz+sz, ggy=gy+gy, nny, lly, tty, ccs, zzs, ddz, ddzs) but
+  #      restored in FULL on both sides of a line break:
+  #      asz-szony, meny-nyi, ösz-sze, pogy-gyász. Encoded as
+  #      geminate_digraphs and pre-expanded by LanguageRule before
+  #      tokenisation.
+  - lang: "hun"
+    vowels: "aeiouáéíóöőúüű"
+    consonants: "bcdfghjklmnpqrstvwxyz"
+    sonorants: "lmnrj"
+    clusters_keep_next: []
+    dont_split_digraphs: ["dzs", "cs", "dz", "gy", "ly", "ny", "sz", "ty", "zs"]
+    digraph_vowels: []
+    glides: "j"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    geminate_digraphs:
+      ddzs: dzsdzs
+      ccs: cscs
+      ggy: gygy
+      lly: lyly
+      nny: nyny
+      ssz: szsz
+      tty: tyty
+      zzs: zszs
+      ddz: dzdz
+
   - lang: "deu"
     vowels: "aeiouyäöü"
     consonants: "bcdfghjklmnpqrstvwxzß"

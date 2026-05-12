@@ -8,7 +8,8 @@ class WordSyllabifier:
     """Handles syllabification of a single word."""
 
     def __init__(self, word: str, rule: LanguageRule, soft_hyphen: str):
-        self.word = word
+        self.original_word = word
+        self.word, self.geminate_spans = rule.expand_geminate_digraphs(word)
         self.rule = rule
         self.soft_hyphen = soft_hyphen
         self.tokens = self._tokenize()
@@ -269,35 +270,92 @@ class WordSyllabifier:
 
     def syllabify(self) -> str:
         """Perform syllabification and return the word with soft hyphens."""
-        exception = self.rule.exceptions.get(self.word.lower())
+        exception = self.rule.exceptions.get(self.original_word.lower())
         if exception is not None:
             return self._apply_exception(exception)
 
+        # When the word doesn't actually split, hand back the original surface
+        # so any geminate-digraph expansion isn't visible to the caller.
         if len(self.nuclei) < 2:
-            return self.word
+            return self.original_word
 
         boundaries = self._place_boundaries()
         if not boundaries:
-            return self.word
+            return self.original_word
 
-        result = []
+        return self._render_with_geminate_spans(boundaries)
+
+    def _render_with_geminate_spans(self, boundaries: list[int]) -> str:
+        """Render the result, collapsing geminate expansions that don't split.
+
+        For each geminate span produced by pre-expansion, we keep the expanded
+        surface (sz, sz; gy, gy …) only when a boundary actually falls between
+        its tokens. When no boundary falls inside, we substitute back the
+        original compact text ('ssz', 'ggy', …) so the caller never sees a
+        cosmetic expansion that wasn't earned by an actual line break.
+        """
         boundary_set = set(boundaries)
+        span_ranges = self._span_token_ranges()
+        spans_with_internal = self._spans_containing_any_boundary(span_ranges, boundary_set)
+        token_to_span = self._token_to_span_index(span_ranges)
 
-        for i, token in enumerate(self.tokens):
-            if i in boundary_set:
-                result.append(self.soft_hyphen)
-            result.append(token.surface)
+        output: list[str] = []
+        i = 0
+        while i < len(self.tokens):
+            s_idx = token_to_span.get(i)
+            if s_idx is not None and s_idx not in spans_with_internal:
+                first, last, compact = span_ranges[s_idx]
+                if i == first and i in boundary_set:
+                    output.append(self.soft_hyphen)
+                output.append(compact)
+                i = last + 1
+            else:
+                if i in boundary_set:
+                    output.append(self.soft_hyphen)
+                output.append(self.tokens[i].surface)
+                i += 1
+        return "".join(output)
 
-        return "".join(result)
+    def _span_token_ranges(self) -> list[tuple[int, int, str]]:
+        """For each geminate span, find the (first_token, last_token, compact)."""
+        ranges: list[tuple[int, int, str]] = []
+        for start, length, compact in self.geminate_spans:
+            end = start + length
+            first: int | None = None
+            last: int | None = None
+            for i, token in enumerate(self.tokens):
+                if token.start_idx >= start and token.end_idx <= end:
+                    if first is None:
+                        first = i
+                    last = i
+            if first is not None and last is not None:
+                ranges.append((first, last, compact))
+        return ranges
+
+    def _spans_containing_any_boundary(self, ranges: list[tuple[int, int, str]], boundary_set: set[int]) -> set[int]:
+        result: set[int] = set()
+        for s_idx, (first, last, _) in enumerate(ranges):
+            for b in boundary_set:
+                if first < b <= last:
+                    result.add(s_idx)
+                    break
+        return result
+
+    def _token_to_span_index(self, ranges: list[tuple[int, int, str]]) -> dict[int, int]:
+        mapping: dict[int, int] = {}
+        for s_idx, (first, last, _) in enumerate(ranges):
+            for t_idx in range(first, last + 1):
+                mapping[t_idx] = s_idx
+        return mapping
 
     def _apply_exception(self, split_lower: str) -> str:
-        """Render an exception's hyphen-marked lowercase split using self.word's case."""
+        """Render an exception's hyphen-marked lowercase split using the original case."""
         result = []
         src_idx = 0
         for ch in split_lower:
             if ch == "-":
                 result.append(self.soft_hyphen)
             else:
-                result.append(self.word[src_idx])
+                result.append(self.original_word[src_idx])
                 src_idx += 1
         return "".join(result)
