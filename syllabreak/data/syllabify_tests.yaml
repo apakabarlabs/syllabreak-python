@@ -920,6 +920,89 @@ tests:
       - text: "asszonyban"
         want: "asz-szony-ban"
 
+  # Finnish (fin). Standard orthographic syllabification per VISK and
+  # Karlsson — strict VC-CV with long vowels and diphthongs as nuclei.
+  - section: "Finnish"
+    lang: "fin"
+    cases:
+      # V-CV: one intervocalic consonant
+      - text: "kala"
+        want: "ka-la"
+      - text: "talo"
+        want: "ta-lo"
+      - text: "ranta"
+        want: "ran-ta"
+
+      # VC-CV: only the last consonant of a cluster moves to the next onset
+      - text: "kissa"
+        want: "kis-sa"
+      - text: "matka"
+        want: "mat-ka"
+      - text: "Helsinki"
+        want: "Hel-sin-ki"
+      - text: "kahvi"
+        want: "kah-vi"
+      - text: "ystävä"
+        want: "ys-tä-vä"
+      - text: "mahdollisuus"
+        want: "mah-dol-li-suus"
+
+      # Long vowels — one nucleus, never split
+      - text: "maa"
+        want: "maa"
+      - text: "puu"
+        want: "puu"
+      - text: "kuusi"
+        want: "kuu-si"
+      - text: "kääntää"
+        want: "kään-tää"
+      - text: "saari"
+        want: "saa-ri"
+
+      # i-diphthongs (universal)
+      - text: "aikuinen"
+        want: "ai-kui-nen"
+      - text: "perjantai"
+        want: "per-jan-tai"
+
+      # u-diphthongs
+      - text: "koulu"
+        want: "kou-lu"
+      - text: "aurinko"
+        want: "au-rin-ko"
+      - text: "kaupunki"
+        want: "kau-pun-ki"
+      - text: "rakkaus"
+        want: "rak-kaus"
+
+      # Opening diphthongs (ie/uo/yö) — first-syllable canonical examples
+      - text: "suomi"
+        want: "suo-mi"
+      - text: "kieli"
+        want: "kie-li"
+      - text: "huone"
+        want: "huo-ne"
+      - text: "tie"
+        want: "tie"
+      - text: "työ"
+        want: "työ"
+      - text: "syö"
+        want: "syö"
+      - text: "miehet"
+        want: "mie-het"
+
+      # Hiatus — vowel sequences that are not a recognised digraph split.
+      # The tokenizer is greedy on digraphs, so we pin down the cases
+      # where no digraph applies and adjacent monophthongs must split.
+      - text: "yliopisto"
+        want: "y-li-o-pis-to"
+      - text: "hioa"
+        want: "hi-o-a"
+      # `uo` IS a recognised opening diphthong, but the trailing `a`
+      # cannot join it — the `a` forms its own syllable via hiatus.
+      - text: "ruoan"
+        want: "ruo-an"
+
   - section: "Latin"
     lang: "lat"
     cases:

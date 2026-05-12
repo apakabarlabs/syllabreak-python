@@ -114,6 +114,12 @@ tests:
       - "mädchen"
       - "geschäft"
       - "größe"
+      # Caveat fixture: Finnish words without ü/ß cannot be told from
+      # German on a character-set scoring basis — the Finnish alphabet
+      # is a subset of German's. Rules order keeps `deu` before `fin`,
+      # so a Finnish ä/ö-only word routes to `deu`. Pass lang="fin"
+      # explicitly for Finnish text.
+      - "käsi"
 
   - lang: "fra"
     cases:

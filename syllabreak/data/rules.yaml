@@ -286,6 +286,54 @@ rules:
     # Clusters that should only be kept after long vowels (split after short vowels)
     clusters_only_after_long: ["st"]
 
+  # Finnish (fin) — Uralic, Finnic. Standard orthographic syllabification
+  # per VISK (Iso suomen kielioppi, §11–14) and Karlsson (1999).
+  #
+  # Rules:
+  #   - V-CV for one intervocalic consonant (ka-la, ta-lo)
+  #   - VC-CV for two or more — only the LAST consonant moves to the next
+  #     onset (kis-sa, mat-ka, mah-dol-li-suus)
+  #   - long vowels (aa ee ii oo uu yy ää öö) are a single nucleus
+  #   - i-diphthongs (V+i: ai ei oi ui yi äi öi) are diphthongs in any
+  #     position
+  #   - u/y-ending diphthongs (au eu iu ou ey äy iy öy) are listed as
+  #     single nuclei too
+  #   - opening diphthongs (ie uo yö) are formally diphthongs only in
+  #     a root-initial syllable. We list them in `digraph_vowels`
+  #     unconditionally because native roots overwhelmingly carry them
+  #     in initial position (kie-li, suo-mi, työ, tie, syö, huo-ne) and
+  #     non-initial occurrences in derived forms would require lexical
+  #     knowledge to disambiguate
+  #   - any 3+ vowels split as hiatus (yliopisto → y-li-o-pis-to)
+  #
+  # Sources:
+  #   - VISK §11–14 (kaino.kotus.fi/visk)
+  #   - Karlsson, F. (1999). Finnish: An Essential Grammar. Routledge
+  #   - Wiktionary, Appendix:Finnish hyphenation
+  - lang: "fin"
+    vowels: "aeiouyäö"
+    consonants: "bcdfghjklmnpqrstvwxzšž"
+    sonorants: "lmnr"
+    clusters_keep_next: []
+    dont_split_digraphs: []
+    digraph_vowels: [
+      # Long vowels — single nucleus, never split
+      "aa", "ee", "ii", "oo", "uu", "yy", "ää", "öö",
+      # i-diphthongs (V + i) — diphthong in any position
+      "ai", "ei", "oi", "ui", "yi", "äi", "öi",
+      # u/y-ending diphthongs listed here
+      "au", "eu", "iu", "ou", "ey", "äy", "iy", "öy",
+      # Opening diphthongs — formally root-initial only, but treated
+      # as a single nucleus everywhere (see header comment)
+      "ie", "uo", "yö"
+    ]
+    glides: "j"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   - lang: "fra"
     vowels: "aeiouyàâäéèêëïîôùûüœæ"
     consonants: "bcdfghjklmnpqrstvwxzç"
