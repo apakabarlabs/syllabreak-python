@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .language_rule import LanguageRule
 from .tokenizer import Token, TokenClass, Tokenizer
 
