@@ -1,3 +1,34 @@
+import unicodedata
+
+
+def _nfd(value: str) -> str:
+    return unicodedata.normalize("NFD", value)
+
+
+def _augment_set(values) -> set[str]:
+    """Build a set with both the NFC entries from the rule and their NFD
+    decompositions. Multi-character fields (digraph_vowels, clusters,
+    suffix groups, ...) need this because tokenisation runs on NFD input
+    and entries with precomposed letters like deu's "üh" would otherwise
+    fail to match."""
+    result: set[str] = set()
+    for value in values:
+        result.add(value)
+        result.add(_nfd(value))
+    return result
+
+
+def _augment_mapping(mapping) -> dict[str, str]:
+    """Augment a mapping with NFD-form keys (mapped to NFD-form values),
+    so that exception/geminate lookups succeed whether the caller has
+    handed us NFC or NFD input."""
+    result: dict[str, str] = {}
+    for key, value in mapping.items():
+        result[key] = value
+        result[_nfd(key)] = _nfd(value)
+    return result
+
+
 class MetaRule:
     """Aggregates information about all language rules and provides cross-language analysis"""
 
@@ -27,7 +58,7 @@ class MetaRule:
         return all_chars
 
     def find_matches(self, text: str) -> list:
-        """Find all matching languages for the text, sorted by score"""
+        """Find all matching languages for the text, sorted by score."""
         if not text:
             return []
 
@@ -78,34 +109,44 @@ class LanguageRule:
     _all_chars: set[str]
 
     def __init__(self, data: dict):
+        # Rule fields stay as the NFC entries from rules.yaml. The engine
+        # normalises text to NFD only inside syllabify(), and the tokenizer
+        # tolerates combining marks by:
+        #   - auto-attaching any Mn codepoint to the preceding token, and
+        #   - skipping Mn marks while matching multi-char digraphs so
+        #     forms like ἀι (NFD: α + U+0313 + ι) still match the base
+        #     "αι" digraph entry.
+        # Detection runs on NFC-normalised input — Polish ą/ż, deu ä,
+        # polytonic Greek ἀ/ἤ all sit precomposed and discriminate via
+        # each rule's unique_chars.
         self.lang = data["lang"]
         self.vowels = set(data["vowels"])
         self.consonants = set(data["consonants"])
         self.sonorants = set(data["sonorants"])
-        self.clusters_keep_next = set(data.get("clusters_keep_next", []))
-        self.dont_split_digraphs = set(data.get("dont_split_digraphs", []))
-        self.digraph_vowels = set(data.get("digraph_vowels", []))
+        self.clusters_keep_next = _augment_set(data.get("clusters_keep_next", []))
+        self.dont_split_digraphs = _augment_set(data.get("dont_split_digraphs", []))
+        self.digraph_vowels = _augment_set(data.get("digraph_vowels", []))
         self.glides = set(data.get("glides", ""))
         self.syllabic_consonants = set(data.get("syllabic_consonants", ""))
         self.modifiers_attach_left = set(data.get("modifiers_attach_left", ""))
         self.modifiers_attach_right = set(data.get("modifiers_attach_right", ""))
         self.modifiers_separators = set(data.get("modifiers_separators", ""))
-        self.clusters_only_after_long = set(data.get("clusters_only_after_long", []))
+        self.clusters_only_after_long = _augment_set(data.get("clusters_only_after_long", []))
         self.split_hiatus = data.get("split_hiatus", False)
         self.final_semivowels = set(data.get("final_semivowels", ""))
-        self.final_sequences_keep = set(data.get("final_sequences_keep", []))
-        self.suffixes_break_vre = set(data.get("suffixes_break_vre", []))
-        self.suffixes_keep_vre = set(data.get("suffixes_keep_vre", []))
+        self.final_sequences_keep = _augment_set(data.get("final_sequences_keep", []))
+        self.suffixes_break_vre = _augment_set(data.get("suffixes_break_vre", []))
+        self.suffixes_keep_vre = _augment_set(data.get("suffixes_keep_vre", []))
         # Lowercased word -> hyphen-marked split. Used to override the algorithm
         # for individual words that escape the general rules (e.g. BCMS "dvije",
         # "prije" — graphic -ije- not from jat, see Matešić 2015 rule P11).
-        self.exceptions = dict(data.get("exceptions", {}))
+        self.exceptions = _augment_mapping(data.get("exceptions", {}))
         # Compact-form digraph geminates -> expanded form, applied before
         # tokenisation. Hungarian writes long double digraphs in a simplified
         # form (ssz=sz+sz, ggy=gy+gy, ...) but at a line break both halves
         # are restored in full (asz-szony, meny-nyi). Expanding here makes
         # the boundary algorithm produce the correct surface automatically.
-        self.geminate_digraphs = dict(data.get("geminate_digraphs", {}))
+        self.geminate_digraphs = _augment_mapping(data.get("geminate_digraphs", {}))
 
         self._all_chars = self.vowels | self.consonants
 
@@ -166,7 +207,7 @@ class LanguageRule:
         return "".join(result), spans
 
     def is_word_char(self, char: str) -> bool:
-        """Whether a character extends a word — letter or any tokenizer-attaching mark."""
+        """Whether a character extends a word — letter or any attaching mark."""
         if char.isalpha():
             return True
         if char in self.modifiers_attach_left:
@@ -174,6 +215,10 @@ class LanguageRule:
         if char in self.modifiers_attach_right:
             return True
         if char in self.modifiers_separators:
+            return True
+        # Unicode nonspacing marks (Mn) always belong to the preceding letter,
+        # so they extend whatever word they sit on.
+        if unicodedata.category(char) == "Mn":
             return True
         return False
 

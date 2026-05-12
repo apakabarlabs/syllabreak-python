@@ -687,6 +687,52 @@ tests:
       - text: "οικογένεια"
         want: "οι-κο-γέ-νει-α"
 
+  - section: "Ancient Greek"
+    lang: "grc"
+    cases:
+      # Polytonic accents (breathings + acute/grave/circumflex + iota
+      # subscript) are handled by NFD normalisation + Mn auto-attach — no
+      # enumeration in the rule needed.
+      - text: "λόγος"
+        want: "λό-γος"
+      - text: "πατήρ"
+        want: "πα-τήρ"
+      - text: "ἀρχή"
+        want: "ἀρ-χή"
+      # Muta cum liquida / valid Greek onset clusters
+      - text: "ἄνθρωπος"
+        want: "ἄν-θρω-πος"
+      - text: "βιβλίον"
+        want: "βι-βλί-ον"
+      - text: "διδάσκαλος"
+        want: "δι-δά-σκα-λος"
+      - text: "ἀδελφός"
+        want: "ἀ-δελ-φός"
+      # Initial cluster πν stays with the first nucleus + εῦ diphthong
+      - text: "πνεῦμα"
+        want: "πνεῦ-μα"
+      # Diphthongs with breathing + accent on second vowel (εἰ)
+      - text: "εἰρήνη"
+        want: "εἰ-ρή-νη"
+      # Iota subscript carried by NFD auto-attach (γλώσσῃ → 2 syll: ω+circ
+      # carries the stressed nucleus, σσ splits, ῃ holds the dative ending)
+      - text: "γλώσσῃ"
+        want: "γλώσ-σῃ"
+      # Diphthongs with breath/accent on the FIRST vowel: NFD places the
+      # combining mark BETWEEN the two diphthong letters, so the tokenizer
+      # has to skip marks while matching the digraph entry (Αἰγαῖος in
+      # NFD: Α + ι + U+0313 + ... — αι base still matches).
+      - text: "Αἰγαῖος"
+        want: "Αἰ-γαῖ-ος"
+      - text: "ἄνθρωποι"
+        want: "ἄν-θρω-ποι"
+      # Diaeresis on the second vowel of a candidate digraph signals
+      # hiatus, not a diphthong. αϊ / Μαΐου must split.
+      - text: "αϊτός"
+        want: "α-ϊ-τός"
+      - text: "Μαΐου"
+        want: "Μα-ΐ-ου"
+
   - section: "Hungarian"
     lang: "hun"
     cases:

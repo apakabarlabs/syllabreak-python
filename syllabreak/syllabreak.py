@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import unicodedata
 from pathlib import Path
 
 import yaml
@@ -21,7 +22,11 @@ class Syllabreak:
         return MetaRule(rules)
 
     def detect_language(self, text: str) -> list[str]:
-        matching_rules = self.meta_rule.find_matches(text)
+        # Detect on NFC-normalised text so precomposed letters (Polish ą,
+        # deu ä, polytonic Greek ἤ …) sit in their canonical form and
+        # discriminate via each rule's unique_chars set. Callers handing
+        # us NFD-decomposed input get the same answer as NFC.
+        matching_rules = self.meta_rule.find_matches(unicodedata.normalize("NFC", text))
         return [rule.lang for rule in matching_rules]
 
     def supported_languages(self) -> list[str]:
@@ -56,29 +61,30 @@ class Syllabreak:
         if lang:
             rule = self._get_rule_by_lang(lang)
         else:
-            rule = self._auto_detect_rule(text)
+            rule = self._auto_detect_rule(unicodedata.normalize("NFC", text))
             if not rule:
                 return text
 
-        # Process each word
+        # Internally we work on the NFD form so that combining marks
+        # (polytonic Greek, BCMS с́, etc.) are visible as separate codepoints
+        # at known positions, and rule fields (also NFD on load) match
+        # consistently. The final result is renormalised to NFC so callers
+        # see the canonical user-visible form.
+        nfd_text = unicodedata.normalize("NFD", text)
+
         result = []
         i = 0
-
-        while i < len(text):
-            # Find word boundaries
-            if not text[i].isalpha():
-                result.append(text[i])
+        while i < len(nfd_text):
+            if not nfd_text[i].isalpha():
+                result.append(nfd_text[i])
                 i += 1
                 continue
 
-            # Found start of word — word continues across letters and any
-            # tokenizer-attaching marks declared by the rule (e.g. combining
-            # acute U+0301 used by Montenegrin Cyrillic с́, з́).
             word_start = i
-            while i < len(text) and rule.is_word_char(text[i]):
+            while i < len(nfd_text) and rule.is_word_char(nfd_text[i]):
                 i += 1
 
-            word = text[word_start:i]
+            word = nfd_text[word_start:i]
             result.append(WordSyllabifier(word, rule, self.soft_hyphen).syllabify())
 
-        return "".join(result)
+        return unicodedata.normalize("NFC", "".join(result))

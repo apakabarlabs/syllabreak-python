@@ -178,6 +178,57 @@ rules:
     modifiers_separators: ""
     split_hiatus: true
 
+  # Ancient (Classical) Greek (grc).
+  #
+  # Two responsibilities, two sources of truth:
+  #
+  #   - Tokenisation only needs base letters. The engine NFD-normalises
+  #     input before tokenisation and the tokenizer auto-attaches every
+  #     combining mark to the preceding token, so polytonic accents
+  #     (smooth/rough breathing, acute/grave/circumflex, iota subscript,
+  #     diaeresis) ride along automatically.
+  #
+  #   - Detection works on NFC input through each rule's character set.
+  #     The vowel and consonant lists below enumerate every precomposed
+  #     codepoint in the Greek and Greek Extended Unicode blocks whose
+  #     base letter is a Greek vowel / consonant — generated from
+  #     unicodedata, not hand-written. Precomposed polytonic forms like
+  #     ἀ, ἄ, ἤ live only in this rule, which is what discriminates grc
+  #     from monotonic ell at detection time.
+  #
+  # Differences from Modern Greek: no consonant digraphs μπ/ντ/γκ/γγ/τζ/τσ
+  # — in Classical Greek these were two separate consonants.
+  - lang: "grc"
+    vowels: "ΐάέήίΰαεηιουωϊϋόύώἀἁἂἃἄἅἆἇἐἑἒἓἔἕἠἡἢἣἤἥἦἧἰἱἲἳἴἵἶἷὀὁὂὃὄὅὐὑὒὓὔὕὖὗὠὡὢὣὤὥὦὧὰάὲέὴήὶίὸόὺύὼώᾀᾁᾂᾃᾄᾅᾆᾇᾐᾑᾒᾓᾔᾕᾖᾗᾠᾡᾢᾣᾤᾥᾦᾧᾰᾱᾲᾳᾴᾶᾷιῂῃῄῆῇῐῑῒΐῖῗῠῡῢΰῦῧῲῳῴῶῷΆΈΉΊΌΎΏΑΕΗΙΟΥΩΪΫἈἉἊἋἌἍἎἏἘἙἚἛἜἝἨἩἪἫἬἭἮἯἸἹἺἻἼἽἾἿὈὉὊὋὌὍὙὛὝὟὨὩὪὫὬὭὮὯᾈᾉᾊᾋᾌᾍᾎᾏᾘᾙᾚᾛᾜᾝᾞᾟᾨᾩᾪᾫᾬᾭᾮᾯᾸᾹᾺΆᾼῈΈῊΉῌῘῙῚΊῨῩῪΎῸΌῺΏῼ"
+    consonants: "ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρςστφχψϴῤῥῬ"
+    sonorants: "λμνρ"
+    clusters_keep_next: [
+      "βλ", "βρ",
+      "γλ", "γν", "γρ",
+      "δρ",
+      "θλ", "θν", "θρ",
+      "κλ", "κν", "κρ", "κτ",
+      "μν",
+      "πλ", "πν", "πρ", "πτ",
+      "σβ", "σθ", "σκ", "σμ", "σπ", "στ", "σφ", "σχ",
+      "τλ", "τμ", "τρ",
+      "φθ", "φλ", "φρ",
+      "χθ", "χλ", "χν", "χρ",
+      "στρ", "σπρ", "σκρ"
+    ]
+    dont_split_digraphs: []
+    digraph_vowels: ["αι", "ει", "οι", "υι", "αυ", "ευ", "ηυ", "ου"]
+    glides: ""
+    syllabic_consonants: ""
+    # Combining marks aren't listed here: the tokenizer auto-attaches any
+    # Unicode Mn-category codepoint to the preceding token, which covers
+    # smooth/rough breathing, acute/grave/circumflex, iota subscript and
+    # diaeresis without enumeration.
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   # Hungarian (AkH 12 §226). Key rules encoded here:
   #
   #   1. Only one consonant moves to the next syllable, regardless of which

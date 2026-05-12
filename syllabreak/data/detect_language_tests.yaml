@@ -58,6 +58,18 @@ tests:
       - "ғылым"
       - "Қазақ"
 
+  - lang: "grc"
+    cases:
+      # Polytonic Greek detection relies on breathings/iota subscript —
+      # marks that appear only in grc, not in monotonic ell. A plain
+      # Greek string like "λόγος" without polytonic marks is ambiguous
+      # between grc and ell and will detect as ell (which sits earlier
+      # in rules.yaml).
+      - "ἄνθρωπος"
+      - "ἀρχή"
+      - "πνεῦμα"
+      - "εἰρήνη"
+
   - lang: "ell"
     cases:
       # Greek script — entire alphabet is unique to ell/grc among supported
