@@ -10,6 +10,10 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇷🇺 Russian (`rus`)
 - 🇷🇸 Serbian Cyrillic (`srp-cyrl`)
 - 🇷🇸 Serbian Latin (`srp-latn`)
+- 🇧🇦 Bosnian (`bos`)
+- 🇭🇷 Croatian (`hrv`)
+- 🇲🇪 Montenegrin Latin (`cnr-latn`)
+- 🇲🇪 Montenegrin Cyrillic (`cnr-cyrl`)
 - 🇹🇷 Turkish (`tur`)
 - 🇬🇪 Georgian (`kat`)
 - 🇩🇪 German (`deu`)
@@ -19,6 +23,32 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 - 🇵🇹 Portuguese (`por`)
 - 🇵🇱 Polish (`pol`)
 - 🏛️ Latin (`lat`)
+
+## Why syllabification isn't trivial
+
+A few language-specific quirks the algorithm has to encode. Each one would otherwise produce visibly wrong splits.
+
+- **BCMS (bos, hrv, cnr)** — long-jat reflex `ije` is **one** syllable: `mli-je-ko` is wrong, `mlije-ko` is correct. Two graphic-but-not-jat exceptions are `dvije` and `prije` (Matešić 2015, rule P11). `srp-latn` does not encode `ije` because Serbian dictionaries cover both ekavian and ijekavian; pass `lang="hrv"` (or `bos`/`cnr-latn`) for ijekavian text.
+- **Montenegrin** adds `ś`/`ź` (Latin) and `с́`/`з́` (Cyrillic, decomposed `с` + U+0301 only — no precomposed Unicode points exist).
+- **French** — `eau` is a trigraph vowel: `châ-teau`.
+- **Romanian** — final `-i` after a consonant is palatalization, not a separate syllable: `stu-denți`, not `stu-den-ți`. Adjacent vowels split into hiatus: `pri-e-teni`.
+- **German** — `st` between vowels splits after a short nucleus but stays together after a long one (`stra-ße` vs `kin-der`-class cases).
+- **Latin** — hiatus is mandatory: `po-e-ta`, `phi-lo-so-phi-a`.
+- **Polish** — digraphs `sz`, `cz`, `rz`, `dz`, `ch` stay together inside a syllable.
+- **BCMS** — syllabic `r` between consonants is a syllable nucleus: `prst` and `krv` are one syllable, `smrt-no` splits around it.
+- **Georgian** — no digraphs, sequences of consonants split unless they appear on a small whitelist of valid onsets.
+
+For BCMS specifically, character-based auto-detect cannot tell `bos`/`hrv`/`srp-latn`/`cnr-latn` apart for text without script-unique letters — the detector returns `srp-latn` first to preserve prior behaviour. Pass `lang=` explicitly to get ijekavian handling.
+
+## Out of Scope
+
+Some writing systems do not fit syllabreak's alphabetic-rules paradigm and will not be added. They need fundamentally different algorithms:
+
+- **Chinese (`cmn`)** — logographic; one character is already one syllable by construction. Nothing to split.
+- **Japanese (`jpn`)** — kana is mora-syllabic by design; kanji cannot be syllabified without a dictionary. Belongs in a separate library.
+- **Korean (`kor`)** — Hangul syllable blocks are syllables visually. Splitting is Unicode block normalization, not a vowel/consonant rule engine.
+- **Arabic (`ara`)** — abjad: short vowels are optional diacritics. Syllabification is undecidable without vocalization.
+- **Bengali (`ben`), Hindi (`hin`), Sanskrit (`san`)** — Brahmic abugidas. The unit is the akṣara (consonant + inherent/explicit vowel + conjuncts), which requires Unicode grapheme-cluster logic rather than a flat character table.
 
 ## Usage
 
@@ -47,6 +77,8 @@ You can specify the language code for more predictable results:
 'pro-blem'
 >>> s.syllabify("problem", lang="srp-latn")  # Force Serbian Latin rules
 'prob-lem'
+>>> s.syllabify("mlijeko", lang="hrv")  # Croatian ije is one syllable
+'mlije-ko'
 ```
 
 This is useful when:

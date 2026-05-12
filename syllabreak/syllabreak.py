@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Optional
 
 import yaml
 
@@ -23,7 +22,7 @@ class Syllabreak:
         matching_rules = self.meta_rule.find_matches(text)
         return [rule.lang for rule in matching_rules]
 
-    def _auto_detect_rule(self, text: str) -> Optional[LanguageRule]:
+    def _auto_detect_rule(self, text: str) -> LanguageRule | None:
         """Auto-detect the first matching language rule for the text."""
         matching_rules = self.meta_rule.find_matches(text)
         return matching_rules[0] if matching_rules else None
@@ -35,7 +34,7 @@ class Syllabreak:
                 return rule
         raise ValueError(f"Language '{lang}' is not supported")
 
-    def syllabify(self, text: str, lang: Optional[str] = None) -> str:
+    def syllabify(self, text: str, lang: str | None = None) -> str:
         """Syllabify text by inserting soft hyphens at syllable boundaries.
 
         Args:
@@ -66,9 +65,11 @@ class Syllabreak:
                 i += 1
                 continue
 
-            # Found start of word
+            # Found start of word — word continues across letters and any
+            # tokenizer-attaching marks declared by the rule (e.g. combining
+            # acute U+0301 used by Montenegrin Cyrillic с́, з́).
             word_start = i
-            while i < len(text) and text[i].isalpha():
+            while i < len(text) and rule.is_word_char(text[i]):
                 i += 1
 
             word = text[word_start:i]

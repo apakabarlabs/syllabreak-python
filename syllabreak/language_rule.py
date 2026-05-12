@@ -73,6 +73,7 @@ class LanguageRule:
     final_sequences_keep: set[str]
     suffixes_break_vre: set[str]
     suffixes_keep_vre: set[str]
+    exceptions: dict[str, str]
     _all_chars: set[str]
 
     def __init__(self, data: dict):
@@ -94,6 +95,10 @@ class LanguageRule:
         self.final_sequences_keep = set(data.get("final_sequences_keep", []))
         self.suffixes_break_vre = set(data.get("suffixes_break_vre", []))
         self.suffixes_keep_vre = set(data.get("suffixes_keep_vre", []))
+        # Lowercased word -> hyphen-marked split. Used to override the algorithm
+        # for individual words that escape the general rules (e.g. BCMS "dvije",
+        # "prije" — graphic -ije- not from jat, see Matešić 2015 rule P11).
+        self.exceptions = dict(data.get("exceptions", {}))
 
         self._all_chars = self.vowels | self.consonants
 
@@ -109,6 +114,18 @@ class LanguageRule:
 
     def contains_char(self, char: str) -> bool:
         return char in self._all_chars
+
+    def is_word_char(self, char: str) -> bool:
+        """Whether a character extends a word — letter or any tokenizer-attaching mark."""
+        if char.isalpha():
+            return True
+        if char in self.modifiers_attach_left:
+            return True
+        if char in self.modifiers_attach_right:
+            return True
+        if char in self.modifiers_separators:
+            return True
+        return False
 
     def calculate_match_score(self, text: str) -> float:
         clean_text = "".join(c.lower() for c in text if c.isalpha())

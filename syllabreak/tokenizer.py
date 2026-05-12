@@ -106,7 +106,8 @@ class Tokenizer:
 
     def _try_match_vowel_digraph(self) -> bool:
         """Try to match a vowel digraph at current position."""
-        for length in [2, 1]:
+        # Length 3 supports trigraphs like BCMS "ije"/"ије" (long-jat reflex).
+        for length in [3, 2, 1]:
             if self.pos + length > len(self.word):
                 continue
             substr = self.word_lower[self.pos : self.pos + length]

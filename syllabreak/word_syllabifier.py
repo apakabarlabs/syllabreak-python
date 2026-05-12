@@ -1,5 +1,3 @@
-from typing import Optional
-
 from .language_rule import LanguageRule
 from .tokenizer import Token, TokenClass, Tokenizer
 
@@ -57,7 +55,9 @@ class WordSyllabifier:
                     continue
                 # Check if surrounded by consonants (not adjacent to vowels)
                 prev_is_consonant = (i == 0) or (self.tokens[i - 1].token_class == TokenClass.CONSONANT)
-                next_is_consonant = (i == len(self.tokens) - 1) or (self.tokens[i + 1].token_class == TokenClass.CONSONANT)
+                next_is_consonant = (i == len(self.tokens) - 1) or (
+                    self.tokens[i + 1].token_class == TokenClass.CONSONANT
+                )
                 if not (prev_is_consonant and next_is_consonant):
                     continue
                 # Find distance to nearest vowel before (or word start)
@@ -122,30 +122,30 @@ class WordSyllabifier:
         right = self._skip_separators_backward(nk1 - 1)
         return self._extract_consonant_cluster(left, right)
 
-    def _is_valid_onset(self, consonant1: str, consonant2: str, prev_nucleus_idx: Optional[int] = None) -> bool:
+    def _is_valid_onset(self, consonant1: str, consonant2: str, prev_nucleus_idx: int | None = None) -> bool:
         """Check if two consonants form a valid onset cluster."""
         onset_candidate = consonant1.lower() + consonant2.lower()
-        
+
         # Check if this cluster requires a long vowel before it
         if onset_candidate in self.rule.clusters_only_after_long and prev_nucleus_idx is not None:
             # Check if previous nucleus is long (digraph or marked as long)
             if not self._is_long_nucleus(prev_nucleus_idx):
                 return False
-        
+
         return onset_candidate in self.rule.clusters_keep_next
-    
+
     def _is_long_nucleus(self, nucleus_idx: int) -> bool:
         """Check if nucleus at given index is long (digraph vowel or followed by lengthening marker)."""
         if nucleus_idx >= len(self.tokens):
             return False
-            
+
         # Get the vowel token
         vowel_token = self.tokens[nucleus_idx]
-        
+
         # Check if this vowel token itself is already a digraph (tokenized as one unit)
         if vowel_token.surface.lower() in self.rule.digraph_vowels:
             return True
-            
+
         # Check if current vowel + next character forms a digraph vowel
         if nucleus_idx + 1 < len(self.tokens):
             next_token = self.tokens[nucleus_idx + 1]
@@ -153,7 +153,7 @@ class WordSyllabifier:
             digraph = vowel_token.surface.lower() + next_token.surface.lower()
             if digraph in self.rule.digraph_vowels:
                 return True
-        
+
         # Single vowel is considered short
         return False
 
@@ -172,11 +172,11 @@ class WordSyllabifier:
         # Check for protected sequences (like -are, -ere, -ore, -ure, -ire)
         if self.rule.final_sequences_keep:
             # Build the sequence from current vowel nucleus through next nucleus
-            sequence = "".join(t.surface.lower() for t in self.tokens[nk:nk1 + 1])
+            sequence = "".join(t.surface.lower() for t in self.tokens[nk : nk1 + 1])
             if sequence in self.rule.final_sequences_keep:
                 # Get the rest of the word starting from next nucleus (includes the vowel)
                 rest_with_vowel = "".join(t.surface.lower() for t in self.tokens[nk1:])
-                rest_after_vowel = "".join(t.surface.lower() for t in self.tokens[nk1 + 1:])
+                rest_after_vowel = "".join(t.surface.lower() for t in self.tokens[nk1 + 1 :])
 
                 # Check if followed by a breaking suffix (par-ent, ad-her-ent)
                 # The suffix starts from the next vowel: "ent" in "par-ent"
@@ -198,14 +198,18 @@ class WordSyllabifier:
 
         return consonant_idx
 
-    def _find_boundary_for_two_consonants(self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: Optional[int] = None) -> int:
+    def _find_boundary_for_two_consonants(
+        self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: int | None = None
+    ) -> int:
         """Determine boundary for two-consonant cluster."""
         if self._is_valid_onset(cluster[0].surface, cluster[1].surface, prev_nucleus_idx):
             return cluster_indices[0]
         else:
             return cluster_indices[1]
 
-    def _find_boundary_for_long_cluster(self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: Optional[int] = None) -> int:
+    def _find_boundary_for_long_cluster(
+        self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: int | None = None
+    ) -> int:
         """Determine boundary for cluster with 3+ consonants."""
         boundary_idx = cluster_indices[-1]
 
@@ -214,7 +218,9 @@ class WordSyllabifier:
 
         return boundary_idx
 
-    def _find_boundary_in_cluster(self, cluster: list[Token], cluster_indices: list[int], nk: int, nk1: int) -> Optional[int]:
+    def _find_boundary_in_cluster(
+        self, cluster: list[Token], cluster_indices: list[int], nk: int, nk1: int
+    ) -> int | None:
         """Determine where to place boundary in a consonant cluster or between vowels."""
         if len(cluster) == 0:
             # Check for vowel hiatus (adjacent vowels that form separate syllables)
@@ -261,6 +267,10 @@ class WordSyllabifier:
 
     def syllabify(self) -> str:
         """Perform syllabification and return the word with soft hyphens."""
+        exception = self.rule.exceptions.get(self.word.lower())
+        if exception is not None:
+            return self._apply_exception(exception)
+
         if len(self.nuclei) < 2:
             return self.word
 
@@ -276,4 +286,16 @@ class WordSyllabifier:
                 result.append(self.soft_hyphen)
             result.append(token.surface)
 
+        return "".join(result)
+
+    def _apply_exception(self, split_lower: str) -> str:
+        """Render an exception's hyphen-marked lowercase split using self.word's case."""
+        result = []
+        src_idx = 0
+        for ch in split_lower:
+            if ch == "-":
+                result.append(self.soft_hyphen)
+            else:
+                result.append(self.word[src_idx])
+                src_idx += 1
         return "".join(result)

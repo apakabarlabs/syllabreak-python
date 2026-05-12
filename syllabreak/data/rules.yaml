@@ -191,3 +191,94 @@ rules:
     modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
+
+  # Bosnian, Croatian, Montenegrin (BCMS) share the orthography with Serbian
+  # but differ in two systematic ways encoded below:
+  #
+  #   1. Long-jat reflex "ije" / "ије" is a single syllable nucleus.
+  #      Rule P11 from Matešić (2015) "Postupak automatskoga slogovanja",
+  #      GOVOR 32(1), https://hrcak.srce.hr/file/244984 — confirmed by the
+  #      Croatian school grammar https://gramatika.hr/pravilo/slog-i-rastavljanje-rijeci-na-slogove/2/
+  #      (bijel, cvijet, riječ, snijeg never split).
+  #
+  #   2. "dj" is two phonemes [d]+[j] (odjenuti, odjeća), not a digraph
+  #      for đ as it is in srp-latn typographic substitutions.
+  #
+  # P11 lists two graphic-but-not-jat exceptions ("dvije", "prije") — those
+  # are handled via the `exceptions` field rather than a special-case
+  # algorithm, since they cannot be distinguished from real jat by surface form.
+  #
+  # New BCMS rules are placed AFTER all existing rules so stable-sort tie-breaks
+  # in the detector keep historical behaviour: text within the BCMS alphabet
+  # (no Polish-unique or other diacritics) still detects as srp-latn first,
+  # matching prior releases. Users get bos/hrv/cnr by explicit lang= argument.
+
+  - lang: "bos"
+    vowels: "aeiou"
+    consonants: "bcčćdžđfghjklmnprsštvzž"
+    sonorants: "lmnrj"
+    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
+    dont_split_digraphs: ["nj", "lj", "dž"]
+    digraph_vowels: ["ije"]
+    glides: "j"
+    syllabic_consonants: "r"
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    exceptions:
+      dvije: "dvi-je"
+      prije: "pri-je"
+
+  - lang: "hrv"
+    vowels: "aeiou"
+    consonants: "bcčćdžđfghjklmnprsštvzž"
+    sonorants: "lmnrj"
+    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
+    dont_split_digraphs: ["nj", "lj", "dž"]
+    digraph_vowels: ["ije"]
+    glides: "j"
+    syllabic_consonants: "r"
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    exceptions:
+      dvije: "dvi-je"
+      prije: "pri-je"
+
+  # Montenegrin Latin adds ś (U+015B) and ź (U+017A); introduced into the
+  # standard in 2009 (see Pravopis crnogorskoga jezika).
+  - lang: "cnr-latn"
+    vowels: "aeiou"
+    consonants: "bcčćdžđfghjklmnprsśštvzźž"
+    sonorants: "lmnrj"
+    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
+    dont_split_digraphs: ["nj", "lj", "dž"]
+    digraph_vowels: ["ije"]
+    glides: "j"
+    syllabic_consonants: "r"
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    exceptions:
+      dvije: "dvi-je"
+      prije: "pri-je"
+
+  # Montenegrin Cyrillic adds с́ and з́ — decomposed only (base letter +
+  # combining acute U+0301; no precomposed Unicode points exist for these).
+  # The combining acute attaches to the preceding consonant token via the
+  # same modifiers_attach_left mechanism rus uses for ь.
+  - lang: "cnr-cyrl"
+    vowels: "аиуео"
+    consonants: "бвгдђжзјклљмнњпрстћфхцчџш"
+    sonorants: "лљмнњрј"
+    clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
+    dont_split_digraphs: []
+    digraph_vowels: ["ије"]
+    glides: "ј"
+    syllabic_consonants: "р"
+    modifiers_attach_left: "́"
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    exceptions:
+      двије: "дви-је"
+      прије: "при-је"
