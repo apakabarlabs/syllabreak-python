@@ -393,6 +393,60 @@ rules:
     modifiers_separators: ""
     split_hiatus: true
 
+  # Eastern Armenian (hye) — Armenian alphabet (U+0531..U+0587). School
+  # orthographic syllabification with a strict VC-CV model. The same model
+  # works for Western Armenian — the consonant/vowel inventory is shared,
+  # only phonetic values differ.
+  #
+  # Rules:
+  #   - one syllable per *written* vowel (no schwa epenthesis: the
+  #     epenthetic schwa that surfaces in pronunciation between consonant
+  #     clusters — դպրոց → [də.pə.rɔts] — is not orthographic and the
+  #     algorithm does not insert it)
+  #   - V-CV for one intervocalic consonant
+  #   - VC-CV for two consonants ("Word-internally, -CC- is perceived as
+  #     a natural syllable boundary")
+  #   - VCC-CV for three (only one consonant moves to the next onset)
+  #   - no `clusters_keep_next`: Armenian native phonotactics disallow
+  #     CCV- onsets, so every internal cluster splits
+  #
+  # Letters:
+  #   - 7 single-letter vowel signs: ա ե է ը ի ո օ
+  #   - 1 vowel digraph: ու = /u/ — never splits, treated as a single
+  #     nucleus (Sahak Petrosyan, hyph-hy.tex; also Dum-Tragut §1.3)
+  #   - 1 vowel-bearing ligature: և (U+0587, /jɛv/) — listed as a vowel
+  #     following Sahak Petrosyan and standard school practice; the
+  #     nucleus is /ɛ/. The non-ligature uppercase equivalent is ԵՎ
+  #     (Ե + Վ) and falls out automatically as vowel + consonant: ԱՐԵՎ
+  #     → Ա-ՐԵՎ via V-CV.
+  #   - յ = /j/ — a consonant glide. Words like մայր / հայ / հայր are
+  #     therefore monosyllabic under V-CV without any digraph encoding,
+  #     because յ cannot be a syllable nucleus.
+  #
+  # Sources:
+  #   - Notes on Syllabification in Classical Armenian, Univ. College
+  #     Oxford (users.ox.ac.uk/~univ2665/Arm/notes2.pdf) — direct quote on
+  #     internal CC behaviour
+  #   - Dum-Tragut, J. (2009). Armenian: Modern Eastern Armenian.
+  #     Benjamins, §1.4 (syllable structure as strict C(j)VCC)
+  #   - Petrosyan, S. (2010). hyph-hy.tex — TeX hyphenation patterns for
+  #     Armenian (CTAN hyph-utf8)
+  - lang: "hye"
+    vowels: "աեէըիոօև"
+    consonants: "բգդզթժլխծկհձղճմյնշչպջռսվտրցւփքֆ"
+    sonorants: "լմնռր"
+    clusters_keep_next: []
+    dont_split_digraphs: []
+    digraph_vowels: ["ու"]
+    glides: "յ"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    # Vowel-vowel adjacency is hiatus, never a diphthong (the only vowel
+    # combination that stays together is the digraph ու). նաև → նա-և.
+    split_hiatus: true
+
   # Latvian — Latin alphabet with macron (ā ē ī ū) and cedilla
   # (ģ ķ ļ ņ š č ž) marks. Standard syllabification: V-CV / VC-CV, with
   # muta-cum-liquida onset clusters kept together (la-brīt, an-tre-sols).

@@ -297,6 +297,94 @@ tests:
       - text: "თბილისი"
         want: "თბი-ლი-სი"
 
+  # Eastern Armenian (hye). School orthographic syllabification per
+  # Univ. College Oxford notes on classical Armenian (still followed for
+  # modern), Dum-Tragut "Armenian: Modern Eastern Armenian" §1.4, and
+  # Sahak Petrosyan's hyph-hy.tex (TeX hyphenation patterns, MIT 2010):
+  #
+  #   - one syllable per written vowel (no schwa epenthesis — the
+  #     pronounced schwa in dpros etc. is not orthographic)
+  #   - V-CV for a single intervocalic consonant
+  #   - VC-CV for two consonants ("Word-internally, -CC- is perceived as
+  #     a natural syllable boundary")
+  #   - ու is a single nucleus
+  #   - և (yev ligature) counted as one vowel-bearing letter
+  - section: "Armenian"
+    lang: "hye"
+    cases:
+      # V-CV throughout; ու is one nucleus
+      - text: "ուսանող"
+        want: "ու-սա-նող"
+      - text: "լեզու"
+        want: "լե-զու"
+      - text: "ուրախ"
+        want: "ու-րախ"
+      - text: "երեխա"
+        want: "ե-րե-խա"
+      - text: "հեռախոս"
+        want: "հե-ռա-խոս"
+      - text: "խաղող"
+        want: "խա-ղող"
+
+      # VC-CV — internal CC splits, no muta-cum-liquida
+      - text: "ընկեր"
+        want: "ըն-կեր"
+      - text: "ակնարկ"
+        want: "ակ-նարկ"
+      - text: "հայրենիք"
+        want: "հայ-րե-նիք"
+      - text: "սենյակ"
+        want: "սեն-յակ"
+      - text: "մայրաքաղաք"
+        want: "մայ-րա-քա-ղաք"
+
+      # Final consonant cluster stays with the last nucleus
+      - text: "աշակերտ"
+        want: "ա-շա-կերտ"
+
+      # Single graphic vowel — no orthographic split even though the word
+      # is pronounced with epenthetic schwas (dpros = [də.pə.rɔts]).
+      # We do not insert schwa, so the result is one syllable.
+      - text: "դպրոց"
+        want: "դպրոց"
+      - text: "գիրք"
+        want: "գիրք"
+      - text: "հայ"
+        want: "հայ"
+      - text: "մայր"
+        want: "մայր"
+      - text: "հաց"
+        want: "հաց"
+
+      # ու digraph in non-initial position and across syllables
+      - text: "ընկերուհի"
+        want: "ըն-կե-րու-հի"
+      # -CC- splits even when the second consonant is the glide յ: the
+      # Oxford rule treats every internal cluster as a natural boundary,
+      # and յ has no special onset privilege (cf. սենյակ → սեն-յակ).
+      - text: "գիտություն"
+        want: "գի-տութ-յուն"
+
+      # և ligature treated as a vowel (single nucleus, /jɛv/)
+      - text: "արև"
+        want: "ա-րև"
+      - text: "նաև"
+        want: "նա-և"
+      # Uppercase non-ligature equivalent: ԵՎ is the conventional
+      # all-caps spelling of և (the lowercase ligature has no precomposed
+      # uppercase form). It must syllabify correctly via V-CV as plain
+      # ե + վ, with no special digraph handling.
+      - text: "ԱՐԵՎ"
+        want: "Ա-ՐԵՎ"
+
+      # Case preservation
+      - text: "Հայաստան"
+        want: "Հա-յաս-տան"
+      - text: "Հայ"
+        want: "Հայ"
+      - text: "ՈՒՍԱՆՈՂ"
+        want: "ՈՒ-ՍԱ-ՆՈՂ"
+
   - section: "German"
     lang: "deu"
     cases:
