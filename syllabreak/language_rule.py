@@ -91,6 +91,7 @@ class LanguageRule:
     consonants: set[str]
     sonorants: set[str]
     clusters_keep_next: set[str]
+    trailing_onsets: set[str]
     dont_split_digraphs: set[str]
     digraph_vowels: set[str]
     glides: set[str]
@@ -124,6 +125,13 @@ class LanguageRule:
         self.consonants = set(data["consonants"])
         self.sonorants = set(data["sonorants"])
         self.clusters_keep_next = _augment_set(data.get("clusters_keep_next", []))
+        # trailing_onsets — onsets valid ONLY in trailing position of a 3+
+        # consonant cluster. Used for languages (Dutch) where some onsets
+        # (s+stop) split as VC-CV in a plain 2-cons cluster (kas-teel) but
+        # stay together as the next syllable's onset when preceded by
+        # another consonant (ven-ster, in-dus-trie). Checked alongside
+        # clusters_keep_next inside the 3+ cluster boundary decision.
+        self.trailing_onsets = _augment_set(data.get("trailing_onsets", []))
         self.dont_split_digraphs = _augment_set(data.get("dont_split_digraphs", []))
         self.digraph_vowels = _augment_set(data.get("digraph_vowels", []))
         self.glides = set(data.get("glides", ""))

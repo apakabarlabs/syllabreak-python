@@ -286,6 +286,69 @@ rules:
     # Clusters that should only be kept after long vowels (split after short vowels)
     clusters_only_after_long: ["st"]
 
+  # Dutch (nld) — Germanic, West Germanic. Standard orthographic
+  # syllabification per Woordenlijst Nederlandse Taal (Het Groene
+  # Boekje, 2015 edition, Nederlandse Taalunie) and Taaladvies.net.
+  #
+  # Rules:
+  #   - one written vowel/digraph per syllable
+  #   - V-CV for one intervocalic consonant (ta-fel, ma-ken, lo-pen)
+  #   - VC-CV for two intervocalic consonants (kas-teel, mees-ter,
+  #     pis-tool) — Dutch does NOT keep s+stop in a 2-cons cluster the
+  #     way it keeps muta-cum-liquida (pa-troon, a-tri-um)
+  #   - 3+ cluster: at least one consonant stays with the previous
+  #     syllable; the trailing 2/3 consonants go to the next onset if
+  #     they form a valid Dutch onset (ven-ster, ham-ster, in-dus-trie,
+  #     des-truc-tie, pad-den-stoel)
+  #   - vowel digraphs aa/ee/oo/uu (long) and ie/oe/eu/ei/ij/au/ou/ui
+  #     (diphthongs) form a single nucleus
+  #   - ch is a single phoneme /x/ (la-chen, bo-chel)
+  #   - hiatus: adjacent vowels not forming a digraph split, often
+  #     marked by diaeresis (idee-ën, pa-ti-ënt)
+  #
+  # The `clusters_keep_next` / `trailing_onsets` split mirrors the
+  # 2-cons / 3-cons distinction: muta-cum-liquida (br, bl, dr, kr, kl,
+  # pr, pl, tr, vr, ...) always glues, s+stop and the diminutive "tj"
+  # only when preceded by another consonant in a 3+ cluster.
+  #
+  # Known limitations of an orthographic algorithm:
+  #   - Morpheme boundary cases: "ab-rupt" (Latin prefix ab- + rupt) is
+  #     produced as "a-brupt" because "br" is a valid onset and we have
+  #     no morphology. Similar for some Latin prefix words.
+  #   - The diminutive suffix -tje after a vowel-final stem
+  #     (jon-ge-tje, au-toot-je) needs lexical knowledge — without it
+  #     the engine produces jon-get-je.
+  #
+  # Auto-detect: Dutch has no unique characters relative to its
+  # Germanic neighbours (alphabet is essentially a subset of German).
+  # Pass `lang="nld"` explicitly.
+  #
+  # Sources:
+  #   - Woordenlijst Nederlandse Taal (Het Groene Boekje, 2015)
+  #   - Taaladvies.net (Nederlandse Taalunie)
+  #   - nl.wiktionary.org (verified individual hyphenations)
+  - lang: "nld"
+    vowels: "aeiouyëïöü"
+    consonants: "bcdfghjklmnpqrstvwxz"
+    sonorants: "lmnr"
+    clusters_keep_next: ["br", "bl", "dr", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "vr", "wr"]
+    trailing_onsets: ["st", "sp", "sk", "sl", "sm", "sn", "sj", "tj", "sch"]
+    dont_split_digraphs: ["ch"]
+    digraph_vowels: [
+      # Long vowels
+      "aa", "ee", "oo", "uu",
+      # Diphthongs
+      "ie", "oe", "eu", "ei", "ij", "au", "ou", "ui",
+      # Triphthongs — single nucleus (draai, mooi, moei-te, leeuw, nieuw)
+      "aai", "ooi", "oei", "eeu", "ieu"
+    ]
+    glides: "j"
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   # Finnish (fin) — Uralic, Finnic. Standard orthographic syllabification
   # per VISK (Iso suomen kielioppi, §11–14) and Karlsson (1999).
   #

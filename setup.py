@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="syllabreak",
-    version="0.12.0",
+    version="0.13.0",
     packages=find_packages(),
     install_requires=[
         "PyYAML>=6.0",

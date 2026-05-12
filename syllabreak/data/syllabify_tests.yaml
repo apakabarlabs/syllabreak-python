@@ -1003,6 +1003,114 @@ tests:
       - text: "ruoan"
         want: "ruo-an"
 
+  # Dutch (nld). Standard orthographic syllabification per Het Groene
+  # Boekje, with hyphenations cross-checked against nl.wiktionary.org.
+  - section: "Dutch"
+    lang: "nld"
+    cases:
+      # V-CV: one intervocalic consonant
+      - text: "maken"
+        want: "ma-ken"
+      - text: "lopen"
+        want: "lo-pen"
+      - text: "boven"
+        want: "bo-ven"
+      - text: "water"
+        want: "wa-ter"
+      - text: "vader"
+        want: "va-der"
+      - text: "tafel"
+        want: "ta-fel"
+      - text: "moeder"
+        want: "moe-der"
+
+      # VC-CV: two intervocalic consonants split (strict)
+      - text: "kinderen"
+        want: "kin-de-ren"
+      - text: "boekje"
+        want: "boek-je"
+      - text: "kasteel"
+        want: "kas-teel"
+      - text: "meester"
+        want: "mees-ter"
+      - text: "pistool"
+        want: "pis-tool"
+      - text: "katje"
+        want: "kat-je"
+
+      # Muta-cum-liquida (stop + r/l) stays together in 2-cons clusters
+      - text: "patroon"
+        want: "pa-troon"
+      - text: "atrium"
+        want: "a-tri-um"
+      - text: "vragen"
+        want: "vra-gen"
+
+      # 3-cons clusters: at least one consonant stays prev, trailing
+      # 2/3 cons go next when they form a valid onset
+      - text: "venster"
+        want: "ven-ster"
+      - text: "monster"
+        want: "mon-ster"
+      - text: "hamster"
+        want: "ham-ster"
+      - text: "centrum"
+        want: "cen-trum"
+      - text: "industrie"
+        want: "in-dus-trie"
+      - text: "destructie"
+        want: "des-truc-tie"
+
+      # ch is a single phoneme /x/
+      - text: "lachen"
+        want: "la-chen"
+      - text: "bochel"
+        want: "bo-chel"
+      - text: "lichten"
+        want: "lich-ten"
+
+      # Initial sch- (3-letter cluster) — handled automatically at word
+      # start as everything before the first nucleus
+      - text: "schaduw"
+        want: "scha-duw"
+      - text: "schaal"
+        want: "schaal"
+
+      # Long vowels and diphthongs as single nuclei
+      - text: "vrouwen"
+        want: "vrou-wen"
+      - text: "huizen"
+        want: "hui-zen"
+      - text: "rijden"
+        want: "rij-den"
+
+      # Triphthongs aai/ooi/oei/eeu/ieu are single nuclei
+      - text: "moeite"
+        want: "moei-te"
+      - text: "mooie"
+        want: "mooi-e"
+      - text: "draaien"
+        want: "draai-en"
+      - text: "leeuwen"
+        want: "leeu-wen"
+      - text: "nieuwe"
+        want: "nieu-we"
+
+      # Multi-syllable words with several internal clusters
+      - text: "Nederland"
+        want: "Ne-der-land"
+      - text: "Amsterdam"
+        want: "Am-ster-dam"
+      - text: "paddenstoel"
+        want: "pad-den-stoel"
+
+      # Hiatus marked by diaeresis (combining U+0308 attaches and the
+      # diaeresis-veto blocks digraph absorption)
+      - text: "ideeën"
+        want: "i-dee-ën"
+      - text: "patiënt"
+        want: "pa-ti-ënt"
+
   - section: "Latin"
     lang: "lat"
     cases:

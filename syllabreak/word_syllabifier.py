@@ -125,8 +125,19 @@ class WordSyllabifier:
         right = self._skip_separators_backward(nk1 - 1)
         return self._extract_consonant_cluster(left, right)
 
-    def _is_valid_onset(self, consonant1: str, consonant2: str, prev_nucleus_idx: int | None = None) -> bool:
-        """Check if two consonants form a valid onset cluster."""
+    def _is_valid_onset(
+        self,
+        consonant1: str,
+        consonant2: str,
+        prev_nucleus_idx: int | None = None,
+        include_trailing_onsets: bool = False,
+    ) -> bool:
+        """Check if two consonants form a valid onset cluster.
+
+        `include_trailing_onsets` widens the lookup with `trailing_onsets`
+        — used inside the 3+ cluster boundary decision, where some onsets
+        (Dutch s+stop) count only because they sit after another consonant.
+        """
         onset_candidate = consonant1.lower() + consonant2.lower()
 
         # Check if this cluster requires a long vowel before it
@@ -135,7 +146,11 @@ class WordSyllabifier:
             if not self._is_long_nucleus(prev_nucleus_idx):
                 return False
 
-        return onset_candidate in self.rule.clusters_keep_next
+        if onset_candidate in self.rule.clusters_keep_next:
+            return True
+        if include_trailing_onsets and onset_candidate in self.rule.trailing_onsets:
+            return True
+        return False
 
     def _is_long_nucleus(self, nucleus_idx: int) -> bool:
         """Check if nucleus at given index is long (digraph vowel or followed by lengthening marker)."""
@@ -218,14 +233,22 @@ class WordSyllabifier:
         Prefer the longest tail that forms a valid word-initial onset. Greek
         στρ in "ά-στρο" requires a 3-letter onset match; falling back to the
         2-letter check would give "άσ-τρο".
+
+        Onsets recognised here are the union of `clusters_keep_next` (which
+        also keeps 2-cons clusters together) and `trailing_onsets` (only
+        valid when preceded by another consonant — Dutch ven-ster, ham-ster
+        keep "st" with the next syllable in a 3+ cluster, while plain
+        kas-teel still splits the 2-cons "st" as VC-CV).
         """
         if len(cluster) >= 3:
             onset3 = (cluster[-3].surface + cluster[-2].surface + cluster[-1].surface).lower()
-            if onset3 in self.rule.clusters_keep_next:
+            if onset3 in self.rule.clusters_keep_next or onset3 in self.rule.trailing_onsets:
                 return cluster_indices[-3]
 
         boundary_idx = cluster_indices[-1]
-        if len(cluster) >= 2 and self._is_valid_onset(cluster[-2].surface, cluster[-1].surface, prev_nucleus_idx):
+        if len(cluster) >= 2 and self._is_valid_onset(
+            cluster[-2].surface, cluster[-1].surface, prev_nucleus_idx, include_trailing_onsets=True
+        ):
             boundary_idx = cluster_indices[-2]
 
         return boundary_idx
