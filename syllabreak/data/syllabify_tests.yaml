@@ -162,6 +162,22 @@ tests:
         want: "dje-lo"
       - text: "odjeća"
         want: "od-je-ća"
+      # "dj" as two phonemes in multi-syllable words
+      - text: "nadjačati"
+        want: "nad-ja-ča-ti"
+      - text: "odjednom"
+        want: "od-jed-nom"
+      # Case preservation: exceptions look up lowercase, render with original case
+      - text: "DVIJE"
+        want: "DVI-JE"
+      - text: "Prije"
+        want: "Pri-je"
+      # Case preservation: "ije" digraph tokenizes against lowercased text but
+      # keeps the original surface
+      - text: "MLIJEKO"
+        want: "MLIJE-KO"
+      - text: "Lijepo"
+        want: "Lije-po"
 
   - section: "Montenegrin Latin"
     lang: "cnr-latn"
@@ -186,6 +202,11 @@ tests:
       # "dj" as two phonemes
       - text: "odjenuti"
         want: "od-je-nu-ti"
+      # Case preservation on Montenegrin-specific letters
+      - text: "Śutra"
+        want: "Śu-tra"
+      - text: "IŹEDE"
+        want: "I-ŹE-DE"
 
   - section: "Montenegrin Cyrillic"
     lang: "cnr-cyrl"
@@ -208,6 +229,27 @@ tests:
         want: "ње-гов"
       - text: "учитељ"
         want: "у-чи-тељ"
+      # Case preservation with the decomposed combining acute
+      - text: "С́утра"
+        want: "С́у-тра"
+      - text: "ПАС́ЈИ"
+        want: "ПАС́-ЈИ"
+      # Punctuation must not break the word at the combining acute —
+      # rule.is_word_char keeps U+0301 inside the word, comma/parens outside
+      - text: "с́утра,"
+        want: "с́у-тра,"
+      - text: "(с́утра)"
+        want: "(с́у-тра)"
+      # Case preservation: exceptions in Cyrillic
+      - text: "ДВИЈЕ"
+        want: "ДВИ-ЈЕ"
+      - text: "Прије"
+        want: "При-је"
+      # Case preservation: "ије" digraph
+      - text: "МЛИЈЕКО"
+        want: "МЛИЈЕ-КО"
+      - text: "Лијепо"
+        want: "Лије-по"
 
   - section: "Serbian Latin (autodetect)"
     lang: null
