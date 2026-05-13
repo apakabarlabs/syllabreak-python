@@ -586,6 +586,72 @@ rules:
     modifiers_attach_right: ""
     modifiers_separators: ""
 
+  # Vietnamese (vie) — Austroasiatic, Vietic. Latin alphabet with a
+  # rich diacritic system: 6 plain vowels (a e i o u y) plus 6 with
+  # base-modifying marks (ă, â, ê, ô, ơ, ư) and 5 combining tone marks
+  # (acute, grave, hook above, tilde, dot below). The diacritics
+  # decompose into combining marks (Mn category) in NFD and ride along
+  # their base letter via the tokenizer's Mn auto-attach.
+  #
+  # Vietnamese is overwhelmingly monosyllabic and natively written
+  # with spaces between syllables (Việt Nam, không khí, Hà Nội), so
+  # the engine usually sees a single syllable per word. The non-trivial
+  # cases:
+  #   - 10 consonant digraphs and 1 trigraph: ch, gh, gi, kh, ng, ngh,
+  #     nh, ph, qu, th, tr — tokenised as single consonants.
+  #   - Vowel sequences (di- and triphthongs): ai/ao/au/ay/eo/ia/iê/oa/
+  #     oi/ôi/ơi/ua/uâ/uê/ui/uy/uô/ưa/ươ/yê plus triphthongs iêu, oai,
+  #     oay, uây, uôi, ươi, ươu, uya, uyê. To survive NFD decomposition
+  #     of diacritic-bearing variants (`uổi` → "ưởi"),
+  #     they are listed in their **base-stripped** form (`uoi`), which
+  #     the tokenizer's Mn-skip fallback matches against the run of
+  #     base letters between any combining marks.
+  #   - The letter `đ` (U+0111) is a separate Vietnamese consonant and
+  #     is listed explicitly.
+  #
+  # Auto-detect: `đ` is unique among the supported rules; vowels with
+  # horn (ư, ơ) are also distinctive. Words containing them route
+  # cleanly to Vietnamese. Pass `lang="vie"` for purely ASCII Latin
+  # words.
+  #
+  # Sources:
+  #   - en.wikipedia.org/wiki/Vietnamese_phonology
+  #   - en.wikipedia.org/wiki/Vietnamese_alphabet
+  - lang: "vie"
+    # vowels enumerates every precomposed Vietnamese vowel letter
+    # (12 base letters × 6 tone variants = 72) so detect_language can
+    # discriminate against rules whose character sets stop at plain
+    # Latin. The tokenizer inside syllabify works on the NFD form and
+    # gets the base letter via Mn auto-attach — only the bare
+    # `aeiouy` are strictly needed there.
+    vowels: "aeiouyáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ"
+    consonants: "bcdghklmnpqrstvxzđ"
+    sonorants: "lmnr"
+    clusters_keep_next: []
+    dont_split_digraphs: ["ngh", "ch", "gh", "gi", "kh", "ng", "nh", "ph", "qu", "th", "tr"]
+    digraph_vowels: [
+      # Diphthongs (base form — Mn-skip fallback matches stripped of
+      # diacritics, so `ai` covers `ái`/`ài`/..., `oi` covers `ôi`/`ơi`/...,
+      # etc.)
+      "ai", "ao", "au", "ay", "eo", "eu",
+      "ia", "ie", "iu",
+      "oa", "oe", "oi", "ou",
+      "ua", "ue", "ui", "uo", "uy",
+      "ya", "ye", "yu",
+      # Triphthongs
+      "ieu", "oai", "oay", "uai", "uay", "uoi", "uou", "uya", "uye",
+      "yeu",
+      # 4-letter (uyên type) — engine matches up to length 3, so omitted;
+      # `uye` triphthong covers the nucleus part, the trailing `n` is a
+      # coda consonant and stays with the syllable naturally.
+    ]
+    glides: ""
+    syllabic_consonants: ""
+    modifiers_attach_left: ""
+    modifiers_attach_right: ""
+    modifiers_separators: ""
+    split_hiatus: true
+
   - lang: "pol"
     vowels: "aeiouyąęó"
     consonants: "bcćdfghjklłmnńprsśtwzźż"

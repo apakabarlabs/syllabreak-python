@@ -1248,6 +1248,55 @@ tests:
       - text: "njoo"
         want: "njo-o"
 
+  # Vietnamese (vie). Mostly monosyllabic; words come space-separated
+  # so the engine usually sees one syllable. The interesting cases:
+  # consonant digraphs (ph, ng, nh, th, tr, ngh, ...), vowel di- and
+  # triphthongs with tonal diacritics, and the letter đ.
+  - section: "Vietnamese"
+    lang: "vie"
+    cases:
+      # Single-syllable with consonant digraphs and diacritic vowels
+      - text: "phở"
+        want: "phở"
+      - text: "không"
+        want: "không"
+      - text: "Việt"
+        want: "Việt"
+      - text: "Nam"
+        want: "Nam"
+      - text: "xôi"
+        want: "xôi"
+      - text: "bún"
+        want: "bún"
+      - text: "một"
+        want: "một"
+      - text: "hai"
+        want: "hai"
+      - text: "ba"
+        want: "ba"
+      - text: "đẹp"
+        want: "đẹp"
+
+      # Single-syllable with triphthongs (must NOT split)
+      - text: "người"
+        want: "người"
+      - text: "nhiều"
+        want: "nhiều"
+      - text: "tuổi"
+        want: "tuổi"
+      - text: "yêu"
+        want: "yêu"
+      - text: "mưa"
+        want: "mưa"
+
+      # Multi-syllable Vietnamese is normally space-separated, but
+      # space-less loanwords like `tivi` (TV) and `alô` (hello on the
+      # phone) should split sensibly via V-CV.
+      - text: "tivi"
+        want: "ti-vi"
+      - text: "alô"
+        want: "a-lô"
+
   - section: "Latin"
     lang: "lat"
     cases:

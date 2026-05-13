@@ -141,18 +141,47 @@ class Tokenizer:
     def _try_match_digraph(self, source: set[str], token_class: TokenClass) -> bool:
         """Shared logic for consonant and vowel digraphs.
 
-        First tries the longest direct substring match — that catches
-        entries whose marks sit on a vowel that participates in the
-        digraph itself (deu "üh", a long-vowel lengthener written u+◌̈+h).
-        Falls back to a Mn-skipping match against the same set — that
-        catches breath/accent placed between two base letters of a
-        diphthong (Ancient Greek "ἀι" = α + U+0313 + ι matches "αι").
+        For each candidate length (3, 2, 1) we try the Mn-skipping match
+        first, then the direct substring match. The Mn-skipping path
+        composes the next N base letters while skipping any Unicode
+        combining marks between them, so it can cover more codepoints
+        than a direct length-N substring. This matters for triphthongs
+        written with a diacritic on the middle base (Vietnamese yêu =
+        y + ê + u → Mn-skip-3 matches the "yeu" base entry over 4
+        codepoints, even though direct length-3 would match the shorter
+        "yê"/"ye◌̂" entry first).
+
+        The direct path is kept as a fallback within each length so
+        digraphs whose marks sit on a vowel that participates in the
+        digraph itself (deu "üh", a long-vowel lengthener u + ◌̈ + h)
+        still match against their NFD-augmented entry.
 
         A diaeresis attached to the codepoint that closes the candidate
-        match vetoes the digraph: αϊ / Μαΐου / naïf etc. are hiatus, not
-        a digraph.
+        match vetoes the digraph: αϊ / Μαΐου / naïf etc. are hiatus,
+        not a digraph.
         """
+        positions = self._scan_bases()
+        bases = self._bases_at_positions(positions) if positions else []
         for length in (3, 2, 1):
+            # Mn-skip match — composes base letters skipping marks.
+            if len(bases) >= length:
+                candidate = "".join(bases[:length])
+                if candidate in source:
+                    end = positions[length - 1]
+                    if not self._diaeresis_vetoes_at(end):
+                        self.tokens.append(
+                            Token(
+                                surface=self.word[self.pos : end],
+                                token_class=token_class,
+                                start_idx=self.pos,
+                                end_idx=end,
+                            )
+                        )
+                        self.pos = end
+                        return True
+            # Direct substring match — catches entries listed with the
+            # mark inside (NFD-augmented "ye◌̂" matching the precomposed
+            # YAML entry "yê").
             end = self.pos + length
             if end > len(self.word):
                 continue
@@ -168,30 +197,6 @@ class Tokenizer:
                 )
                 self.pos = end
                 return True
-
-        positions = self._scan_bases()
-        if not positions:
-            return False
-        bases = self._bases_at_positions(positions)
-        for length in (3, 2, 1):
-            if len(bases) < length:
-                continue
-            candidate = "".join(bases[:length])
-            if candidate not in source:
-                continue
-            end = positions[length - 1]
-            if self._diaeresis_vetoes_at(end):
-                continue
-            self.tokens.append(
-                Token(
-                    surface=self.word[self.pos : end],
-                    token_class=token_class,
-                    start_idx=self.pos,
-                    end_idx=end,
-                )
-            )
-            self.pos = end
-            return True
         return False
 
     def _try_match_consonant_digraph(self) -> bool:
