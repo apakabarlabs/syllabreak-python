@@ -636,7 +636,7 @@ rules:
       "ai", "ao", "au", "ay", "eo", "eu",
       "ia", "ie", "iu",
       "oa", "oe", "oi", "ou",
-      "ua", "ue", "ui", "uo", "uy",
+      "ua", "ue", "ui", "uo", "uu", "uy",
       "ya", "ye", "yu",
       # Triphthongs
       "ieu", "oai", "oay", "uai", "uay", "uoi", "uou", "uya", "uye",

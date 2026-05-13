@@ -1289,6 +1289,14 @@ tests:
       - text: "mưa"
         want: "mưa"
 
+      # The `ưu` diphthong (base-stripped form `uu`) — single nucleus.
+      - text: "cứu"
+        want: "cứu"
+      - text: "hưu"
+        want: "hưu"
+      - text: "mưu"
+        want: "mưu"
+
       # Multi-syllable Vietnamese is normally space-separated, but
       # space-less loanwords like `tivi` (TV) and `alô` (hello on the
       # phone) should split sensibly via V-CV.
