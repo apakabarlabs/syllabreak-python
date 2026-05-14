@@ -1,0 +1,17 @@
+# Per-language word-split mode.
+#
+# Default behaviour (omitted languages): a "word" is one or more Unicode
+# letters/marks/digits, optionally joined by an apostrophe (straight or curly)
+# or a hyphen. The regex `[\p{L}\p{M}\p{Nd}]+(?:['’\-][\p{L}\p{M}\p{Nd}]+)*`
+# is encoded in each platform's implementation — only `mode` is configured here.
+#
+# CJK mode: one Han / Hiragana / Katakana / Hangul character per word. Latin/
+# digit runs inside mixed text stay together ("iPhoneを使う" → ["iPhone", "を",
+# "使", "う"]).
+rules:
+  - lang: cmn
+    mode: cjk
+  - lang: jpn
+    mode: cjk
+  - lang: kor
+    mode: cjk

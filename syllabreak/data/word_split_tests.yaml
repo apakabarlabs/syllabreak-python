@@ -1,0 +1,118 @@
+# Single source of truth for word-split behaviour across Python / Swift /
+# Kotlin implementations. Every platform's WordSplitter loads this file and
+# must pass every row — a divergence means one of the regex engines is wrong.
+tests:
+  # ---- English: contractions, em-dash, internal hyphen, punctuation ----
+  - lang: eng
+    text: "Don't go — to Vomero."
+    expected: ["Don't", "go", "to", "Vomero"]
+  - lang: eng
+    text: "I'm 42 years old."
+    expected: ["I'm", "42", "years", "old"]
+  - lang: eng
+    text: "back-to-back wins"
+    expected: ["back-to-back", "wins"]
+  - lang: eng
+    text: "He said: \"hello\"."
+    expected: ["He", "said", "hello"]
+  - lang: eng
+    text: ""
+    expected: []
+  - lang: eng
+    text: "   \n\t  "
+    expected: []
+  - lang: eng
+    text: "Mr. Smith arrived."
+    expected: ["Mr", "Smith", "arrived"]
+  - lang: eng
+    text: "The year 2026 was hot."
+    expected: ["The", "year", "2026", "was", "hot"]
+  - lang: eng
+    text: "Pi is approximately 3.14"
+    expected: ["Pi", "is", "approximately", "3", "14"]
+
+  # ---- Russian: cyrillic, internal hyphen, ё ----
+  - lang: rus
+    text: "Жил-был старик у синего моря."
+    expected: ["Жил-был", "старик", "у", "синего", "моря"]
+  - lang: rus
+    text: "Как-то раз..."
+    expected: ["Как-то", "раз"]
+  - lang: rus
+    text: "Ёжик в тумане"
+    expected: ["Ёжик", "в", "тумане"]
+
+  # ---- German: umlauts and ß ----
+  - lang: deu
+    text: "Über die Straße läuft ein Hund."
+    expected: ["Über", "die", "Straße", "läuft", "ein", "Hund"]
+
+  # ---- French: curly U+2019 apostrophe must not split the word ----
+  - lang: fra
+    text: "L'arbre est grand."
+    expected: ["L'arbre", "est", "grand"]
+  - lang: fra
+    text: "L’arbre est grand."
+    expected: ["L’arbre", "est", "grand"]
+  - lang: fra
+    text: "Je ne sais pas."
+    expected: ["Je", "ne", "sais", "pas"]
+
+  # ---- Italian ----
+  - lang: ita
+    text: "L'amore è bello."
+    expected: ["L'amore", "è", "bello"]
+
+  # ---- Spanish: inverted punctuation discarded ----
+  - lang: spa
+    text: "¿Cómo estás? ¡Bien!"
+    expected: ["Cómo", "estás", "Bien"]
+
+  # ---- Hungarian: long vowels ----
+  - lang: hun
+    text: "Kovács Balázs vagyok."
+    expected: ["Kovács", "Balázs", "vagyok"]
+
+  # ---- Arabic: RTL, diacritics kept inside the word via \p{M} ----
+  - lang: ara
+    text: "أنا أحب القطط."
+    expected: ["أنا", "أحب", "القطط"]
+
+  # ---- Hindi (Devanagari) — matras attach via \p{M} ----
+  - lang: hin
+    text: "मेरा नाम राम है।"
+    expected: ["मेरा", "नाम", "राम", "है"]
+
+  # ---- Hebrew ----
+  - lang: heb
+    text: "שלום עולם"
+    expected: ["שלום", "עולם"]
+
+  # ---- Latin ----
+  - lang: lat
+    text: "Veni, vidi, vici."
+    expected: ["Veni", "vidi", "vici"]
+
+  # ---- Chinese (cmn): one Han char per word, mixed with Latin ----
+  - lang: cmn
+    text: "我喜欢猫。"
+    expected: ["我", "喜", "欢", "猫"]
+  - lang: cmn
+    text: "iPhoneを使う"
+    expected: ["iPhone", "を", "使", "う"]
+  - lang: cmn
+    text: "2026年的春天"
+    expected: ["2026", "年", "的", "春", "天"]
+
+  # ---- Japanese (jpn): kanji + hiragana + katakana, each a word ----
+  - lang: jpn
+    text: "私は猫が好きです。"
+    expected: ["私", "は", "猫", "が", "好", "き", "で", "す"]
+  - lang: jpn
+    text: "カタカナとひらがな"
+    expected: ["カ", "タ", "カ", "ナ", "と", "ひ", "ら", "が", "な"]
+
+  # ---- Korean (kor): hangul syllables ----
+  - lang: kor
+    text: "안녕하세요 세계"
+    expected: ["안", "녕", "하", "세", "요", "세", "계"]
