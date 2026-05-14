@@ -63,6 +63,12 @@ class WordSplitter:
         self._modes = _load_rules()
 
     def split(self, text: str, lang: str) -> list[str]:
-        if self._modes.get(lang) == "cjk":
-            return _CJK_WORD_RE.findall(text)
-        return _DEFAULT_WORD_RE.findall(text)
+        return [text[s:e] for s, e in self.find_ranges(text, lang)]
+
+    def find_ranges(self, text: str, lang: str) -> list[tuple[int, int]]:
+        """Like `split` but returns (start, end) character offsets — needed
+        by clients that highlight or annotate specific word positions in the
+        original text (e.g. iOS lexeme spans), where re-searching the surface
+        form would be ambiguous on repeats ("the cat sat on the mat")."""
+        regex_obj = _CJK_WORD_RE if self._modes.get(lang) == "cjk" else _DEFAULT_WORD_RE
+        return [m.span() for m in regex_obj.finditer(text)]
