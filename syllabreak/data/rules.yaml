@@ -9,7 +9,6 @@ rules:
     glides: "wy"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     # Word-final sequences that should not be split (care, here, more, cure, fire)
     # These are kept together at word end or before light suffixes (-s, -less, -ful, -ly, -ing, -ed)
@@ -29,7 +28,6 @@ rules:
     glides: "й"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
-    modifiers_attach_right: ""
     modifiers_separators: "ъ"
 
   - lang: "srp-cyrl"
@@ -42,7 +40,6 @@ rules:
     glides: "ј"
     syllabic_consonants: "р"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   - lang: "srp-latn"
@@ -55,7 +52,6 @@ rules:
     glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   # Kazakh — Cyrillic alphabet with Turkic extras (ә, і, ң, ө, ұ, ү, ғ, қ, һ).
@@ -81,7 +77,6 @@ rules:
     glides: "й"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
-    modifiers_attach_right: ""
     modifiers_separators: "ъ"
 
   # Kyrgyz — Cyrillic alphabet with Turkic extras (ң, ө, ү). Long vowels
@@ -107,7 +102,6 @@ rules:
     glides: "й"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
-    modifiers_attach_right: ""
     modifiers_separators: "ъ"
 
   - lang: "tur"
@@ -120,7 +114,6 @@ rules:
     glides: "y"
     syllabic_consonants: ""  # Turkish doesn't have syllabic consonants
     modifiers_attach_left: ""  # No diacritic markers as separate letters
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   # Modern Greek (ell). School orthographic syllabification:
@@ -174,7 +167,6 @@ rules:
     glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -225,7 +217,6 @@ rules:
     # smooth/rough breathing, acute/grave/circumflex, iota subscript and
     # diaeresis without enumeration.
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -253,7 +244,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     geminate_digraphs:
       ddzs: dzsdzs
@@ -281,7 +271,6 @@ rules:
     glides: "wj"         # 'y' is a vowel in German loanwords
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     # Clusters that should only be kept after long vowels (split after short vowels)
     clusters_only_after_long: ["st"]
@@ -345,7 +334,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -393,7 +381,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -448,7 +435,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -523,7 +509,6 @@ rules:
     # word-initial syllabic m is recognised.
     syllabic_consonants: "mn"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -537,7 +522,6 @@ rules:
     glides: "wy"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   - lang: "ron"
@@ -553,7 +537,6 @@ rules:
     glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     # Split adjacent vowels that are not diphthongs (e.g., pri-e-teni)
     split_hiatus: true
@@ -570,7 +553,6 @@ rules:
     glides: "iu"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   - lang: "por"
@@ -583,7 +565,6 @@ rules:
     glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   # Vietnamese (vie) — Austroasiatic, Vietic. Latin alphabet with a
@@ -648,7 +629,6 @@ rules:
     glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -665,7 +645,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   - lang: "lat"
@@ -679,7 +658,6 @@ rules:
     glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -696,7 +674,6 @@ rules:
     glides: ""                # No glides: force split for sequences like იე -> ი-ე
     syllabic_consonants: ""   # No syllabic consonants
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     split_hiatus: true
 
@@ -748,7 +725,6 @@ rules:
     glides: "յ"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     # Vowel-vowel adjacency is hiatus, never a diphthong (the only vowel
     # combination that stays together is the digraph ու). նաև → նա-և.
@@ -777,7 +753,6 @@ rules:
     glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
 
   # Bosnian, Croatian, Montenegrin (BCMS) share the orthography with Serbian
@@ -811,7 +786,6 @@ rules:
     glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
@@ -827,7 +801,6 @@ rules:
     glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
@@ -845,7 +818,6 @@ rules:
     glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
-    modifiers_attach_right: ""
     modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
@@ -873,7 +845,6 @@ rules:
     glides: "ј"
     syllabic_consonants: "р"
     modifiers_attach_left: "́"
-    modifiers_attach_right: ""
     modifiers_separators: ""
     exceptions:
       двије: "дви-је"

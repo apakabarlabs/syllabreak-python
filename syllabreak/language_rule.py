@@ -97,7 +97,6 @@ class LanguageRule:
     glides: set[str]
     syllabic_consonants: set[str]
     modifiers_attach_left: set[str]
-    modifiers_attach_right: set[str]
     modifiers_separators: set[str]
     clusters_only_after_long: set[str]
     split_hiatus: bool
@@ -137,7 +136,6 @@ class LanguageRule:
         self.glides = set(data.get("glides", ""))
         self.syllabic_consonants = set(data.get("syllabic_consonants", ""))
         self.modifiers_attach_left = set(data.get("modifiers_attach_left", ""))
-        self.modifiers_attach_right = set(data.get("modifiers_attach_right", ""))
         self.modifiers_separators = set(data.get("modifiers_separators", ""))
         self.clusters_only_after_long = _augment_set(data.get("clusters_only_after_long", []))
         self.split_hiatus = data.get("split_hiatus", False)
@@ -219,8 +217,6 @@ class LanguageRule:
         if char.isalpha():
             return True
         if char in self.modifiers_attach_left:
-            return True
-        if char in self.modifiers_attach_right:
             return True
         if char in self.modifiers_separators:
             return True

@@ -20,7 +20,6 @@ def create_test_rule():
             "glides": "",
             "syllabic_consonants": "",
             "modifiers_attach_left": "",
-            "modifiers_attach_right": "",
             "modifiers_separators": "",
         }
         default_data.update(overrides)
