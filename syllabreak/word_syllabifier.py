@@ -130,6 +130,21 @@ class WordSyllabifier:
         right = self._skip_separators_backward(nk1 - 1)
         return self._extract_consonant_cluster(left, right)
 
+    def _find_separator_between(self, nk: int, nk1: int) -> int | None:
+        """Index of the first separator token between two nuclei, or None.
+
+        A separator (Russian hard sign ъ) marks a morpheme boundary: the
+        preceding consonant is the coda of the previous syllable and the
+        separator + iotated vowel open the next one (об-ъект, под-ъезд,
+        из-ъян). The boundary therefore falls on the separator itself,
+        overriding the usual onset-cluster rule that would move the lone
+        consonant to the next syllable (о-бъект).
+        """
+        for i in range(nk + 1, nk1):
+            if self.tokens[i].token_class == TokenClass.SEPARATOR:
+                return i
+        return None
+
     def _is_valid_onset(
         self,
         consonant1: str,
@@ -298,6 +313,10 @@ class WordSyllabifier:
         boundaries = []
 
         for k in range(len(self.nuclei) - 1):
+            separator_idx = self._find_separator_between(self.nuclei[k], self.nuclei[k + 1])
+            if separator_idx is not None:
+                boundaries.append(separator_idx)
+                continue
             cluster, cluster_indices = self._find_cluster_between_nuclei(self.nuclei[k], self.nuclei[k + 1])
             boundary = self._find_boundary_in_cluster(cluster, cluster_indices, self.nuclei[k], self.nuclei[k + 1])
             if boundary is not None:

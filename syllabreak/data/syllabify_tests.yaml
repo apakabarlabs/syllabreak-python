@@ -87,6 +87,20 @@ tests:
         want: "бо-ец"
       - text: "паук"
         want: "па-ук"
+      # Hard sign ъ holds the boundary: the preceding consonant stays as coda,
+      # ъ + iotated vowel open the next syllable (issue #35)
+      - text: "объект"
+        want: "об-ъект"
+      - text: "подъезд"
+        want: "под-ъезд"
+      - text: "изъян"
+        want: "из-ъян"
+      - text: "адъютант"
+        want: "ад-ъю-тант"
+      - text: "объявление"
+        want: "об-ъяв-ле-ни-е"
+      - text: "съел"
+        want: "съел"
   
   - section: "Serbian Cyrillic"
     lang: "srp-cyrl"
