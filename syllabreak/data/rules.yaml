@@ -114,6 +114,11 @@ rules:
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
+    # Kyrgyz у/и are pure vowels (not glides like Kazakh), so adjacent vowels
+    # split as hiatus: а-ян, кы-ял, о-юн, ди-а-лог. Long vowels (аа/оо/уу/…)
+    # stay one nucleus via digraph_vowels (буу-дай, тоо-луу). ky.wikipedia
+    # Фонетика; bizdin.kg. No vowel_glides here — unlike kaz.
+    split_hiatus: true
 
   - lang: "tur"
     vowels: "aeıioöuü"

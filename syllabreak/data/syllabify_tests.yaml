@@ -726,6 +726,16 @@ tests:
         want: "сы-йыр"
       - text: "тыйын"
         want: "ты-йын"
+      # Vowel hiatus splits (у/и are pure vowels, not glides); long vowels stay
+      # one nucleus via digraph_vowels (issue #36, ky.wikipedia)
+      - text: "аян"
+        want: "а-ян"
+      - text: "кыял"
+        want: "кы-ял"
+      - text: "оюн"
+        want: "о-юн"
+      - text: "диалог"
+        want: "ди-а-лог"
 
   - section: "Latvian"
     lang: "lav"
