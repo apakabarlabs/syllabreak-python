@@ -52,6 +52,20 @@ tests:
         want: "шко-ла"
       - text: "мальчик"
         want: "маль-чик"
+      # й (U+0439) decomposes under NFD to и + breve; it must stay a consonant
+      # coda/onset, not a vowel nucleus (issue #33)
+      - text: "мой"
+        want: "мой"
+      - text: "война"
+        want: "вой-на"
+      - text: "синий"
+        want: "си-ний"
+      - text: "чайка"
+        want: "чай-ка"
+      - text: "любой"
+        want: "лю-бой"
+      - text: "йогурт"
+        want: "йо-гурт"
   
   - section: "Serbian Cyrillic"
     lang: "srp-cyrl"
@@ -606,6 +620,11 @@ tests:
       # kaz-unique letters (ұ, ғ, і)
       - text: "мұғалім"
         want: "мұ-ға-лім"
+      # й must be a consonant, not a nucleus (issue #33)
+      - text: "айбар"
+        want: "ай-бар"
+      - text: "қойшы"
+        want: "қой-шы"
 
   - section: "Kyrgyz"
     lang: "kir"
@@ -640,6 +659,16 @@ tests:
       # 2-consonant cluster VC-CV
       - text: "кыздар"
         want: "кыз-дар"
+      # й (и+breve under NFD) must not be absorbed into the ии long-vowel
+      # digraph; кийиз was wrongly kept whole instead of ки-йиз (issue #33)
+      - text: "кийиз"
+        want: "ки-йиз"
+      - text: "кийим"
+        want: "ки-йим"
+      - text: "сыйыр"
+        want: "сы-йыр"
+      - text: "тыйын"
+        want: "ты-йын"
 
   - section: "Latvian"
     lang: "lav"

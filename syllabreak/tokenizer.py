@@ -26,11 +26,47 @@ class Tokenizer:
     """Tokenizes words according to language rules."""
 
     def __init__(self, word: str, rule: LanguageRule):
-        self.word = word
-        self.word_lower = word.lower()
         self.rule = rule
+        self.word = self._recompose_category_flips(word)
+        self.word_lower = self.word.lower()
         self.tokens: list[Token] = []
         self.pos = 0
+
+    def _recompose_category_flips(self, word: str) -> str:
+        """Recompose base+combining-mark runs that NFC into a single declared
+        letter whose category differs from the bare NFD base.
+
+        The engine works in NFD so accents ride along their base, but NFD also
+        decomposes letters that are NOT just "base + accent": Russian й = и
+        (vowel) + combining breve. Left decomposed, the vowel base и is wrongly
+        read as a syllable nucleus (мой -> мо-й) or absorbed into a long-vowel
+        digraph (Kyrgyz ии: кийиз -> кийиз). Recomposing such letters before
+        tokenisation restores й as a single consonant codepoint.
+
+        Only letters whose composed class differs from the base class are
+        touched, so Greek accented vowels (ά = α + accent, both vowels) stay
+        decomposed — the digraph matcher relies on the bare base to match
+        αι/ευ across accents — and letters with no precomposed form
+        (Montenegrin с́) stay as they are (NFC keeps them multi-codepoint).
+        """
+        result: list[str] = []
+        i = 0
+        while i < len(word):
+            end = i + 1
+            while end < len(word) and unicodedata.category(word[end]) == "Mn":
+                end += 1
+            if end > i + 1:
+                composed = unicodedata.normalize("NFC", word[i:end])
+                if len(composed) == 1 and self._classify_letter(composed.lower()) not in (
+                    None,
+                    self._classify_letter(word[i].lower()),
+                ):
+                    result.append(composed)
+                    i = end
+                    continue
+            result.append(word[i])
+            i += 1
+        return "".join(result)
 
     def tokenize(self) -> list[Token]:
         """Main tokenization method."""
@@ -207,36 +243,26 @@ class Tokenizer:
         # Length 3 supports trigraphs like BCMS "ije"/"ије" (long-jat reflex).
         return self._try_match_digraph(self.rule.digraph_vowels, TokenClass.VOWEL)
 
+    def _classify_letter(self, char: str) -> TokenClass | None:
+        """Classify a single letter as VOWEL or CONSONANT, or None if unknown."""
+        if char in self.rule.vowels:
+            return TokenClass.VOWEL
+        if char in self.rule.consonants or char in self.rule.glides or char in self.rule.sonorants:
+            return TokenClass.CONSONANT
+        return None
+
     def _add_single_character_token(self):
         """Add a single character token at current position."""
         char = self.word_lower[self.pos]
-        if char in self.rule.vowels:
-            self.tokens.append(
-                Token(
-                    surface=self.word[self.pos],
-                    token_class=TokenClass.VOWEL,
-                    start_idx=self.pos,
-                    end_idx=self.pos + 1,
-                )
+        token_class = self._classify_letter(char)
+        is_glide = token_class == TokenClass.CONSONANT and char in self.rule.glides
+        self.tokens.append(
+            Token(
+                surface=self.word[self.pos],
+                token_class=token_class if token_class is not None else TokenClass.OTHER,
+                is_glide=is_glide,
+                start_idx=self.pos,
+                end_idx=self.pos + 1,
             )
-        elif char in self.rule.consonants or char in self.rule.glides or char in self.rule.sonorants:
-            is_glide = char in self.rule.glides
-            self.tokens.append(
-                Token(
-                    surface=self.word[self.pos],
-                    token_class=TokenClass.CONSONANT,
-                    is_glide=is_glide,
-                    start_idx=self.pos,
-                    end_idx=self.pos + 1,
-                )
-            )
-        else:
-            self.tokens.append(
-                Token(
-                    surface=self.word[self.pos],
-                    token_class=TokenClass.OTHER,
-                    start_idx=self.pos,
-                    end_idx=self.pos + 1,
-                )
-            )
+        )
         self.pos += 1
