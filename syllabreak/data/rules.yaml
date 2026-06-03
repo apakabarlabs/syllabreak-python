@@ -29,6 +29,11 @@ rules:
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
+    # Russian syllabification: number of syllables = number of vowels, so
+    # adjacent vowels are heterosyllabic (по-э-зи-я, на-у-ка, со-юз). й is a
+    # consonant glide (not a vowel), so -ый/-ий/-ой endings are unaffected;
+    # ье/ья/ьё/ьи stay single nuclei via digraph_vowels.
+    split_hiatus: true
 
   - lang: "srp-cyrl"
     vowels: "аиуео"
