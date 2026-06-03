@@ -95,6 +95,7 @@ class LanguageRule:
     dont_split_digraphs: set[str]
     digraph_vowels: set[str]
     glides: set[str]
+    vowel_glides: set[str]
     syllabic_consonants: set[str]
     modifiers_attach_left: set[str]
     modifiers_separators: set[str]
@@ -134,6 +135,10 @@ class LanguageRule:
         self.dont_split_digraphs = _augment_set(data.get("dont_split_digraphs", []))
         self.digraph_vowels = _augment_set(data.get("digraph_vowels", []))
         self.glides = set(data.get("glides", ""))
+        # Letters that are a vowel (syllable nucleus) after a consonant / word
+        # start, but a glide consonant after a vowel — Kazakh у/и (ту-ыс vs
+        # да-уа). Reclassified per occurrence in WordSyllabifier.
+        self.vowel_glides = set(data.get("vowel_glides", ""))
         self.syllabic_consonants = set(data.get("syllabic_consonants", ""))
         self.modifiers_attach_left = set(data.get("modifiers_attach_left", ""))
         self.modifiers_separators = set(data.get("modifiers_separators", ""))

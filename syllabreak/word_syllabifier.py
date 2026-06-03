@@ -13,12 +13,35 @@ class WordSyllabifier:
         self.rule = rule
         self.soft_hyphen = soft_hyphen
         self.tokens = self._tokenize()
+        self._reclassify_vowel_glides()
         self.nuclei = self._find_nuclei()
 
     def _tokenize(self) -> list[Token]:
         """Tokenize the word according to language rules."""
         tokenizer = Tokenizer(self.word, self.rule)
         return tokenizer.tokenize()
+
+    def _reclassify_vowel_glides(self) -> None:
+        """Retag context-dependent vowel-glide letters (Kazakh у/и).
+
+        у/и are a syllable nucleus after a consonant or word start (ту-ыс,
+        ки-ім, су-лу) but a glide consonant after a vowel (да-уа, not да-у-а;
+        а-уа). A single vowel-glide token becomes a CONSONANT when the previous
+        non-separator token is a vowel. Multi-letter long-vowel digraphs (Kyrgyz
+        уу/ии) tokenise as one VOWEL token and are left untouched.
+        """
+        if not self.rule.vowel_glides:
+            return
+        for i, token in enumerate(self.tokens):
+            if token.token_class != TokenClass.VOWEL:
+                continue
+            if token.surface.lower() not in self.rule.vowel_glides:
+                continue
+            prev = i - 1
+            while prev >= 0 and self.tokens[prev].token_class == TokenClass.SEPARATOR:
+                prev -= 1
+            if prev >= 0 and self.tokens[prev].token_class == TokenClass.VOWEL:
+                token.token_class = TokenClass.CONSONANT
 
     def _find_nuclei(self) -> list[int]:
         """Find syllable nuclei in the token list."""

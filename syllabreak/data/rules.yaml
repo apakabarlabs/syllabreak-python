@@ -80,9 +80,15 @@ rules:
     dont_split_digraphs: []
     digraph_vowels: []
     glides: "й"
+    # у/и are syllable nuclei after a consonant (ту-ыс, ки-ім, су-лу) but glide
+    # consonants after a vowel (да-уа, not да-у-а; а-уа). emle.kz: у/и are
+    # glides. Combined with split_hiatus this gives ди-а-лог (real hiatus) while
+    # keeping да-уа intact.
+    vowel_glides: "уи"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
+    split_hiatus: true
 
   # Kyrgyz — Cyrillic alphabet with Turkic extras (ң, ө, ү). Long vowels
   # (аа, ээ, оо, ии, уу, өө, үү) form a single nucleus and never split:
