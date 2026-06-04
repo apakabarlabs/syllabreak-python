@@ -35,7 +35,7 @@ rules:
   - lang: "srp-latn"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
+    clusters_keep_next: &bcms_latin_onsets ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž", "dj"]
     syllabic_consonants: "r"
 
@@ -653,37 +653,33 @@ rules:
   - lang: "bos"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
-    dont_split_digraphs: ["nj", "lj", "dž"]
-    digraph_vowels: ["ije"]
+    clusters_keep_next: *bcms_latin_onsets
+    dont_split_digraphs: &bcms_latin_digraphs ["nj", "lj", "dž"]
+    digraph_vowels: &bcms_ije ["ije"]
     syllabic_consonants: "r"
-    exceptions:
+    exceptions: &bcms_ije_exceptions
       dvije: "dvi-je"
       prije: "pri-je"
 
   - lang: "hrv"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
-    dont_split_digraphs: ["nj", "lj", "dž"]
-    digraph_vowels: ["ije"]
+    clusters_keep_next: *bcms_latin_onsets
+    dont_split_digraphs: *bcms_latin_digraphs
+    digraph_vowels: *bcms_ije
     syllabic_consonants: "r"
-    exceptions:
-      dvije: "dvi-je"
-      prije: "pri-je"
+    exceptions: *bcms_ije_exceptions
 
   # Montenegrin Latin adds ś (U+015B) and ź (U+017A); introduced into the
   # standard in 2009 (see Pravopis crnogorskoga jezika).
   - lang: "cnr-latn"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsśštvzźž"
-    clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
-    dont_split_digraphs: ["nj", "lj", "dž"]
-    digraph_vowels: ["ije"]
+    clusters_keep_next: *bcms_latin_onsets
+    dont_split_digraphs: *bcms_latin_digraphs
+    digraph_vowels: *bcms_ije
     syllabic_consonants: "r"
-    exceptions:
-      dvije: "dvi-je"
-      prije: "pri-je"
+    exceptions: *bcms_ije_exceptions
 
   # Montenegrin Cyrillic adds с́ and з́ — decomposed only (base letter +
   # combining acute U+0301; no precomposed Unicode points exist for these).
