@@ -5,9 +5,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "sl", "sm", "sn", "sp", "st", "sw", "tr", "tw"]
     dont_split_digraphs: ["ch", "sh", "th", "ph", "wh", "ck", "gh", "qu"]
     digraph_vowels: ["ea", "ee", "oo", "ou", "ie", "ei", "ai", "ay", "oy", "oi", "ue"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     # Word-final sequences that should not be split (care, here, more, cure, fire)
     # These are kept together at word end or before light suffixes (-s, -less, -ful, -ly, -ing, -ed)
     final_sequences_keep: ["are", "ere", "ire", "ore", "ure"]
@@ -20,9 +17,7 @@ rules:
     vowels: "аеёиоуыэюя"
     consonants: "бвгджзйклмнпрстфхцчшщ"
     clusters_keep_next: ["бл", "бр", "кл", "кр", "др", "тр", "пл", "пр", "сл", "см", "сн", "сп", "ст", "ск", "фл", "фр", "гр", "гл"]
-    dont_split_digraphs: []
     digraph_vowels: ["ье", "ья", "ьё", "ьи"]
-    syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
     # Russian syllabification: number of syllables = number of vowels, so
@@ -35,21 +30,14 @@ rules:
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџш"
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
-    dont_split_digraphs: []
-    digraph_vowels: []
     syllabic_consonants: "р"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   - lang: "srp-latn"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž", "dj"]
-    digraph_vowels: []
     syllabic_consonants: "r"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   # Kazakh — Cyrillic alphabet with Turkic extras (ә, і, ң, ө, ұ, ү, ғ, қ, һ).
   # Standard Turkic syllabification: only one consonant moves to the next
@@ -67,15 +55,11 @@ rules:
   - lang: "kaz"
     vowels: "аәеёиоөуұүыіэюя"
     consonants: "бвгғджзйкқлмнңпрстфхһцчшщ"
-    clusters_keep_next: []
-    dont_split_digraphs: []
-    digraph_vowels: []
     # у/и are syllable nuclei after a consonant (ту-ыс, ки-ім, су-лу) but glide
     # consonants after a vowel (да-уа, not да-у-а; а-уа). emle.kz: у/и are
     # glides. Combined with split_hiatus this gives ди-а-лог (real hiatus) while
     # keeping да-уа intact.
     vowel_glides: "уи"
-    syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
     split_hiatus: true
@@ -96,10 +80,7 @@ rules:
   - lang: "kir"
     vowels: "аеёиоөуүыэюя"
     consonants: "бвгджзйклмнңпрстфхцчшщ"
-    clusters_keep_next: []
-    dont_split_digraphs: []
     digraph_vowels: ["аа", "ээ", "оо", "ии", "уу", "өө", "үү"]
-    syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
     # Kyrgyz у/и are pure vowels (not glides like Kazakh), so adjacent vowels
@@ -112,11 +93,6 @@ rules:
     vowels: "aeıioöuü"
     consonants: "bcçdfgğhjklmnprsştvyz"
     clusters_keep_next: ["br", "bl", "kr", "kl", "pr", "pl", "tr", "dr", "fr", "fl", "gr", "gl"]  # rare in native words, mostly in loanwords
-    dont_split_digraphs: []  # Turkish orthography doesn't use digraphs
-    digraph_vowels: []       # No vowel digraphs in Turkish
-    syllabic_consonants: ""  # Turkish doesn't have syllabic consonants
-    modifiers_attach_left: ""  # No diacritic markers as separate letters
-    modifiers_separators: ""
 
   # Modern Greek (ell). School orthographic syllabification:
   #   - one vowel/diphthong per syllable
@@ -165,9 +141,6 @@ rules:
       "αί", "εί", "οί", "υί", "αύ", "εύ", "ηύ", "ού",
       "άι", "έι", "όι", "ύι"
     ]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Ancient (Classical) Greek (grc).
@@ -207,15 +180,11 @@ rules:
       "χθ", "χλ", "χν", "χρ",
       "στρ", "σπρ", "σκρ"
     ]
-    dont_split_digraphs: []
     digraph_vowels: ["αι", "ει", "οι", "υι", "αυ", "ευ", "ηυ", "ου"]
-    syllabic_consonants: ""
     # Combining marks aren't listed here: the tokenizer auto-attaches any
     # Unicode Mn-category codepoint to the preceding token, which covers
     # smooth/rough breathing, acute/grave/circumflex, iota subscript and
     # diaeresis without enumeration.
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Hungarian (AkH 12 §226). Key rules encoded here:
@@ -235,12 +204,7 @@ rules:
   - lang: "hun"
     vowels: "aeiouáéíóöőúüű"
     consonants: "bcdfghjklmnpqrstvwxyz"
-    clusters_keep_next: []
     dont_split_digraphs: ["dzs", "cs", "dz", "gy", "ly", "ny", "sz", "ty", "zs"]
-    digraph_vowels: []
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     geminate_digraphs:
       ddzs: dzsdzs
       ccs: cscs
@@ -263,9 +227,6 @@ rules:
     dont_split_digraphs: ["sch","ch","qu","ph","th"]
     # Treat these as single (long) nuclei: diphthongs + double vowels + vowel+h lengthening
     digraph_vowels: ["ie","ei","ai","au","eu","äu","aa","ee","oo","ah","eh","ih","oh","uh","äh","öh","üh"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     # Clusters that should only be kept after long vowels (split after short vowels)
     clusters_only_after_long: ["st"]
 
@@ -324,9 +285,6 @@ rules:
       # Triphthongs — single nucleus (draai, mooi, moei-te, leeuw, nieuw)
       "aai", "ooi", "oei", "eeu", "ieu"
     ]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Finnish (fin) — Uralic, Finnic. Standard orthographic syllabification
@@ -356,8 +314,6 @@ rules:
   - lang: "fin"
     vowels: "aeiouyäö"
     consonants: "bcdfghjklmnpqrstvwxzšž"
-    clusters_keep_next: []
-    dont_split_digraphs: []
     digraph_vowels: [
       # Long vowels — single nucleus, never split
       "aa", "ee", "ii", "oo", "uu", "yy", "ää", "öö",
@@ -369,9 +325,6 @@ rules:
       # as a single nucleus everywhere (see header comment)
       "ie", "uo", "yö"
     ]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Swedish (swe) — Germanic, North Germanic. Standard orthographic
@@ -418,12 +371,6 @@ rules:
   - lang: "swe"
     vowels: "aeiouyåäö"
     consonants: "bcdfghjklmnpqrstvwxz"
-    clusters_keep_next: []
-    dont_split_digraphs: []
-    digraph_vowels: []
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Swahili (swh / Kiswahili) — Niger-Congo, Bantu. Latin alphabet.
@@ -488,14 +435,11 @@ rules:
       # Single-phoneme digraphs (loanwords and native)
       "ch", "sh", "th", "dh", "gh", "kh"
     ]
-    digraph_vowels: []
     # m and n are syllabic before any non-digraph consonant
     # (`mtoto`, `nchi`, `mpishi`). The engine treats a word-initial
     # or word-final run of consonants as buffer-satisfied, so a
     # word-initial syllabic m is recognised.
     syllabic_consonants: "mn"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   - lang: "fra"
@@ -504,9 +448,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr", "ch", "ph", "th"]
     dont_split_digraphs: ["ch", "ph", "gn", "th", "qu"]
     digraph_vowels: ["ai", "ei", "au", "eau", "eu", "œu", "ou", "oi", "ui"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   - lang: "ron"
     vowels: "aeiouăâî"
@@ -517,9 +458,6 @@ rules:
     dont_split_digraphs: ["ch", "gh"]
     # ea, oa are true diphthongs (falling); ia, iu are rising diphthongs
     digraph_vowels: ["ea", "oa", "ia", "iu"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     # Split adjacent vowels that are not diphthongs (e.g., pri-e-teni)
     split_hiatus: true
     # Final -i after consonant is a semivowel (palatalization), not a separate syllable
@@ -531,9 +469,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr"]
     dont_split_digraphs: ["ch", "ll", "rr", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ia", "ie", "io", "iu", "ua", "ue", "ui", "uo"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   - lang: "por"
     vowels: "aeiouáàâãéêíóôõúü"
@@ -541,9 +476,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr"]
     dont_split_digraphs: ["ch", "lh", "nh", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ui", "ão", "õe", "ãe"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   # Vietnamese (vie) — Austroasiatic, Vietic. Latin alphabet with a
   # rich diacritic system: 6 plain vowels (a e i o u y) plus 6 with
@@ -585,7 +517,6 @@ rules:
     # `aeiouy` are strictly needed there.
     vowels: "aeiouyáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ"
     consonants: "bcdghklmnpqrstvxzđ"
-    clusters_keep_next: []
     dont_split_digraphs: ["ngh", "ch", "gh", "gi", "kh", "ng", "nh", "ph", "qu", "th", "tr"]
     digraph_vowels: [
       # Diphthongs (base form — Mn-skip fallback matches stripped of
@@ -603,9 +534,6 @@ rules:
       # `uye` triphthong covers the nucleus part, the trailing `n` is a
       # coda consonant and stays with the syllable naturally.
     ]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   - lang: "pol"
@@ -616,10 +544,6 @@ rules:
     # school hyphenation splits at the 2-letter boundary.
     clusters_keep_next: ["br", "bl", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st"]
     dont_split_digraphs: ["sz", "cz", "rz", "dz", "ch"]
-    digraph_vowels: []
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   - lang: "lat"
     vowels: "aeiouyāēīōūȳăĕĭŏŭ"
@@ -628,9 +552,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "qu"]
     dont_split_digraphs: ["ch", "ph", "th", "rh", "qu"]
     digraph_vowels: ["ae", "oe", "au", "eu"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   - lang: "kat"
@@ -640,11 +561,6 @@ rules:
     clusters_keep_next:
       ["ბრ","ბლ","გრ","გლ","დრ","პრ","პლ","ტრ","კრ","კლ","ფრ","ფლ",
        "კვ","გვ","ტვ","თვ","შვ","ჭვ","ჩვ","ცვ","წვ","ხვ"]
-    dont_split_digraphs: []   # No digraphs in modern Georgian
-    digraph_vowels: []        # No vowel digraphs: split any V+V (hiatus)
-    syllabic_consonants: ""   # No syllabic consonants
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     split_hiatus: true
 
   # Eastern Armenian (hye) — Armenian alphabet (U+0531..U+0587). School
@@ -688,12 +604,7 @@ rules:
   - lang: "hye"
     vowels: "աեէըիոօև"
     consonants: "բգդզթժլխծկհձղճմյնշչպջռսվտրցւփքֆ"
-    clusters_keep_next: []
-    dont_split_digraphs: []
     digraph_vowels: ["ու"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     # Vowel-vowel adjacency is hiatus, never a diphthong (the only vowel
     # combination that stays together is the digraph ու). նաև → նա-և.
     split_hiatus: true
@@ -717,9 +628,6 @@ rules:
     # so they stay together at the syllable boundary (re-dzēt, džem-pe-ris).
     dont_split_digraphs: ["dz", "dž"]
     digraph_vowels: ["ai", "au", "ei", "ie", "iu", "oi", "ui", "eu", "ou"]
-    syllabic_consonants: ""
-    modifiers_attach_left: ""
-    modifiers_separators: ""
 
   # Bosnian, Croatian, Montenegrin (BCMS) share the orthography with Serbian
   # but differ in two systematic ways encoded below:
@@ -749,8 +657,6 @@ rules:
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
     syllabic_consonants: "r"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
       prije: "pri-je"
@@ -762,8 +668,6 @@ rules:
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
     syllabic_consonants: "r"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
       prije: "pri-je"
@@ -777,8 +681,6 @@ rules:
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
     syllabic_consonants: "r"
-    modifiers_attach_left: ""
-    modifiers_separators: ""
     exceptions:
       dvije: "dvi-je"
       prije: "pri-je"
@@ -799,11 +701,9 @@ rules:
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџшс́з́"
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
-    dont_split_digraphs: []
     digraph_vowels: ["ије"]
     syllabic_consonants: "р"
     modifiers_attach_left: "́"
-    modifiers_separators: ""
     exceptions:
       двије: "дви-је"
       прије: "при-је"
