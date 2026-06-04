@@ -16,7 +16,6 @@ def create_test_rule():
             "clusters_keep_next": [],
             "dont_split_digraphs": [],
             "digraph_vowels": [],
-            "glides": "",
             "syllabic_consonants": "",
             "modifiers_attach_left": "",
             "modifiers_separators": "",
@@ -114,19 +113,6 @@ def test_consonant_classification(create_test_rule):
     tokens = tokenizer.tokenize()
 
     assert all(t.token_class == TokenClass.CONSONANT for t in tokens)
-
-
-def test_glide_classification(create_test_rule):
-    """Test that glides are marked correctly."""
-    rule = create_test_rule(consonants="bcdjwy", glides="jwy")
-
-    tokenizer = Tokenizer("jay", rule)
-    tokens = tokenizer.tokenize()
-
-    assert tokens[0].token_class == TokenClass.CONSONANT
-    assert tokens[0].is_glide
-    assert tokens[2].token_class == TokenClass.CONSONANT
-    assert tokens[2].is_glide
 
 
 def test_unknown_char_classification(create_test_rule):

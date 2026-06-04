@@ -16,7 +16,6 @@ class TokenClass(Enum):
 class Token:
     surface: str
     token_class: TokenClass
-    is_glide: bool = False
     is_modifier: bool = False
     start_idx: int = 0
     end_idx: int = 0
@@ -247,7 +246,7 @@ class Tokenizer:
         """Classify a single letter as VOWEL or CONSONANT, or None if unknown."""
         if char in self.rule.vowels:
             return TokenClass.VOWEL
-        if char in self.rule.consonants or char in self.rule.glides:
+        if char in self.rule.consonants:
             return TokenClass.CONSONANT
         return None
 
@@ -255,12 +254,10 @@ class Tokenizer:
         """Add a single character token at current position."""
         char = self.word_lower[self.pos]
         token_class = self._classify_letter(char)
-        is_glide = token_class == TokenClass.CONSONANT and char in self.rule.glides
         self.tokens.append(
             Token(
                 surface=self.word[self.pos],
                 token_class=token_class if token_class is not None else TokenClass.OTHER,
-                is_glide=is_glide,
                 start_idx=self.pos,
                 end_idx=self.pos + 1,
             )

@@ -93,7 +93,6 @@ class LanguageRule:
     trailing_onsets: set[str]
     dont_split_digraphs: set[str]
     digraph_vowels: set[str]
-    glides: set[str]
     vowel_glides: set[str]
     syllabic_consonants: set[str]
     modifiers_attach_left: set[str]
@@ -132,7 +131,6 @@ class LanguageRule:
         self.trailing_onsets = _augment_set(data.get("trailing_onsets", []))
         self.dont_split_digraphs = _augment_set(data.get("dont_split_digraphs", []))
         self.digraph_vowels = _augment_set(data.get("digraph_vowels", []))
-        self.glides = set(data.get("glides", ""))
         # Letters that are a vowel (syllable nucleus) after a consonant / word
         # start, but a glide consonant after a vowel — Kazakh у/и (ту-ыс vs
         # да-уа). Reclassified per occurrence in WordSyllabifier.

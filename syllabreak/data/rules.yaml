@@ -5,7 +5,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "sl", "sm", "sn", "sp", "st", "sw", "tr", "tw"]
     dont_split_digraphs: ["ch", "sh", "th", "ph", "wh", "ck", "gh", "qu"]
     digraph_vowels: ["ea", "ee", "oo", "ou", "ie", "ei", "ai", "ay", "oy", "oi", "ue"]
-    glides: "wy"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -23,7 +22,6 @@ rules:
     clusters_keep_next: ["бл", "бр", "кл", "кр", "др", "тр", "пл", "пр", "сл", "см", "сн", "сп", "ст", "ск", "фл", "фр", "гр", "гл"]
     dont_split_digraphs: []
     digraph_vowels: ["ье", "ья", "ьё", "ьи"]
-    glides: "й"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
@@ -39,7 +37,6 @@ rules:
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     dont_split_digraphs: []
     digraph_vowels: []
-    glides: "ј"
     syllabic_consonants: "р"
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -50,7 +47,6 @@ rules:
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž", "dj"]
     digraph_vowels: []
-    glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -74,7 +70,6 @@ rules:
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: []
-    glides: "й"
     # у/и are syllable nuclei after a consonant (ту-ыс, ки-ім, су-лу) but glide
     # consonants after a vowel (да-уа, not да-у-а; а-уа). emle.kz: у/и are
     # glides. Combined with split_hiatus this gives ди-а-лог (real hiatus) while
@@ -104,7 +99,6 @@ rules:
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: ["аа", "ээ", "оо", "ии", "уу", "өө", "үү"]
-    glides: "й"
     syllabic_consonants: ""
     modifiers_attach_left: "ь"
     modifiers_separators: "ъ"
@@ -120,7 +114,6 @@ rules:
     clusters_keep_next: ["br", "bl", "kr", "kl", "pr", "pl", "tr", "dr", "fr", "fl", "gr", "gl"]  # rare in native words, mostly in loanwords
     dont_split_digraphs: []  # Turkish orthography doesn't use digraphs
     digraph_vowels: []       # No vowel digraphs in Turkish
-    glides: "y"
     syllabic_consonants: ""  # Turkish doesn't have syllabic consonants
     modifiers_attach_left: ""  # No diacritic markers as separate letters
     modifiers_separators: ""
@@ -172,7 +165,6 @@ rules:
       "αί", "εί", "οί", "υί", "αύ", "εύ", "ηύ", "ού",
       "άι", "έι", "όι", "ύι"
     ]
-    glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -217,7 +209,6 @@ rules:
     ]
     dont_split_digraphs: []
     digraph_vowels: ["αι", "ει", "οι", "υι", "αυ", "ευ", "ηυ", "ου"]
-    glides: ""
     syllabic_consonants: ""
     # Combining marks aren't listed here: the tokenizer auto-attaches any
     # Unicode Mn-category codepoint to the preceding token, which covers
@@ -247,7 +238,6 @@ rules:
     clusters_keep_next: []
     dont_split_digraphs: ["dzs", "cs", "dz", "gy", "ly", "ny", "sz", "ty", "zs"]
     digraph_vowels: []
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -273,7 +263,6 @@ rules:
     dont_split_digraphs: ["sch","ch","qu","ph","th"]
     # Treat these as single (long) nuclei: diphthongs + double vowels + vowel+h lengthening
     digraph_vowels: ["ie","ei","ai","au","eu","äu","aa","ee","oo","ah","eh","ih","oh","uh","äh","öh","üh"]
-    glides: "wj"         # 'y' is a vowel in German loanwords
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -335,7 +324,6 @@ rules:
       # Triphthongs — single nucleus (draai, mooi, moei-te, leeuw, nieuw)
       "aai", "ooi", "oei", "eeu", "ieu"
     ]
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -381,7 +369,6 @@ rules:
       # as a single nucleus everywhere (see header comment)
       "ie", "uo", "yö"
     ]
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -434,7 +421,6 @@ rules:
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: []
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -503,7 +489,6 @@ rules:
       "ch", "sh", "th", "dh", "gh", "kh"
     ]
     digraph_vowels: []
-    glides: "wy"
     # m and n are syllabic before any non-digraph consonant
     # (`mtoto`, `nchi`, `mpishi`). The engine treats a word-initial
     # or word-final run of consonants as buffer-satisfied, so a
@@ -519,7 +504,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr", "ch", "ph", "th"]
     dont_split_digraphs: ["ch", "ph", "gn", "th", "qu"]
     digraph_vowels: ["ai", "ei", "au", "eau", "eu", "œu", "ou", "oi", "ui"]
-    glides: "wy"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -533,7 +517,6 @@ rules:
     dont_split_digraphs: ["ch", "gh"]
     # ea, oa are true diphthongs (falling); ia, iu are rising diphthongs
     digraph_vowels: ["ea", "oa", "ia", "iu"]
-    glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -548,7 +531,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr"]
     dont_split_digraphs: ["ch", "ll", "rr", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ia", "ie", "io", "iu", "ua", "ue", "ui", "uo"]
-    glides: "iu"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -559,7 +541,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr"]
     dont_split_digraphs: ["ch", "lh", "nh", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ui", "ão", "õe", "ãe"]
-    glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -622,7 +603,6 @@ rules:
       # `uye` triphthong covers the nucleus part, the trailing `n` is a
       # coda consonant and stays with the syllable naturally.
     ]
-    glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -637,7 +617,6 @@ rules:
     clusters_keep_next: ["br", "bl", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st"]
     dont_split_digraphs: ["sz", "cz", "rz", "dz", "ch"]
     digraph_vowels: []
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -649,7 +628,6 @@ rules:
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "qu"]
     dont_split_digraphs: ["ch", "ph", "th", "rh", "qu"]
     digraph_vowels: ["ae", "oe", "au", "eu"]
-    glides: ""
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -664,7 +642,6 @@ rules:
        "კვ","გვ","ტვ","თვ","შვ","ჭვ","ჩვ","ცვ","წვ","ხვ"]
     dont_split_digraphs: []   # No digraphs in modern Georgian
     digraph_vowels: []        # No vowel digraphs: split any V+V (hiatus)
-    glides: ""                # No glides: force split for sequences like იე -> ი-ე
     syllabic_consonants: ""   # No syllabic consonants
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -714,7 +691,6 @@ rules:
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: ["ու"]
-    glides: "յ"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -741,7 +717,6 @@ rules:
     # so they stay together at the syllable boundary (re-dzēt, džem-pe-ris).
     dont_split_digraphs: ["dz", "dž"]
     digraph_vowels: ["ai", "au", "ei", "ie", "iu", "oi", "ui", "eu", "ou"]
-    glides: "j"
     syllabic_consonants: ""
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -773,7 +748,6 @@ rules:
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
-    glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -787,7 +761,6 @@ rules:
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
-    glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -803,7 +776,6 @@ rules:
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
-    glides: "j"
     syllabic_consonants: "r"
     modifiers_attach_left: ""
     modifiers_separators: ""
@@ -829,7 +801,6 @@ rules:
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     dont_split_digraphs: []
     digraph_vowels: ["ије"]
-    glides: "ј"
     syllabic_consonants: "р"
     modifiers_attach_left: "́"
     modifiers_separators: ""
