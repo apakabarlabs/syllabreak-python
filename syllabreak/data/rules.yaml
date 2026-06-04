@@ -29,7 +29,7 @@ rules:
   - lang: "srp-cyrl"
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџш"
-    clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
+    clusters_keep_next: &bcms_cyrl_onsets ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     syllabic_consonants: "р"
 
   - lang: "srp-latn"
@@ -696,7 +696,7 @@ rules:
   - lang: "cnr-cyrl"
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџшс́з́"
-    clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
+    clusters_keep_next: *bcms_cyrl_onsets
     digraph_vowels: ["ије"]
     syllabic_consonants: "р"
     modifiers_attach_left: "́"
