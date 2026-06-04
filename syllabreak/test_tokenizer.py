@@ -13,7 +13,6 @@ def create_test_rule():
             "lang": lang,
             "vowels": "aeiou",
             "consonants": "bcdfghjklmnpqrstvwxyz",
-            "sonorants": "lmnr",
             "clusters_keep_next": [],
             "dont_split_digraphs": [],
             "digraph_vowels": [],

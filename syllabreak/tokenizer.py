@@ -247,7 +247,7 @@ class Tokenizer:
         """Classify a single letter as VOWEL or CONSONANT, or None if unknown."""
         if char in self.rule.vowels:
             return TokenClass.VOWEL
-        if char in self.rule.consonants or char in self.rule.glides or char in self.rule.sonorants:
+        if char in self.rule.consonants or char in self.rule.glides:
             return TokenClass.CONSONANT
         return None
 

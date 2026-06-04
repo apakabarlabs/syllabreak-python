@@ -89,7 +89,6 @@ class LanguageRule:
     lang: str
     vowels: set[str]
     consonants: set[str]
-    sonorants: set[str]
     clusters_keep_next: set[str]
     trailing_onsets: set[str]
     dont_split_digraphs: set[str]
@@ -123,7 +122,6 @@ class LanguageRule:
         self.lang = data["lang"]
         self.vowels = set(data["vowels"])
         self.consonants = set(data["consonants"])
-        self.sonorants = set(data["sonorants"])
         self.clusters_keep_next = _augment_set(data.get("clusters_keep_next", []))
         # trailing_onsets — onsets valid ONLY in trailing position of a 3+
         # consonant cluster. Used for languages (Dutch) where some onsets

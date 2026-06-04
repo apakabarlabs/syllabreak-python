@@ -2,7 +2,6 @@ rules:
   - lang: "eng"
     vowels: "aeiouy"
     consonants: "bcdfghjklmnpqrstvwxyz"
-    sonorants: "lmnr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "sl", "sm", "sn", "sp", "st", "sw", "tr", "tw"]
     dont_split_digraphs: ["ch", "sh", "th", "ph", "wh", "ck", "gh", "qu"]
     digraph_vowels: ["ea", "ee", "oo", "ou", "ie", "ei", "ai", "ay", "oy", "oi", "ue"]
@@ -21,7 +20,6 @@ rules:
   - lang: "rus"
     vowels: "аеёиоуыэюя"
     consonants: "бвгджзйклмнпрстфхцчшщ"
-    sonorants: "лмнрй"
     clusters_keep_next: ["бл", "бр", "кл", "кр", "др", "тр", "пл", "пр", "сл", "см", "сн", "сп", "ст", "ск", "фл", "фр", "гр", "гл"]
     dont_split_digraphs: []
     digraph_vowels: ["ье", "ья", "ьё", "ьи"]
@@ -38,7 +36,6 @@ rules:
   - lang: "srp-cyrl"
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџш"
-    sonorants: "лљмнњрј"
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     dont_split_digraphs: []
     digraph_vowels: []
@@ -50,7 +47,6 @@ rules:
   - lang: "srp-latn"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    sonorants: "lmnrj"
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž", "dj"]
     digraph_vowels: []
@@ -75,7 +71,6 @@ rules:
   - lang: "kaz"
     vowels: "аәеёиоөуұүыіэюя"
     consonants: "бвгғджзйкқлмнңпрстфхһцчшщ"
-    sonorants: "лмнңрй"
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: []
@@ -106,7 +101,6 @@ rules:
   - lang: "kir"
     vowels: "аеёиоөуүыэюя"
     consonants: "бвгджзйклмнңпрстфхцчшщ"
-    sonorants: "лмнңрй"
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: ["аа", "ээ", "оо", "ии", "уу", "өө", "үү"]
@@ -123,7 +117,6 @@ rules:
   - lang: "tur"
     vowels: "aeıioöuü"
     consonants: "bcçdfgğhjklmnprsştvyz"
-    sonorants: "lmnr"
     clusters_keep_next: ["br", "bl", "kr", "kl", "pr", "pl", "tr", "dr", "fr", "fl", "gr", "gl"]  # rare in native words, mostly in loanwords
     dont_split_digraphs: []  # Turkish orthography doesn't use digraphs
     digraph_vowels: []       # No vowel digraphs in Turkish
@@ -154,7 +147,6 @@ rules:
   - lang: "ell"
     vowels: "αεηιουωϊϋΐΰάέήίόύώ"
     consonants: "βγδζθκλμνξπρστφχψς"
-    sonorants: "λμνρ"
     clusters_keep_next: [
       "βλ", "βρ",
       "γλ", "γν", "γρ",
@@ -209,7 +201,6 @@ rules:
   - lang: "grc"
     vowels: "ΐάέήίΰαεηιουωϊϋόύώἀἁἂἃἄἅἆἇἐἑἒἓἔἕἠἡἢἣἤἥἦἧἰἱἲἳἴἵἶἷὀὁὂὃὄὅὐὑὒὓὔὕὖὗὠὡὢὣὤὥὦὧὰάὲέὴήὶίὸόὺύὼώᾀᾁᾂᾃᾄᾅᾆᾇᾐᾑᾒᾓᾔᾕᾖᾗᾠᾡᾢᾣᾤᾥᾦᾧᾰᾱᾲᾳᾴᾶᾷιῂῃῄῆῇῐῑῒΐῖῗῠῡῢΰῦῧῲῳῴῶῷΆΈΉΊΌΎΏΑΕΗΙΟΥΩΪΫἈἉἊἋἌἍἎἏἘἙἚἛἜἝἨἩἪἫἬἭἮἯἸἹἺἻἼἽἾἿὈὉὊὋὌὍὙὛὝὟὨὩὪὫὬὭὮὯᾈᾉᾊᾋᾌᾍᾎᾏᾘᾙᾚᾛᾜᾝᾞᾟᾨᾩᾪᾫᾬᾭᾮᾯᾸᾹᾺΆᾼῈΈῊΉῌῘῙῚΊῨῩῪΎῸΌῺΏῼ"
     consonants: "ΒΓΔΖΘΚΛΜΝΞΠΡΣΤΦΧΨβγδζθκλμνξπρςστφχψϴῤῥῬ"
-    sonorants: "λμνρ"
     clusters_keep_next: [
       "βλ", "βρ",
       "γλ", "γν", "γρ",
@@ -253,7 +244,6 @@ rules:
   - lang: "hun"
     vowels: "aeiouáéíóöőúüű"
     consonants: "bcdfghjklmnpqrstvwxyz"
-    sonorants: "lmnrj"
     clusters_keep_next: []
     dont_split_digraphs: ["dzs", "cs", "dz", "gy", "ly", "ny", "sz", "ty", "zs"]
     digraph_vowels: []
@@ -275,7 +265,6 @@ rules:
   - lang: "deu"
     vowels: "aeiouyäöü"
     consonants: "bcdfghjklmnpqrstvwxzß"
-    sonorants: "lmnr"
     # Allowable onset clusters; st stays here, gating is done by 'short nucleus' rule.
     # 3-letter clusters spr/str/skr were intentionally dropped: with 3-letter
     # onset support active across the engine they would push Astronomie to
@@ -335,7 +324,6 @@ rules:
   - lang: "nld"
     vowels: "aeiouyëïöü"
     consonants: "bcdfghjklmnpqrstvwxz"
-    sonorants: "lmnr"
     clusters_keep_next: ["br", "bl", "dr", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "vr", "wr"]
     trailing_onsets: ["st", "sp", "sk", "sl", "sm", "sn", "sj", "tj", "sch"]
     dont_split_digraphs: ["ch"]
@@ -380,7 +368,6 @@ rules:
   - lang: "fin"
     vowels: "aeiouyäö"
     consonants: "bcdfghjklmnpqrstvwxzšž"
-    sonorants: "lmnr"
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: [
@@ -444,7 +431,6 @@ rules:
   - lang: "swe"
     vowels: "aeiouyåäö"
     consonants: "bcdfghjklmnpqrstvwxz"
-    sonorants: "lmnr"
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: []
@@ -496,7 +482,6 @@ rules:
   - lang: "swh"
     vowels: "aeiou"
     consonants: "bcdfghjklmnpqrstvwxyz"
-    sonorants: "lmnr"
     clusters_keep_next: [
       # Cw onset clusters — /w/ glide forms a single onset with the
       # preceding consonant
@@ -531,7 +516,6 @@ rules:
   - lang: "fra"
     vowels: "aeiouyàâäéèêëïîôùûüœæ"
     consonants: "bcdfghjklmnpqrstvwxzç"
-    sonorants: "lmnr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr", "ch", "ph", "th"]
     dont_split_digraphs: ["ch", "ph", "gn", "th", "qu"]
     digraph_vowels: ["ai", "ei", "au", "eau", "eu", "œu", "ou", "oi", "ui"]
@@ -543,7 +527,6 @@ rules:
   - lang: "ron"
     vowels: "aeiouăâî"
     consonants: "bcdfghjklmnprsștțvwxz"
-    sonorants: "lmnr"
     # Only C + l/r clusters stay together (DOOM orthographic norm)
     # sp, st, sc, șt split between vowels (e.g., răs-puns, dra-gos-te)
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr"]
@@ -562,7 +545,6 @@ rules:
   - lang: "spa"
     vowels: "aeiouáéíóúü"
     consonants: "bcdfghjklmnñpqrstvwxyz"
-    sonorants: "lmnñr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr"]
     dont_split_digraphs: ["ch", "ll", "rr", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ia", "ie", "io", "iu", "ua", "ue", "ui", "uo"]
@@ -574,7 +556,6 @@ rules:
   - lang: "por"
     vowels: "aeiouáàâãéêíóôõúü"
     consonants: "bcçdfghjklmnpqrstvwxz"
-    sonorants: "lmnr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "vr"]
     dont_split_digraphs: ["ch", "lh", "nh", "qu", "gu"]
     digraph_vowels: ["ai", "au", "ei", "eu", "oi", "ou", "ui", "ão", "õe", "ãe"]
@@ -623,7 +604,6 @@ rules:
     # `aeiouy` are strictly needed there.
     vowels: "aeiouyáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ"
     consonants: "bcdghklmnpqrstvxzđ"
-    sonorants: "lmnr"
     clusters_keep_next: []
     dont_split_digraphs: ["ngh", "ch", "gh", "gi", "kh", "ng", "nh", "ph", "qu", "th", "tr"]
     digraph_vowels: [
@@ -651,7 +631,6 @@ rules:
   - lang: "pol"
     vowels: "aeiouyąęó"
     consonants: "bcćdfghjklłmnńprsśtwzźż"
-    sonorants: "lłmnńrj"
     # 3-letter clusters skr/spr/str dropped — see the Polish/German notes;
     # with 3-letter onset support active they over-keep clusters that
     # school hyphenation splits at the 2-letter boundary.
@@ -666,7 +645,6 @@ rules:
   - lang: "lat"
     vowels: "aeiouyāēīōūȳăĕĭŏŭ"
     consonants: "bcdfghjklmnpqrstvxz"
-    sonorants: "lmnr"
     # muta cum liquida clusters only (stop + l/r)
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "pl", "pr", "tr", "qu"]
     dont_split_digraphs: ["ch", "ph", "th", "rh", "qu"]
@@ -680,7 +658,6 @@ rules:
   - lang: "kat"
     vowels: "აეიოუ"
     consonants: "ბგდვზთკლმნპრსტფქღყშჩცძწჟხჯჰ"
-    sonorants: "ლმნრ"
     # Allow only these onset clusters (whitelist). Anything else -> split V.CV
     clusters_keep_next:
       ["ბრ","ბლ","გრ","გლ","დრ","პრ","პლ","ტრ","კრ","კლ","ფრ","ფლ",
@@ -734,7 +711,6 @@ rules:
   - lang: "hye"
     vowels: "աեէըիոօև"
     consonants: "բգդզթժլխծկհձղճմյնշչպջռսվտրցւփքֆ"
-    sonorants: "լմնռր"
     clusters_keep_next: []
     dont_split_digraphs: []
     digraph_vowels: ["ու"]
@@ -760,7 +736,6 @@ rules:
   - lang: "lav"
     vowels: "aāeēiīouū"
     consonants: "bcčdfgģhjkķlļmnņpršstvzž"
-    sonorants: "lļmnņr"
     clusters_keep_next: ["bl", "br", "cl", "cr", "dr", "fl", "fr", "gl", "gr", "kl", "kr", "pl", "pr", "tr"]
     # dz and dž are affricates ([dz], [dʒ]) — one consonant phonemically,
     # so they stay together at the syllable boundary (re-dzēt, džem-pe-ris).
@@ -795,7 +770,6 @@ rules:
   - lang: "bos"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    sonorants: "lmnrj"
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
@@ -810,7 +784,6 @@ rules:
   - lang: "hrv"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsštvzž"
-    sonorants: "lmnrj"
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
@@ -827,7 +800,6 @@ rules:
   - lang: "cnr-latn"
     vowels: "aeiou"
     consonants: "bcčćdžđfghjklmnprsśštvzźž"
-    sonorants: "lmnrj"
     clusters_keep_next: ["br", "kr", "dr", "tr", "pr", "gr", "gl", "pl", "kl", "sp", "st", "sk"]
     dont_split_digraphs: ["nj", "lj", "dž"]
     digraph_vowels: ["ije"]
@@ -854,7 +826,6 @@ rules:
   - lang: "cnr-cyrl"
     vowels: "аиуео"
     consonants: "бвгдђжзјклљмнњпрстћфхцчџшс́з́"
-    sonorants: "лљмнњрј"
     clusters_keep_next: ["бр", "кр", "др", "тр", "пр", "гр", "гл", "пл", "кл", "сп", "ст", "ск"]
     dont_split_digraphs: []
     digraph_vowels: ["ије"]
