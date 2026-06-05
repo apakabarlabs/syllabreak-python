@@ -10,7 +10,7 @@ setup(
         # harakat, Devanagari matras to attach to the preceding letter.
         "regex>=2024.0",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     author="Apakabar.fm team",
     description="A library for syllable breaking and language detection",
     package_data={
