@@ -11,7 +11,7 @@ setup(
         "regex>=2024.0",
     ],
     python_requires=">=3.10",
-    author="Apakabar.fm team",
+    author="Apakabarlabs",
     description="A library for syllable breaking and language detection",
     package_data={
         "syllabreak": ["data/*.yaml"],
