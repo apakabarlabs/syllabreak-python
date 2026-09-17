@@ -1,4 +1,5 @@
 [![Tests](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/tests.yml/badge.svg)](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/tests.yml)
+[![Documentation](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/documentation.yml/badge.svg)](https://apakabarlabs.github.io/syllabreak-python/syllabreak.html)
 
 # syllabreak
 
@@ -146,6 +147,10 @@ The library returns all matching languages sorted by confidence:
 >>> s.detect_language("čovek")
 ['srp-latn', 'eng', 'tur']  # Serbian Latin has highest confidence due to č
 ```
+
+## Documentation
+
+The [API reference](https://apakabarlabs.github.io/syllabreak-python/syllabreak.html) is generated from the public Python API and deployed by GitHub Actions.
 
 ## Lines of Code
 
