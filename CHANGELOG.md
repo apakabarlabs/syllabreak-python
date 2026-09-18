@@ -7,6 +7,7 @@ No runtime behaviour changes.
 ### Changed
 - The documented Git dependency now names the current release.
 - CI runs the complete Makefile build, including the README examples, generated documentation, wheel build, and comment policy checks.
+- Development tools use their own Python environment, so the library remains testable on Python 3.10.
 - Releases are created by a manually dispatched GitHub Actions workflow after the full build passes.
 
 ## 0.19.0

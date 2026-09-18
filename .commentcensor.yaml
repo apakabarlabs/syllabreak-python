@@ -1,5 +1,6 @@
 documentation: https://apakabarlabs.github.io/syllabreak-python/syllabreak.html
 
 skip:
+  - .tools/
   - build/
   - venv/

@@ -1,14 +1,19 @@
 .DEFAULT_GOAL := build
 
-.PHONY: install build test-build test docs comments lint format clean
+.PHONY: install install-tools build test-build test docs comments lint format clean
 
 COMMENTCENSOR_VERSION ?= v0.3.2
+COMMENTCENSOR_ENV = .tools/commentcensor
+COMMENTCENSOR = $(COMMENTCENSOR_ENV)/bin/commentcensor
 
 install:
 	python3 -m venv venv
 	venv/bin/pip install -q -r requirements.txt
 	venv/bin/pip install -q -e .
-	venv/bin/pip install -q --upgrade git+https://github.com/botforge-pro/commentcensor.git@$(COMMENTCENSOR_VERSION)
+
+install-tools:
+	python3 -m venv $(COMMENTCENSOR_ENV)
+	$(COMMENTCENSOR_ENV)/bin/pip install -q --upgrade git+https://github.com/botforge-pro/commentcensor.git@$(COMMENTCENSOR_VERSION)
 
 clean:
 	rm -rf build dist *.egg-info .pytest_cache .ruff_cache
@@ -24,7 +29,7 @@ test:
 	venv/bin/pytest test_readme.py
 
 comments:
-	venv/bin/commentcensor .
+	$(COMMENTCENSOR) .
 
 lint: comments
 	venv/bin/ruff check .

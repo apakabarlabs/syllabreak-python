@@ -156,6 +156,7 @@ The [API reference](https://apakabarlabs.github.io/syllabreak-python/syllabreak.
 
 ```bash
 make install
+make install-tools   # requires Python 3.11 or newer
 make test
 make lint
 make docs
