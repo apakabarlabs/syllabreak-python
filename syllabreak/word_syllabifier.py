@@ -5,8 +5,6 @@ from .tokenizer import Token, TokenClass, Tokenizer
 
 
 class WordSyllabifier:
-    """Handles syllabification of a single word."""
-
     def __init__(self, word: str, rule: LanguageRule, soft_hyphen: str):
         self.original_word = word
         self.word, self.geminate_spans = rule.expand_geminate_digraphs(word)
@@ -17,19 +15,10 @@ class WordSyllabifier:
         self.nuclei = self._find_nuclei()
 
     def _tokenize(self) -> list[Token]:
-        """Tokenize the word according to language rules."""
         tokenizer = Tokenizer(self.word, self.rule)
         return tokenizer.tokenize()
 
     def _reclassify_vowel_glides(self) -> None:
-        """Retag context-dependent vowel-glide letters (Kazakh у/и).
-
-        у/и are a syllable nucleus after a consonant or word start (ту-ыс,
-        ки-ім, су-лу) but a glide consonant after a vowel (да-уа, not да-у-а;
-        а-уа). A single vowel-glide token becomes a CONSONANT when the previous
-        non-separator token is a vowel. Multi-letter long-vowel digraphs (Kyrgyz
-        уу/ии) tokenise as one VOWEL token and are left untouched.
-        """
         if not self.rule.vowel_glides:
             return
         for i, token in enumerate(self.tokens):
@@ -44,34 +33,25 @@ class WordSyllabifier:
                 token.token_class = TokenClass.CONSONANT
 
     def _find_nuclei(self) -> list[int]:
-        """Find syllable nuclei in the token list."""
         nuclei = []
         for i, token in enumerate(self.tokens):
             if token.token_class == TokenClass.VOWEL:
                 nuclei.append(i)
 
-        # Check for final semivowels (e.g., Romanian final -i after consonant)
-        # These don't form a separate syllable nucleus
         if nuclei and self.rule.final_semivowels:
             last_nucleus_idx = nuclei[-1]
             last_token = self.tokens[last_nucleus_idx]
-            # Check if it's the last token (or only followed by non-letters)
+
             is_final = all(
                 self.tokens[j].token_class in (TokenClass.SEPARATOR, TokenClass.OTHER)
                 for j in range(last_nucleus_idx + 1, len(self.tokens))
             )
             if is_final and last_token.surface.lower() in self.rule.final_semivowels:
-                # Check if preceded by consonant
                 if last_nucleus_idx > 0:
                     prev_idx = last_nucleus_idx - 1
                     if self.tokens[prev_idx].token_class == TokenClass.CONSONANT:
-                        # Remove this nucleus - it's a semivowel, not a syllable
                         nuclei.pop()
 
-        # Check for syllabic consonants surrounded by other consonants
-        # (e.g., Serbian "r" in "prljav" -> "pr-ljav")
-        # Must have consonant on both sides AND have at least one consonant
-        # between it and the nearest vowel on BOTH sides (not just one)
         if self.rule.syllabic_consonants and nuclei:
             syllabic_nuclei = []
             for i, token in enumerate(self.tokens):
@@ -79,44 +59,37 @@ class WordSyllabifier:
                     continue
                 if token.surface.lower() not in self.rule.syllabic_consonants:
                     continue
-                # Check if surrounded by consonants (not adjacent to vowels)
+
                 prev_is_consonant = (i == 0) or (self.tokens[i - 1].token_class == TokenClass.CONSONANT)
                 next_is_consonant = (i == len(self.tokens) - 1) or (
                     self.tokens[i + 1].token_class == TokenClass.CONSONANT
                 )
                 if not (prev_is_consonant and next_is_consonant):
                     continue
-                # Find distance to nearest vowel before (or None if no vowel
-                # exists on that side — word starts with this run of cons).
+
                 dist_to_prev_vowel: int | None = None
                 for j in range(i - 1, -1, -1):
                     if self.tokens[j].token_class == TokenClass.VOWEL:
                         dist_to_prev_vowel = i - j
                         break
-                # Find distance to nearest vowel after (or None if word ends
-                # here without any further vowel).
+
                 dist_to_next_vowel: int | None = None
                 for j in range(i + 1, len(self.tokens)):
                     if self.tokens[j].token_class == TokenClass.VOWEL:
                         dist_to_next_vowel = j - i
                         break
-                # Syllabic consonant only if there's at least one consonant
-                # between it and the nearest vowel on BOTH sides. The "no
-                # vowel at all on that side" case (word-initial or word-final
-                # run of consonants) counts as the buffer being satisfied —
-                # Swahili `mtoto` → `m-to-to`, BCMS `prst`/`vrh`.
+
                 has_buffer_before = dist_to_prev_vowel is None or dist_to_prev_vowel > 1
                 has_buffer_after = dist_to_next_vowel is None or dist_to_next_vowel > 1
                 if has_buffer_before and has_buffer_after:
                     syllabic_nuclei.append(i)
-            # Merge syllabic consonant nuclei with vowel nuclei
+
             if syllabic_nuclei:
                 nuclei = sorted(set(nuclei + syllabic_nuclei))
 
         if nuclei:
             return nuclei
 
-        # Fallback: if no vowels at all, try syllabic consonants anywhere
         for i, token in enumerate(self.tokens):
             if token.token_class == TokenClass.CONSONANT and token.surface.lower() in self.rule.syllabic_consonants:
                 nuclei.append(i)
@@ -124,21 +97,18 @@ class WordSyllabifier:
         return nuclei
 
     def _skip_separators_forward(self, start: int) -> int:
-        """Skip separator tokens forward from start position."""
         pos = start
         while pos < len(self.tokens) and self.tokens[pos].token_class == TokenClass.SEPARATOR:
             pos += 1
         return pos
 
     def _skip_separators_backward(self, start: int) -> int:
-        """Skip separator tokens backward from start position."""
         pos = start
         while pos >= 0 and self.tokens[pos].token_class == TokenClass.SEPARATOR:
             pos -= 1
         return pos
 
     def _extract_consonant_cluster(self, left: int, right: int) -> tuple[list[Token], list[int]]:
-        """Extract consonants between left and right indices."""
         cluster = []
         cluster_indices = []
         for i in range(left, right + 1):
@@ -148,21 +118,11 @@ class WordSyllabifier:
         return cluster, cluster_indices
 
     def _find_cluster_between_nuclei(self, nk: int, nk1: int) -> tuple[list[Token], list[int]]:
-        """Find consonant cluster between two nuclei."""
         left = self._skip_separators_forward(nk + 1)
         right = self._skip_separators_backward(nk1 - 1)
         return self._extract_consonant_cluster(left, right)
 
     def _find_separator_between(self, nk: int, nk1: int) -> int | None:
-        """Index of the first separator token between two nuclei, or None.
-
-        A separator (Russian hard sign ъ) marks a morpheme boundary: the
-        preceding consonant is the coda of the previous syllable and the
-        separator + iotated vowel open the next one (об-ъект, под-ъезд,
-        из-ъян). The boundary therefore falls on the separator itself,
-        overriding the usual onset-cluster rule that would move the lone
-        consonant to the next syllable (о-бъект).
-        """
         for i in range(nk + 1, nk1):
             if self.tokens[i].token_class == TokenClass.SEPARATOR:
                 return i
@@ -175,17 +135,9 @@ class WordSyllabifier:
         prev_nucleus_idx: int | None = None,
         include_trailing_onsets: bool = False,
     ) -> bool:
-        """Check if two consonants form a valid onset cluster.
-
-        `include_trailing_onsets` widens the lookup with `trailing_onsets`
-        — used inside the 3+ cluster boundary decision, where some onsets
-        (Dutch s+stop) count only because they sit after another consonant.
-        """
         onset_candidate = consonant1.lower() + consonant2.lower()
 
-        # Check if this cluster requires a long vowel before it
         if onset_candidate in self.rule.clusters_only_after_long and prev_nucleus_idx is not None:
-            # Check if previous nucleus is long (digraph or marked as long)
             if not self._is_long_nucleus(prev_nucleus_idx):
                 return False
 
@@ -196,65 +148,43 @@ class WordSyllabifier:
         return False
 
     def _is_long_nucleus(self, nucleus_idx: int) -> bool:
-        """Check if nucleus at given index is long (digraph vowel or followed by lengthening marker)."""
         if nucleus_idx >= len(self.tokens):
             return False
 
-        # Get the vowel token
         vowel_token = self.tokens[nucleus_idx]
 
-        # Check if this vowel token itself is already a digraph (tokenized as one unit)
         if vowel_token.surface.lower() in self.rule.digraph_vowels:
             return True
 
-        # Check if current vowel + next character forms a digraph vowel
         if nucleus_idx + 1 < len(self.tokens):
             next_token = self.tokens[nucleus_idx + 1]
-            # Build potential digraph from current vowel and next token
+
             digraph = vowel_token.surface.lower() + next_token.surface.lower()
             if digraph in self.rule.digraph_vowels:
                 return True
 
-        # Single vowel is considered short
         return False
 
     def _find_boundary_for_single_consonant(self, cluster_indices: list[int], nk: int, nk1: int) -> int:
-        """V-CV: boundary before single consonant.
-
-        Exception: Don't split V-r-e patterns (care, here, more) when:
-        - At word end, OR
-        - Before light suffixes (-s, -less, -ful, -ly, -ing, -ed)
-
-        But split AFTER the consonant when followed by breaking suffixes (-ent, -ence, -ency, -ment):
-        - parent -> par-ent, adherent -> ad-her-ent
-        """
         consonant_idx = cluster_indices[0]
 
-        # Check for protected sequences (like -are, -ere, -ore, -ure, -ire)
         if self.rule.final_sequences_keep:
-            # Build the sequence from current vowel nucleus through next nucleus
             sequence = "".join(t.surface.lower() for t in self.tokens[nk : nk1 + 1])
             if sequence in self.rule.final_sequences_keep:
-                # Get the rest of the word starting from next nucleus (includes the vowel)
                 rest_with_vowel = "".join(t.surface.lower() for t in self.tokens[nk1:])
                 rest_after_vowel = "".join(t.surface.lower() for t in self.tokens[nk1 + 1 :])
 
-                # Check if followed by a breaking suffix (par-ent, ad-her-ent)
-                # The suffix starts from the next vowel: "ent" in "par-ent"
                 if self.rule.suffixes_break_vre:
                     for suffix in self.rule.suffixes_break_vre:
                         if rest_with_vowel == suffix or rest_with_vowel.startswith(suffix):
-                            # Split after consonant = before next nucleus
                             return nk1
 
-                # Check if at word end or followed by light suffix (care, care-less)
                 is_at_end = nk1 == len(self.tokens) - 1
                 has_light_suffix = False
                 if self.rule.suffixes_keep_vre and rest_after_vowel:
                     has_light_suffix = rest_after_vowel in self.rule.suffixes_keep_vre
 
                 if is_at_end or has_light_suffix:
-                    # Don't split - return None to indicate no boundary
                     return None
 
         return consonant_idx
@@ -262,7 +192,6 @@ class WordSyllabifier:
     def _find_boundary_for_two_consonants(
         self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: int | None = None
     ) -> int:
-        """Determine boundary for two-consonant cluster."""
         if self._is_valid_onset(cluster[0].surface, cluster[1].surface, prev_nucleus_idx):
             return cluster_indices[0]
         else:
@@ -271,18 +200,6 @@ class WordSyllabifier:
     def _find_boundary_for_long_cluster(
         self, cluster: list[Token], cluster_indices: list[int], prev_nucleus_idx: int | None = None
     ) -> int:
-        """Determine boundary for cluster with 3+ consonants.
-
-        Prefer the longest tail that forms a valid word-initial onset. Greek
-        στρ in "ά-στρο" requires a 3-letter onset match; falling back to the
-        2-letter check would give "άσ-τρο".
-
-        Onsets recognised here are the union of `clusters_keep_next` (which
-        also keeps 2-cons clusters together) and `trailing_onsets` (only
-        valid when preceded by another consonant — Dutch ven-ster, ham-ster
-        keep "st" with the next syllable in a 3+ cluster, while plain
-        kas-teel still splits the 2-cons "st" as VC-CV).
-        """
         if len(cluster) >= 3:
             onset3 = (cluster[-3].surface + cluster[-2].surface + cluster[-1].surface).lower()
             if onset3 in self.rule.clusters_keep_next or onset3 in self.rule.trailing_onsets:
@@ -299,16 +216,12 @@ class WordSyllabifier:
     def _find_boundary_in_cluster(
         self, cluster: list[Token], cluster_indices: list[int], nk: int, nk1: int
     ) -> int | None:
-        """Determine where to place boundary in a consonant cluster or between vowels."""
         if len(cluster) == 0:
-            # Check for vowel hiatus (adjacent vowels that form separate syllables)
             if not self.rule.split_hiatus:
                 return None
 
-            # Check if nuclei are adjacent (or only separated by modifiers/separators)
             are_adjacent = nk1 - nk == 1
             if not are_adjacent:
-                # Check if there are only separators between vowels
                 all_separators = True
                 for i in range(nk + 1, nk1):
                     if self.tokens[i].token_class != TokenClass.SEPARATOR:
@@ -317,11 +230,10 @@ class WordSyllabifier:
                 are_adjacent = all_separators
 
             if are_adjacent:
-                # Check if these two vowels form a digraph (don't split)
                 vowel_pair = self.tokens[nk].surface.lower() + self.tokens[nk1].surface.lower()
                 if vowel_pair in self.rule.digraph_vowels:
                     return None
-                # Hiatus: split between vowels
+
                 return nk1
             return None
         elif len(cluster) == 1:
@@ -332,7 +244,6 @@ class WordSyllabifier:
             return self._find_boundary_for_long_cluster(cluster, cluster_indices, nk)
 
     def _place_boundaries(self) -> list[int]:
-        """Determine syllable boundaries between nuclei."""
         boundaries = []
 
         for k in range(len(self.nuclei) - 1):
@@ -348,13 +259,10 @@ class WordSyllabifier:
         return boundaries
 
     def syllabify(self) -> str:
-        """Perform syllabification and return the word with soft hyphens."""
         exception = self.rule.exceptions.get(self.original_word.lower())
         if exception is not None:
             return self._apply_exception(exception)
 
-        # When the word doesn't actually split, hand back the original surface
-        # so any geminate-digraph expansion isn't visible to the caller.
         if len(self.nuclei) < 2:
             return self.original_word
 
@@ -365,14 +273,6 @@ class WordSyllabifier:
         return self._render_with_geminate_spans(boundaries)
 
     def _render_with_geminate_spans(self, boundaries: list[int]) -> str:
-        """Render the result, collapsing geminate expansions that don't split.
-
-        For each geminate span produced by pre-expansion, we keep the expanded
-        surface (sz, sz; gy, gy …) only when a boundary actually falls between
-        its tokens. When no boundary falls inside, we substitute back the
-        original compact text ('ssz', 'ggy', …) so the caller never sees a
-        cosmetic expansion that wasn't earned by an actual line break.
-        """
         boundary_set = set(boundaries)
         span_ranges = self._span_token_ranges()
         spans_with_internal = self._spans_containing_any_boundary(span_ranges, boundary_set)
@@ -396,7 +296,6 @@ class WordSyllabifier:
         return "".join(output)
 
     def _span_token_ranges(self) -> list[tuple[int, int, str]]:
-        """For each geminate span, find the (first_token, last_token, compact)."""
         ranges: list[tuple[int, int, str]] = []
         for start, length, compact in self.geminate_spans:
             end = start + length
@@ -428,7 +327,6 @@ class WordSyllabifier:
         return mapping
 
     def _apply_exception(self, split_lower: str) -> str:
-        """Render an exception's hyphen-marked lowercase split using the original case."""
         result = []
         src_idx = 0
         for ch in split_lower:

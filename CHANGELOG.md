@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.19.1
+
+No runtime behaviour changes.
+
+### Changed
+- The documented Git dependency now names the current release.
+- CI runs the complete Makefile build, including the README examples, generated documentation, wheel build, and comment policy checks.
+- Releases are created by a manually dispatched GitHub Actions workflow after the full build passes.
+
 ## 0.19.0
 
 ### Fixed — syllable-division correctness

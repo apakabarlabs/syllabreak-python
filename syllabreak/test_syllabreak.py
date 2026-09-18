@@ -22,7 +22,7 @@ def load_test_cases():
 
 @pytest.mark.parametrize("section,lang,text,want", load_test_cases())
 def test_syllabify(section, lang, text, want):
-    syllabifier = Syllabreak("-")  # Use regular hyphen for tests
+    syllabifier = Syllabreak("-")
     if lang:
         result = syllabifier.syllabify(text, lang=lang)
     else:

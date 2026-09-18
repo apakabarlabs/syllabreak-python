@@ -30,17 +30,8 @@ _DEFAULT_WORD_RE = regex.compile(
     r"[\p{L}\p{M}\p{Nd}]+(?:[''’\-][\p{L}\p{M}\p{Nd}]+)*",
 )
 
-# CJK character ranges: Han Unified + Extension A + Compat, Hiragana, Katakana,
-# Hangul Syllables. Matched as a literal class; Latin/digit runs are caught
-# first so mixed scripts (iPhoneを使う) tokenise sensibly.
-_CJK_CHAR_RANGE = (
-    "㐀-䶿"  # CJK Unified Ideographs Extension A
-    "一-鿿"  # CJK Unified Ideographs
-    "豈-﫿"  # CJK Compatibility Ideographs
-    "぀-ゟ"  # Hiragana
-    "゠-ヿ"  # Katakana
-    "가-힯"  # Hangul Syllables
-)
+
+_CJK_CHAR_RANGE = "㐀-䶿一-鿿豈-﫿぀-ゟ゠-ヿ가-힯"
 
 _CJK_WORD_RE = regex.compile(
     r"[A-Za-z0-9]+(?:[''’\-][A-Za-z0-9]+)*"

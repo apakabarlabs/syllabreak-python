@@ -1,7 +1,7 @@
+# syllabreak
+
 [![Tests](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/tests.yml/badge.svg)](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/tests.yml)
 [![Documentation](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/documentation.yml/badge.svg)](https://apakabarlabs.github.io/syllabreak-python/syllabreak.html)
-
-# syllabreak
 
 Multilingual library for accurate and deterministic hyphenation and syllable counting without relying on dictionaries.
 
@@ -10,7 +10,7 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 The library is distributed as a git tag (not published to PyPI). Install from GitHub:
 
 ```bash
-pip install git+https://github.com/apakabarlabs/syllabreak-python.git@v0.19.0
+pip install git+https://github.com/apakabarlabs/syllabreak-python.git@v0.19.1
 ```
 
 ## Supported Languages
@@ -151,6 +151,18 @@ The library returns all matching languages sorted by confidence:
 ## Documentation
 
 The [API reference](https://apakabarlabs.github.io/syllabreak-python/syllabreak.html) is generated from the public Python API and deployed by GitHub Actions.
+
+## Develop
+
+```bash
+make install
+make test
+make lint
+make docs
+make build
+```
+
+Releases are published by the [Release workflow](https://github.com/apakabarlabs/syllabreak-python/actions/workflows/release.yml).
 
 ## Lines of Code
 

@@ -1,9 +1,3 @@
-"""Reads `data/word_split_tests.yaml` and asserts every row.
-
-This file lives next to the implementation so every platform's port can mirror
-the same table (kotlin and swift load the same yaml).
-"""
-
 from __future__ import annotations
 
 from pathlib import Path

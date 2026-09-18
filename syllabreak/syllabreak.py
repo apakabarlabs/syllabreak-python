@@ -22,10 +22,6 @@ class Syllabreak:
         return MetaRule(rules)
 
     def detect_language(self, text: str) -> list[str]:
-        # Detect on NFC-normalised text so precomposed letters (Polish ą,
-        # deu ä, polytonic Greek ἤ …) sit in their canonical form and
-        # discriminate via each rule's unique_chars set. Callers handing
-        # us NFD-decomposed input get the same answer as NFC.
         matching_rules = self.meta_rule.find_matches(unicodedata.normalize("NFC", text))
         return [rule.lang for rule in matching_rules]
 
@@ -34,12 +30,10 @@ class Syllabreak:
         return [rule.lang for rule in self.meta_rule.rules]
 
     def _auto_detect_rule(self, text: str) -> LanguageRule | None:
-        """Auto-detect the first matching language rule for the text."""
         matching_rules = self.meta_rule.find_matches(text)
         return matching_rules[0] if matching_rules else None
 
     def _get_rule_by_lang(self, lang: str) -> LanguageRule:
-        """Get language rule by language code."""
         for rule in self.meta_rule.rules:
             if rule.lang == lang:
                 return rule
@@ -65,11 +59,6 @@ class Syllabreak:
             if not rule:
                 return text
 
-        # Internally we work on the NFD form so that combining marks
-        # (polytonic Greek, BCMS с́, etc.) are visible as separate codepoints
-        # at known positions, and rule fields (also NFD on load) match
-        # consistently. The final result is renormalised to NFC so callers
-        # see the canonical user-visible form.
         nfd_text = unicodedata.normalize("NFD", text)
 
         result = []

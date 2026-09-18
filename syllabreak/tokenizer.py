@@ -22,8 +22,6 @@ class Token:
 
 
 class Tokenizer:
-    """Tokenizes words according to language rules."""
-
     def __init__(self, word: str, rule: LanguageRule):
         self.rule = rule
         self.word = self._recompose_category_flips(word)
@@ -32,22 +30,6 @@ class Tokenizer:
         self.pos = 0
 
     def _recompose_category_flips(self, word: str) -> str:
-        """Recompose base+combining-mark runs that NFC into a single declared
-        letter whose category differs from the bare NFD base.
-
-        The engine works in NFD so accents ride along their base, but NFD also
-        decomposes letters that are NOT just "base + accent": Russian й = и
-        (vowel) + combining breve. Left decomposed, the vowel base и is wrongly
-        read as a syllable nucleus (мой -> мо-й) or absorbed into a long-vowel
-        digraph (Kyrgyz ии: кийиз -> кийиз). Recomposing such letters before
-        tokenisation restores й as a single consonant codepoint.
-
-        Only letters whose composed class differs from the base class are
-        touched, so Greek accented vowels (ά = α + accent, both vowels) stay
-        decomposed — the digraph matcher relies on the bare base to match
-        αι/ευ across accents — and letters with no precomposed form
-        (Montenegrin с́) stay as they are (NFC keeps them multi-codepoint).
-        """
         result: list[str] = []
         i = 0
         while i < len(word):
@@ -68,7 +50,6 @@ class Tokenizer:
         return "".join(result)
 
     def tokenize(self) -> list[Token]:
-        """Main tokenization method."""
         while self.pos < len(self.word):
             if self._try_match_left_modifier():
                 continue
@@ -82,14 +63,6 @@ class Tokenizer:
         return self.tokens
 
     def _try_match_left_modifier(self) -> bool:
-        """Try to match a left-attaching modifier at current position.
-
-        In addition to the rule's explicit modifiers_attach_left set, any
-        Unicode nonspacing mark (category Mn) attaches to the preceding token.
-        Together with NFD normalisation on input this lets polytonic Greek
-        (and any other diacritic-rich script) work without enumerating every
-        precomposed codepoint in the rule.
-        """
         char = self.word_lower[self.pos]
         is_modifier = char in self.rule.modifiers_attach_left or unicodedata.category(char) == "Mn"
         if not is_modifier:
@@ -113,7 +86,6 @@ class Tokenizer:
         return True
 
     def _try_match_separator(self) -> bool:
-        """Try to match a separator at current position."""
         char = self.word_lower[self.pos]
         if char not in self.rule.modifiers_separators:
             return False
@@ -130,11 +102,6 @@ class Tokenizer:
         return True
 
     def _scan_bases(self) -> list[int]:
-        """Collect up to three upcoming base-letter end positions, skipping
-        Unicode nonspacing marks (Mn) between them. Returned positions are
-        slice-friendly (one past the matched base), so word[self.pos:
-        positions[k-1]] is the surface for a k-base match including its
-        intervening marks."""
         positions: list[int] = []
         p = self.pos
         while p < len(self.word) and len(positions) < 3:
@@ -149,7 +116,7 @@ class Tokenizer:
         chars = []
         for idx, end in enumerate(positions):
             start = self.pos if idx == 0 else positions[idx - 1]
-            # The base letter is the last non-Mn char in word_lower[start:end].
+
             for q in range(end - 1, start - 1, -1):
                 if unicodedata.category(self.word_lower[q]) != "Mn":
                     chars.append(self.word_lower[q])
@@ -159,12 +126,6 @@ class Tokenizer:
     DIAERESIS = "̈"
 
     def _diaeresis_vetoes_at(self, end_pos: int) -> bool:
-        """Return True if a combining diaeresis (U+0308) attaches to the
-        codepoint that would close a digraph match. In Greek (αϊ, εϊ, οϊ,
-        Μαΐου, …) diaeresis explicitly signals "this vowel stands apart"
-        — hiatus — and must break diphthong recognition; the same
-        convention shows up elsewhere when ï/ü break their host digraph
-        (`naïf`-style)."""
         for p in range(end_pos, len(self.word)):
             ch = self.word_lower[p]
             if unicodedata.category(ch) != "Mn":
@@ -174,31 +135,9 @@ class Tokenizer:
         return False
 
     def _try_match_digraph(self, source: set[str], token_class: TokenClass) -> bool:
-        """Shared logic for consonant and vowel digraphs.
-
-        For each candidate length (3, 2, 1) we try the Mn-skipping match
-        first, then the direct substring match. The Mn-skipping path
-        composes the next N base letters while skipping any Unicode
-        combining marks between them, so it can cover more codepoints
-        than a direct length-N substring. This matters for triphthongs
-        written with a diacritic on the middle base (Vietnamese yêu =
-        y + ê + u → Mn-skip-3 matches the "yeu" base entry over 4
-        codepoints, even though direct length-3 would match the shorter
-        "yê"/"ye◌̂" entry first).
-
-        The direct path is kept as a fallback within each length so
-        digraphs whose marks sit on a vowel that participates in the
-        digraph itself (deu "üh", a long-vowel lengthener u + ◌̈ + h)
-        still match against their NFD-augmented entry.
-
-        A diaeresis attached to the codepoint that closes the candidate
-        match vetoes the digraph: αϊ / Μαΐου / naïf etc. are hiatus,
-        not a digraph.
-        """
         positions = self._scan_bases()
         bases = self._bases_at_positions(positions) if positions else []
         for length in (3, 2, 1):
-            # Mn-skip match — composes base letters skipping marks.
             if len(bases) >= length:
                 candidate = "".join(bases[:length])
                 if candidate in source:
@@ -214,9 +153,7 @@ class Tokenizer:
                         )
                         self.pos = end
                         return True
-            # Direct substring match — catches entries listed with the
-            # mark inside (NFD-augmented "ye◌̂" matching the precomposed
-            # YAML entry "yê").
+
             end = self.pos + length
             if end > len(self.word):
                 continue
@@ -235,15 +172,12 @@ class Tokenizer:
         return False
 
     def _try_match_consonant_digraph(self) -> bool:
-        # Length 3 supports trigraphs like Hungarian "dzs" and German "sch".
         return self._try_match_digraph(self.rule.dont_split_digraphs, TokenClass.CONSONANT)
 
     def _try_match_vowel_digraph(self) -> bool:
-        # Length 3 supports trigraphs like BCMS "ije"/"ије" (long-jat reflex).
         return self._try_match_digraph(self.rule.digraph_vowels, TokenClass.VOWEL)
 
     def _classify_letter(self, char: str) -> TokenClass | None:
-        """Classify a single letter as VOWEL or CONSONANT, or None if unknown."""
         if char in self.rule.vowels:
             return TokenClass.VOWEL
         if char in self.rule.consonants:
@@ -251,7 +185,6 @@ class Tokenizer:
         return None
 
     def _add_single_character_token(self):
-        """Add a single character token at current position."""
         char = self.word_lower[self.pos]
         token_class = self._classify_letter(char)
         self.tokens.append(

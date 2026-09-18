@@ -1,13 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="syllabreak",
-    version="0.19.0",
+    version="0.19.1",
     packages=find_packages(),
     install_requires=[
         "PyYAML>=6.0",
-        # `regex` (not stdlib `re`) gives us \p{M} for Hebrew points, Arabic
-        # harakat, Devanagari matras to attach to the preceding letter.
         "regex>=2024.0",
     ],
     python_requires=">=3.10",

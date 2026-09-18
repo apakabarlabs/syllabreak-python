@@ -6,11 +6,6 @@ def _nfd(value: str) -> str:
 
 
 def _augment_set(values) -> set[str]:
-    """Build a set with both the NFC entries from the rule and their NFD
-    decompositions. Multi-character fields (digraph_vowels, clusters,
-    suffix groups, ...) need this because tokenisation runs on NFD input
-    and entries with precomposed letters like deu's "üh" would otherwise
-    fail to match."""
     result: set[str] = set()
     for value in values:
         result.add(value)
@@ -19,9 +14,6 @@ def _augment_set(values) -> set[str]:
 
 
 def _augment_mapping(mapping) -> dict[str, str]:
-    """Augment a mapping with NFD-form keys (mapped to NFD-form values),
-    so that exception/geminate lookups succeed whether the caller has
-    handed us NFC or NFD input."""
     result: dict[str, str] = {}
     for key, value in mapping.items():
         result[key] = value
@@ -30,15 +22,12 @@ def _augment_mapping(mapping) -> dict[str, str]:
 
 
 class MetaRule:
-    """Aggregates information about all language rules and provides cross-language analysis"""
-
     def __init__(self, rules: list):
         self.rules = rules
         self._calculate_unique_chars()
         self._link_rules_to_meta()
 
     def _calculate_unique_chars(self):
-        """Calculate unique characters for each language rule"""
         for rule in self.rules:
             rule.unique_chars = rule.all_chars.copy()
             for other_rule in self.rules:
@@ -46,19 +35,16 @@ class MetaRule:
                     rule.unique_chars -= other_rule.all_chars
 
     def _link_rules_to_meta(self):
-        """Link each rule back to this meta rule"""
         for rule in self.rules:
             rule.meta = self
 
     def get_all_known_chars(self) -> set[str]:
-        """Get all characters from all languages"""
         all_chars = set()
         for rule in self.rules:
             all_chars |= rule.all_chars
         return all_chars
 
     def find_matches(self, text: str) -> list:
-        """Find all matching languages for the text, sorted by score."""
         if not text:
             return []
 
@@ -68,24 +54,19 @@ class MetaRule:
 
         matches = []
 
-        # Calculate scores for all rules
         for rule in self.rules:
             score = rule.calculate_match_score(text)
             if score > 0:
-                # Boost score if has unique characters
                 if rule.unique_chars and any(c in rule.unique_chars for c in clean_text):
-                    score = 1.0  # Maximum score for unique chars
+                    score = 1.0
                 matches.append((rule, score))
 
-        # Sort by score descending
         matches.sort(key=lambda x: x[1], reverse=True)
 
         return [rule for rule, score in matches]
 
 
 class LanguageRule:
-    """Represents syllabification rules for a specific language and script"""
-
     lang: str
     vowels: set[str]
     consonants: set[str]
@@ -108,32 +89,15 @@ class LanguageRule:
     _all_chars: set[str]
 
     def __init__(self, data: dict):
-        # Rule fields stay as the NFC entries from rules.yaml. The engine
-        # normalises text to NFD only inside syllabify(), and the tokenizer
-        # tolerates combining marks by:
-        #   - auto-attaching any Mn codepoint to the preceding token, and
-        #   - skipping Mn marks while matching multi-char digraphs so
-        #     forms like ἀι (NFD: α + U+0313 + ι) still match the base
-        #     "αι" digraph entry.
-        # Detection runs on NFC-normalised input — Polish ą/ż, deu ä,
-        # polytonic Greek ἀ/ἤ all sit precomposed and discriminate via
-        # each rule's unique_chars.
         self.lang = data["lang"]
         self.vowels = set(data["vowels"])
         self.consonants = set(data["consonants"])
         self.clusters_keep_next = _augment_set(data.get("clusters_keep_next", []))
-        # trailing_onsets — onsets valid ONLY in trailing position of a 3+
-        # consonant cluster. Used for languages (Dutch) where some onsets
-        # (s+stop) split as VC-CV in a plain 2-cons cluster (kas-teel) but
-        # stay together as the next syllable's onset when preceded by
-        # another consonant (ven-ster, in-dus-trie). Checked alongside
-        # clusters_keep_next inside the 3+ cluster boundary decision.
+
         self.trailing_onsets = _augment_set(data.get("trailing_onsets", []))
         self.dont_split_digraphs = _augment_set(data.get("dont_split_digraphs", []))
         self.digraph_vowels = _augment_set(data.get("digraph_vowels", []))
-        # Letters that are a vowel (syllable nucleus) after a consonant / word
-        # start, but a glide consonant after a vowel — Kazakh у/и (ту-ыс vs
-        # да-уа). Reclassified per occurrence in WordSyllabifier.
+
         self.vowel_glides = set(data.get("vowel_glides", ""))
         self.syllabic_consonants = set(data.get("syllabic_consonants", ""))
         self.modifiers_attach_left = set(data.get("modifiers_attach_left", ""))
@@ -144,15 +108,9 @@ class LanguageRule:
         self.final_sequences_keep = _augment_set(data.get("final_sequences_keep", []))
         self.suffixes_break_vre = _augment_set(data.get("suffixes_break_vre", []))
         self.suffixes_keep_vre = _augment_set(data.get("suffixes_keep_vre", []))
-        # Lowercased word -> hyphen-marked split. Used to override the algorithm
-        # for individual words that escape the general rules (e.g. BCMS "dvije",
-        # "prije" — graphic -ije- not from jat, see Matešić 2015 rule P11).
+
         self.exceptions = _augment_mapping(data.get("exceptions", {}))
-        # Compact-form digraph geminates -> expanded form, applied before
-        # tokenisation. Hungarian writes long double digraphs in a simplified
-        # form (ssz=sz+sz, ggy=gy+gy, ...) but at a line break both halves
-        # are restored in full (asz-szony, meny-nyi). Expanding here makes
-        # the boundary algorithm produce the correct surface automatically.
+
         self.geminate_digraphs = _augment_mapping(data.get("geminate_digraphs", {}))
 
         self._all_chars = self.vowels | self.consonants
@@ -171,17 +129,6 @@ class LanguageRule:
         return char in self._all_chars
 
     def expand_geminate_digraphs(self, word: str) -> tuple[str, list[tuple[int, int, str]]]:
-        """Expand compact-form digraph geminates (Hungarian ssz, ggy, ...).
-
-        Returns (expanded_word, spans). Each span is (start_in_expanded,
-        length_in_expanded, original_compact_text); the spans let the caller
-        decide whether to render the expanded form (when a boundary falls
-        inside the span — AkH 12 §226 line-break behaviour) or restore the
-        compact form (when the geminate is not actually split).
-
-        Case is preserved per match: an ALL-UPPER compact stretch expands to
-        all-upper, a single-cap-prefix to title-case, otherwise lowercase.
-        """
         if not self.geminate_digraphs:
             return word, []
         patterns = sorted(self.geminate_digraphs.items(), key=lambda kv: -len(kv[0]))
@@ -214,15 +161,13 @@ class LanguageRule:
         return "".join(result), spans
 
     def is_word_char(self, char: str) -> bool:
-        """Whether a character extends a word — letter or any attaching mark."""
         if char.isalpha():
             return True
         if char in self.modifiers_attach_left:
             return True
         if char in self.modifiers_separators:
             return True
-        # Unicode nonspacing marks (Mn) always belong to the preceding letter,
-        # so they extend whatever word they sit on.
+
         if unicodedata.category(char) == "Mn":
             return True
         return False
