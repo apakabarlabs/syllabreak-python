@@ -54,6 +54,7 @@ class WordSplitter:
         self._modes = _load_rules()
 
     def split(self, text: str, lang: str) -> list[str]:
+        """Return the visible words in text using the language's split mode."""
         return [text[s:e] for s, e in self.find_ranges(text, lang)]
 
     def find_ranges(self, text: str, lang: str) -> list[tuple[int, int]]:

@@ -10,6 +10,13 @@ from .word_syllabifier import WordSyllabifier
 
 
 class Syllabreak:
+    """Syllabifies text and detects the most likely rule languages.
+
+    Args:
+        soft_hyphen: Separator inserted at syllable boundaries. Defaults to
+            the Unicode soft hyphen.
+    """
+
     def __init__(self, soft_hyphen: str = "\u00ad"):
         self.soft_hyphen = soft_hyphen
         self.meta_rule = self._load_rules()
@@ -22,6 +29,11 @@ class Syllabreak:
         return MetaRule(rules)
 
     def detect_language(self, text: str) -> list[str]:
+        """Return matching language codes in descending confidence order.
+
+        Returns an empty list when the text contains no characters known to
+        any loaded rule.
+        """
         matching_rules = self.meta_rule.find_matches(unicodedata.normalize("NFC", text))
         return [rule.lang for rule in matching_rules]
 
