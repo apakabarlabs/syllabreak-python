@@ -1,3 +1,33 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "syllabreak"
+dynamic = ["version"]
+description = "Deterministic multilingual syllable breaking and language detection"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Apakabarlabs" },
+]
+dependencies = [
+    "PyYAML>=6.0",
+    "regex>=2024.0",
+]
+
+[project.urls]
+Documentation = "https://apakabarlabs.github.io/syllabreak-python/syllabreak.html"
+Issues = "https://github.com/apakabarlabs/syllabreak-python/issues"
+Repository = "https://github.com/apakabarlabs/syllabreak-python"
+
+[tool.setuptools.dynamic]
+version = { attr = "syllabreak.__version__" }
+
+[tool.setuptools.package-data]
+syllabreak = ["data/*.yaml"]
+
 [tool.ruff]
 line-length = 120
 target-version = "py311"

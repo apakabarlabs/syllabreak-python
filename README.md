@@ -7,10 +7,10 @@ Multilingual library for accurate and deterministic hyphenation and syllable cou
 
 ## Installation
 
-The library is distributed as a git tag (not published to PyPI). Install from GitHub:
+Install from PyPI:
 
 ```bash
-pip install git+https://github.com/apakabarlabs/syllabreak-python.git@v0.19.1
+pip install syllabreak
 ```
 
 ## Supported Languages

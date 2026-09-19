@@ -40,4 +40,5 @@ format:
 	venv/bin/ruff format .
 
 build: lint test-build test docs
-	venv/bin/python -m build --wheel
+	venv/bin/python -m build
+	venv/bin/python -m twine check dist/*
