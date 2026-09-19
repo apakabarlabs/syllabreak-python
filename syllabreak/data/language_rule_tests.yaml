@@ -1,0 +1,7 @@
+tests:
+  - name: precomposed entry includes canonical decomposition
+    values: [üh]
+    expected: [üh, "u\u0308h"]
+  - name: unchanged entry is not duplicated
+    values: [sch]
+    expected: [sch]
