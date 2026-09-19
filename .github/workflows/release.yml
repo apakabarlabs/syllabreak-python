@@ -37,8 +37,15 @@ jobs:
         run: test "$(venv/bin/python -c 'import syllabreak; print(syllabreak.__version__)')" = "${VERSION}"
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ inputs.version }}
-        run: gh release create "v${VERSION}" dist/* --generate-notes --target "${GITHUB_SHA}"
+        run: |
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh release upload "v${VERSION}" dist/* --clobber
+          else
+            gh release create "v${VERSION}" dist/* --generate-notes --target "${GITHUB_SHA}"
+          fi
