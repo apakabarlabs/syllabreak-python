@@ -464,6 +464,8 @@ tests:
         want: "fuß-ball"
       - text: "mädchen"
         want: "mäd-chen"
+      - text: "ma\u0308dchen"
+        want: "mäd-chen"
       - text: "österreich"
         want: "ös-ter-reich"
       - text: "schmetterling"

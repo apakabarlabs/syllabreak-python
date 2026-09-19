@@ -132,6 +132,7 @@ tests:
       - "straße"
       - "fußball"
       - "mädchen"
+      - "ma\u0308dchen"
       - "geschäft"
       - "größe"
       # Caveat fixture: Finnish words without ü/ß cannot be told from

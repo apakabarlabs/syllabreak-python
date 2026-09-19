@@ -5,3 +5,14 @@ tests:
   - name: unchanged entry is not duplicated
     values: [sch]
     expected: [sch]
+
+mapping_tests:
+  - name: precomposed mapping includes canonical decomposition
+    mapping: {üh: ö}
+    expected:
+      - {key: üh, value: ö}
+      - {key: "u\u0308h", value: "o\u0308"}
+  - name: unchanged mapping remains available
+    mapping: {ssz: szsz}
+    expected:
+      - {key: ssz, value: szsz}
