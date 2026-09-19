@@ -1,0 +1,106 @@
+tests:
+  - name: consonant digraph
+    rule: {lang: test, vowels: aeio, consonants: njgv, dont_split_digraphs: [nj]}
+    text: njegov
+    tokens:
+      - {surface: nj, class: consonant, start: 0, end: 2}
+      - {surface: e, class: vowel, start: 2, end: 3}
+      - {surface: g, class: consonant, start: 3, end: 4}
+      - {surface: o, class: vowel, start: 4, end: 5}
+      - {surface: v, class: consonant, start: 5, end: 6}
+
+  - name: consonant digraph precedence
+    rule: {lang: test, vowels: aeiou, consonants: chlst, dont_split_digraphs: [ch, sh, th]}
+    text: cheat
+    tokens:
+      - {surface: ch, class: consonant, start: 0, end: 2}
+      - {surface: e, class: vowel, start: 2, end: 3}
+      - {surface: a, class: vowel, start: 3, end: 4}
+      - {surface: t, class: consonant, start: 4, end: 5}
+
+  - name: vowel digraph
+    rule: {lang: test, vowels: aeiou, consonants: bcdfg, digraph_vowels: [ea, ee]}
+    text: beat
+    tokens:
+      - {surface: b, class: consonant, start: 0, end: 1}
+      - {surface: ea, class: vowel, start: 1, end: 3}
+      - {surface: t, class: other, start: 3, end: 4}
+
+  - name: left-attaching modifier
+    rule: {lang: test, vowels: aоуие, consonants: кмпьтр, modifiers_attach_left: ь}
+    text: компь
+    tokens:
+      - {surface: к, class: consonant, start: 0, end: 1}
+      - {surface: о, class: vowel, start: 1, end: 2}
+      - {surface: м, class: consonant, start: 2, end: 3}
+      - {surface: пь, class: consonant, modifier: true, start: 3, end: 5}
+
+  - name: separator
+    rule: {lang: test, vowels: aeiou, consonants: bcdfg, modifiers_separators: '-'}
+    text: ab-cd
+    tokens:
+      - {surface: a, class: vowel, start: 0, end: 1}
+      - {surface: b, class: consonant, start: 1, end: 2}
+      - {surface: '-', class: separator, start: 2, end: 3}
+      - {surface: c, class: consonant, start: 3, end: 4}
+      - {surface: d, class: consonant, start: 4, end: 5}
+
+  - name: vowel classification
+    rule: {lang: test, vowels: aeiou, consonants: bcdfghjklmnpqrstvwxyz}
+    text: aei
+    tokens:
+      - {surface: a, class: vowel, start: 0, end: 1}
+      - {surface: e, class: vowel, start: 1, end: 2}
+      - {surface: i, class: vowel, start: 2, end: 3}
+
+  - name: consonant classification
+    rule: {lang: test, vowels: aeiou, consonants: bcdfghjklmnpqrstvwxyz}
+    text: bcd
+    tokens:
+      - {surface: b, class: consonant, start: 0, end: 1}
+      - {surface: c, class: consonant, start: 1, end: 2}
+      - {surface: d, class: consonant, start: 2, end: 3}
+
+  - name: unknown character classification
+    rule: {lang: test, vowels: aeiou, consonants: bcdfg}
+    text: 'a#b'
+    tokens:
+      - {surface: a, class: vowel, start: 0, end: 1}
+      - {surface: '#', class: other, start: 1, end: 2}
+      - {surface: b, class: consonant, start: 2, end: 3}
+
+  - name: empty string
+    rule: {lang: test, vowels: aeiou, consonants: bcdfghjklmnpqrstvwxyz}
+    text: ''
+    tokens: []
+
+  - name: case preservation
+    rule: {lang: test, vowels: aeiou, consonants: bcdfghjklmnpqrstvwxyz}
+    text: HeLLo
+    tokens:
+      - {surface: H, class: consonant, start: 0, end: 1}
+      - {surface: e, class: vowel, start: 1, end: 2}
+      - {surface: L, class: consonant, start: 2, end: 3}
+      - {surface: L, class: consonant, start: 3, end: 4}
+      - {surface: o, class: vowel, start: 4, end: 5}
+
+  - name: category-changing composition
+    rule: {lang: test, vowels: и, consonants: й}
+    text: й
+    normalization: nfd
+    tokens:
+      - {surface: й, class: consonant, start: 0, end: 1}
+
+  - name: same-category composition stays decomposed
+    rule: {lang: test, vowels: αά, consonants: ''}
+    text: ά
+    normalization: nfd
+    tokens:
+      - {surface: ά, class: vowel, modifier: true, start: 0, end: 2}
+
+  - name: unavailable composition stays decomposed
+    rule: {lang: test, vowels: '', consonants: с}
+    text: с́
+    normalization: nfd
+    tokens:
+      - {surface: с́, class: consonant, modifier: true, start: 0, end: 2}
