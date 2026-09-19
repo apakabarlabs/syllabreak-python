@@ -16,3 +16,17 @@ mapping_tests:
     mapping: {ssz: szsz}
     expected:
       - {key: ssz, value: szsz}
+
+geminate_tests:
+  - name: compact digraph expands with its span
+    rule: {lang: test, vowels: '', consonants: '', geminate_digraphs: {ssz: szsz}}
+    word: asszony
+    expanded: aszszony
+    spans:
+      - {start: 1, length: 4, compact: ssz}
+  - name: span offsets count decomposed scalars
+    rule: {lang: test, vowels: '', consonants: '', geminate_digraphs: {ssz: szsz}}
+    word: "o\u0308ssz"
+    expanded: "o\u0308szsz"
+    spans:
+      - {start: 2, length: 4, compact: ssz}
