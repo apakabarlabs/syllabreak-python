@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.20.0
+
+### Fixed
+
+- English final `e` and `ed` use ordered nucleus rules for regular silent
+  endings, syllabic `-ed`, consonant + `le`, `-isle`, `-gue`, and `-que`, with
+  a bounded lexical layer for non-productive pronunciations.
+- Polish vowel hiatus and `cj` boundaries now follow the shared rule corpus,
+  with lexical overrides for loanword diphthongs.
+
 ## 0.19.1
 
 No runtime behaviour changes.

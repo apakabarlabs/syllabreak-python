@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import unicodedata
+
 from .language_rule import LanguageRule
 from .tokenizer import Token, TokenClass, Tokenizer
 
@@ -12,11 +14,13 @@ class WordSyllabifier:
         self.soft_hyphen = soft_hyphen
         self.tokens = self._tokenize()
         self._reclassify_vowel_glides()
-        self.nuclei = self._find_nuclei()
+        self.nuclei: list[int] = []
 
     def _tokenize(self) -> list[Token]:
         tokenizer = Tokenizer(self.word, self.rule)
-        return tokenizer.tokenize()
+        tokens = tokenizer.tokenize()
+        self.word = tokenizer.word
+        return tokens
 
     def _reclassify_vowel_glides(self) -> None:
         if not self.rule.vowel_glides:
@@ -33,9 +37,10 @@ class WordSyllabifier:
                 token.token_class = TokenClass.CONSONANT
 
     def _find_nuclei(self) -> list[int]:
+        nucleus_overrides = self._classify_vowel_nuclei()
         nuclei = []
         for i, token in enumerate(self.tokens):
-            if token.token_class == TokenClass.VOWEL:
+            if token.token_class == TokenClass.VOWEL and nucleus_overrides.get(i) != "silent":
                 nuclei.append(i)
 
         if nuclei and self.rule.final_semivowels:
@@ -95,6 +100,35 @@ class WordSyllabifier:
                 nuclei.append(i)
 
         return nuclei
+
+    def _classify_vowel_nuclei(self) -> dict[int, str]:
+        word = self.word.casefold()
+        for rule in self.rule.vowel_nucleus_rules:
+            if rule.words and word not in rule.words:
+                continue
+            if not word.endswith(rule.suffix):
+                continue
+            suffix_start = len(word) - len(rule.suffix)
+            preceding = suffix_start - 1
+            while preceding >= 0 and unicodedata.category(word[preceding]) == "Mn":
+                preceding -= 1
+            if rule.preceded_by and (preceding < 0 or word[preceding] not in rule.preceded_by):
+                continue
+            if rule.preceded_by_class:
+                if preceding < 0:
+                    continue
+                expected = self.rule.consonants if rule.preceded_by_class == "consonant" else self.rule.vowels
+                if word[preceding] not in expected:
+                    continue
+            target = suffix_start + rule.vowel_offset
+            for i, token in enumerate(self.tokens):
+                if (
+                    token.start_idx == target
+                    and token.end_idx == target + rule.vowel_length
+                    and token.token_class == TokenClass.VOWEL
+                ):
+                    return {i: rule.outcome}
+        return {}
 
     def _skip_separators_forward(self, start: int) -> int:
         pos = start
@@ -263,6 +297,7 @@ class WordSyllabifier:
         if exception is not None:
             return self._apply_exception(exception)
 
+        self.nuclei = self._find_nuclei()
         if len(self.nuclei) < 2:
             return self.original_word
 

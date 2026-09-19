@@ -1,4 +1,5 @@
 import unicodedata
+from dataclasses import dataclass
 
 
 def _nfd(value: str) -> str:
@@ -19,6 +20,17 @@ def _augment_mapping(mapping) -> dict[str, str]:
         result[key] = value
         result[_nfd(key)] = _nfd(value)
     return result
+
+
+@dataclass(frozen=True)
+class VowelNucleusRule:
+    suffix: str
+    vowel_offset: int
+    vowel_length: int
+    outcome: str
+    words: frozenset[str]
+    preceded_by: frozenset[str]
+    preceded_by_class: str | None
 
 
 class MetaRule:
@@ -84,6 +96,7 @@ class LanguageRule:
     final_sequences_keep: set[str]
     suffixes_break_vre: set[str]
     suffixes_keep_vre: set[str]
+    vowel_nucleus_rules: tuple[VowelNucleusRule, ...]
     exceptions: dict[str, str]
     geminate_digraphs: dict[str, str]
     _all_chars: set[str]
@@ -108,12 +121,52 @@ class LanguageRule:
         self.final_sequences_keep = _augment_set(data.get("final_sequences_keep", []))
         self.suffixes_break_vre = _augment_set(data.get("suffixes_break_vre", []))
         self.suffixes_keep_vre = _augment_set(data.get("suffixes_keep_vre", []))
+        self.vowel_nucleus_rules = self._load_vowel_nucleus_rules(data.get("vowel_nucleus_rules", []))
 
         self.exceptions = _augment_mapping(data.get("exceptions", {}))
 
         self.geminate_digraphs = _augment_mapping(data.get("geminate_digraphs", {}))
 
         self._all_chars = self.vowels | self.consonants
+
+    def _load_vowel_nucleus_rules(self, entries: list[dict]) -> tuple[VowelNucleusRule, ...]:
+        result: list[VowelNucleusRule] = []
+        for entry in entries:
+            suffix = _nfd(entry["suffix"])
+            vowel_offset = entry["vowel_offset"]
+            vowel_length = entry.get("vowel_length", 1)
+            if (
+                not isinstance(vowel_offset, int)
+                or not isinstance(vowel_length, int)
+                or vowel_length < 1
+                or not 0 <= vowel_offset < len(suffix)
+                or vowel_offset + vowel_length > len(suffix)
+            ):
+                raise ValueError(f"invalid vowel offset for nucleus rule: {suffix}")
+            if not all(char in self.vowels for char in suffix[vowel_offset : vowel_offset + vowel_length]):
+                raise ValueError(f"nucleus rule target is not a vowel: {suffix}")
+            outcome = entry["outcome"]
+            if outcome not in {"preserve", "silent"}:
+                raise ValueError(f"invalid nucleus rule outcome: {outcome}")
+            words = frozenset(_nfd(value).casefold() for value in entry.get("words", []))
+            preceded_by = frozenset(_nfd(value) for value in entry.get("preceded_by", []))
+            if any(len(value) != 1 for value in preceded_by):
+                raise ValueError(f"nucleus rule predecessor must be one character: {suffix}")
+            preceded_by_class = entry.get("preceded_by_class")
+            if preceded_by_class not in {None, "consonant", "vowel"}:
+                raise ValueError(f"invalid nucleus rule predecessor class: {preceded_by_class}")
+            result.append(
+                VowelNucleusRule(
+                    suffix,
+                    vowel_offset,
+                    vowel_length,
+                    outcome,
+                    words,
+                    preceded_by,
+                    preceded_by_class,
+                )
+            )
+        return tuple(result)
 
     @property
     def all_chars(self) -> set[str]:

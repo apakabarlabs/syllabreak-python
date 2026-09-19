@@ -21,6 +21,11 @@ def _load_geminate_cases():
     return yaml.safe_load(path.read_text())["geminate_tests"]
 
 
+def _load_vowel_nucleus_rule_cases():
+    path = Path(__file__).parent / "data" / "language_rule_tests.yaml"
+    return yaml.safe_load(path.read_text())["vowel_nucleus_rule_tests"]
+
+
 @pytest.mark.parametrize("case", _load_cases(), ids=lambda case: case["name"])
 def test_augment_set(case):
     assert _augment_set(case["values"]) == set(case["expected"])
@@ -39,3 +44,19 @@ def test_expand_geminate_digraphs(case):
     expected_spans = [(span["start"], span["length"], span["compact"]) for span in case["spans"]]
     assert expanded == case["expanded"]
     assert spans == expected_spans
+
+
+@pytest.mark.parametrize("case", _load_vowel_nucleus_rule_cases(), ids=lambda case: case["name"])
+def test_vowel_nucleus_rule_validation(case):
+    data = {
+        "lang": "test",
+        "vowels": "aeiou",
+        "consonants": "bcdfghjklmnpqrstvwxyz",
+        "vowel_nucleus_rules": case["entries"],
+    }
+    if "error" in case:
+        with pytest.raises(ValueError, match=case["error"]):
+            LanguageRule(data)
+    else:
+        rule = LanguageRule(data)
+        assert [entry.suffix for entry in rule.vowel_nucleus_rules] == case["expected"]

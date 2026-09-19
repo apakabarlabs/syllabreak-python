@@ -30,3 +30,38 @@ geminate_tests:
     expanded: "o\u0308szsz"
     spans:
       - {start: 2, length: 4, compact: ssz}
+
+vowel_nucleus_rule_tests:
+  - name: declaration order defines priority
+    entries:
+      - {suffix: e, vowel_offset: 0, outcome: silent}
+      - {suffix: ed, vowel_offset: 0, outcome: preserve, preceded_by: [t, d]}
+    expected: [e, ed]
+  - name: out of range offset is rejected
+    entries:
+      - {suffix: e, vowel_offset: 1, outcome: silent}
+    error: "invalid vowel offset for nucleus rule"
+  - name: consonant target is rejected
+    entries:
+      - {suffix: ed, vowel_offset: 1, outcome: silent}
+    error: "nucleus rule target is not a vowel"
+  - name: unknown outcome is rejected
+    entries:
+      - {suffix: e, vowel_offset: 0, outcome: maybe}
+    error: "invalid nucleus rule outcome"
+  - name: multi-character predecessor is rejected
+    entries:
+      - {suffix: ed, vowel_offset: 0, outcome: silent, preceded_by: [th]}
+    error: "predecessor must be one character"
+  - name: unknown predecessor class is rejected
+    entries:
+      - {suffix: le, vowel_offset: 1, outcome: preserve, preceded_by_class: letter}
+    error: "invalid nucleus rule predecessor class"
+  - name: multi-letter vowel target is accepted
+    entries:
+      - {suffix: gue, vowel_offset: 1, vowel_length: 2, outcome: silent}
+    expected: [gue]
+  - name: vowel target cannot exceed suffix
+    entries:
+      - {suffix: e, vowel_offset: 0, vowel_length: 2, outcome: silent}
+    error: "invalid vowel offset for nucleus rule"

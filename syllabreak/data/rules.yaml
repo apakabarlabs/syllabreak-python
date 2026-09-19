@@ -12,7 +12,120 @@ rules:
     suffixes_break_vre: ["ent", "ents", "ence", "ency", "ment", "ments"]
     # Light suffixes that don't break V-r-e pattern (care-less, care-ful)
     suffixes_keep_vre: ["s", "ed", "ing", "less", "ful", "fully", "ly", "ness"]
-
+    vowel_nucleus_rules:
+      - suffix: "e"
+        vowel_offset: 0
+        outcome: "preserve"
+        words:
+          - abalone
+          - acne
+          - acme
+          - adobe
+          - anime
+          - anemone
+          - ante
+          - apostrophe
+          - attache
+          - cafe
+          - catastrophe
+          - chile
+          - chloe
+          - cliche
+          - coyote
+          - dante
+          - epitome
+          - facsimile
+          - fiance
+          - finale
+          - guacamole
+          - hyperbole
+          - kamikaze
+          - karate
+          - karaoke
+          - latte
+          - machete
+          - maybe
+          - namaste
+          - nike
+          - posse
+          - psyche
+          - recipe
+          - sesame
+          - simile
+          - synecdoche
+          - tamale
+          - ukulele
+          - vigilante
+          - wannabe
+          - yosemite
+          - zoe
+      - suffix: "ed"
+        vowel_offset: 0
+        outcome: "preserve"
+        words:
+          - beloved
+          - crooked
+          - dogged
+          - hatred
+          - hundred
+          - jagged
+          - kindred
+          - naked
+          - ragged
+          - rugged
+          - sacred
+          - wicked
+          - wretched
+      - suffix: "gue"
+        vowel_offset: 1
+        vowel_length: 2
+        outcome: "preserve"
+        words: [argue, segue]
+      - suffix: "gue"
+        vowel_offset: 1
+        vowel_length: 2
+        outcome: "silent"
+      - suffix: "que"
+        vowel_offset: 1
+        vowel_length: 2
+        outcome: "silent"
+      - suffix: "isle"
+        vowel_offset: 3
+        outcome: "silent"
+      - suffix: "le"
+        vowel_offset: 1
+        outcome: "preserve"
+        preceded_by_class: "consonant"
+      - suffix: "ed"
+        vowel_offset: 0
+        outcome: "preserve"
+        preceded_by: ["t", "d"]
+      - suffix: "ed"
+        vowel_offset: 0
+        outcome: "silent"
+      - suffix: "e"
+        vowel_offset: 0
+        outcome: "silent"
+    exceptions:
+      coyote: "coy-o-te"
+      recipe: "rec-i-pe"
+      simile: "sim-i-le"
+      wicked: "wick-ed"
+      crooked: "crook-ed"
+      beloved: "be-lov-ed"
+      wretched: "wretch-ed"
+      epitome: "e-pit-o-me"
+      sesame: "ses-a-me"
+      chloe: "chlo-e"
+      zoe: "zo-e"
+      chile: "chil-e"
+      embed: "em-bed"
+      hundred: "hun-dred"
+      delivered: "de-liv-ered"
+      covered: "cov-ered"
+      created: "cre-at-ed"
+      decided: "de-cid-ed"
+      whispered: "whis-pered"
   - lang: "rus"
     vowels: "аеёиоуыэюя"
     consonants: "бвгджзйклмнпрстфхцчшщ"
@@ -542,8 +655,17 @@ rules:
     # 3-letter clusters skr/spr/str dropped — see the Polish/German notes;
     # with 3-letter onset support active they over-keep clusters that
     # school hyphenation splits at the 2-letter boundary.
-    clusters_keep_next: ["br", "bl", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st"]
+    clusters_keep_next: ["br", "bl", "cj", "cr", "cl", "dr", "dł", "fr", "fl", "gr", "gl", "kr", "kl", "pr", "pl", "tr", "tł", "wr", "wl", "sk", "sp", "st"]
     dont_split_digraphs: ["sz", "cz", "rz", "dz", "ch"]
+    digraph_vowels: ["ia", "ią", "ie", "ię", "io", "iu"]
+    split_hiatus: true
+    exceptions:
+      auto: "au-to"
+      europa: "eu-ro-pa"
+      euforia: "eu-fo-ria"
+      aura: "au-ra"
+      pauza: "pau-za"
+      triatlon: "tri-at-lon"
 
   - lang: "lat"
     vowels: "aeiouyāēīōūȳăĕĭŏŭ"
