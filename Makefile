@@ -2,9 +2,6 @@
 
 .PHONY: install install-tools install-analysis-tools analyze-english-endings build test-build test docs comments lint format clean
 
-COMMENTCENSOR_VERSION ?= v0.3.2
-COMMENTCENSOR_ENV = .tools/commentcensor
-COMMENTCENSOR = $(COMMENTCENSOR_ENV)/bin/commentcensor
 ENGLISH_ANALYSIS_ENV = .tools/english-analysis
 CMUDICT_COMMIT = 74790861f652b15e4ac49015a90074ad62a27690
 CMUDICT_PATH = build/cmudict-$(CMUDICT_COMMIT).dict
@@ -15,8 +12,7 @@ install:
 	venv/bin/pip install -q -e .
 
 install-tools:
-	python3 -m venv $(COMMENTCENSOR_ENV)
-	$(COMMENTCENSOR_ENV)/bin/pip install -q --upgrade git+https://github.com/botforge-pro/commentcensor.git@$(COMMENTCENSOR_VERSION)
+	python3 -m pip install --quiet --upgrade git+https://github.com/botforge-pro/commentcensor.git
 
 install-analysis-tools:
 	python3 -m venv $(ENGLISH_ANALYSIS_ENV)
@@ -43,7 +39,7 @@ test:
 	venv/bin/pytest test_readme.py
 
 comments:
-	$(COMMENTCENSOR) .
+	commentcensor .
 
 lint: comments
 	venv/bin/ruff check .
