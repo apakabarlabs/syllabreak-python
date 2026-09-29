@@ -168,7 +168,7 @@ Releases are published by the [Release workflow](https://github.com/apakabarlabs
 ## Lines of Code
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/loc-history-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset=".github/loc-history-light.svg">
-  <img alt="Lines of Code graph" src=".github/loc-history-light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/apakabarlabs/syllabreak-python/main/.github/loc-history-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/apakabarlabs/syllabreak-python/main/.github/loc-history-light.svg">
+  <img alt="Lines of Code graph" src="https://raw.githubusercontent.com/apakabarlabs/syllabreak-python/main/.github/loc-history-light.svg">
 </picture>
