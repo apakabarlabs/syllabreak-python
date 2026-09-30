@@ -1,6 +1,13 @@
 .DEFAULT_GOAL := build
 
-.PHONY: install install-tools install-analysis-tools analyze-english-endings build test-build test docs comments lint format clean
+.PHONY: install install-tools install-analysis-tools analyze-english-endings build test-build test docs comments lint format clean sync-yaml
+
+sync-yaml:
+	cp syllabreak/data/rules.yaml syllabreak/data/word_split_rules.yaml ../syllabreak-swift/Sources/Syllabreak/Resources/
+	cp syllabreak/data/syllabify_tests.yaml syllabreak/data/detect_language_tests.yaml syllabreak/data/word_split_tests.yaml syllabreak/data/tokenizer_tests.yaml syllabreak/data/language_rule_tests.yaml ../syllabreak-swift/Tests/SyllabreakTests/Resources/
+	mkdir -p ../syllabreak-kotlin/src/main/resources/fm/apakabar/syllabreak ../syllabreak-kotlin/src/test/resources
+	cp syllabreak/data/rules.yaml ../syllabreak-kotlin/src/main/resources/fm/apakabar/syllabreak/
+	cp syllabreak/data/syllabify_tests.yaml syllabreak/data/detect_language_tests.yaml syllabreak/data/tokenizer_tests.yaml syllabreak/data/language_rule_tests.yaml ../syllabreak-kotlin/src/test/resources/
 
 ENGLISH_ANALYSIS_ENV = .tools/english-analysis
 CMUDICT_COMMIT = 74790861f652b15e4ac49015a90074ad62a27690
