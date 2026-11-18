@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := build
 
-.PHONY: install install-tools install-analysis-tools analyze-english-endings build test-build test docs comments lint format clean sync-yaml
+.PHONY: install install-tools install-analysis-tools analyze-english-endings build test-build test docs comments lint format sync-yaml
 
 sync-yaml:
 	cp syllabreak/data/rules.yaml syllabreak/data/word_split_rules.yaml ../syllabreak-swift/Sources/Syllabreak/Resources/
@@ -31,9 +31,6 @@ $(CMUDICT_PATH):
 
 analyze-english-endings: install-analysis-tools $(CMUDICT_PATH)
 	PYTHONPATH=. $(ENGLISH_ANALYSIS_ENV)/bin/python tools/analyze_english_endings.py $(CMUDICT_PATH) --include-lexicon
-
-clean:
-	rm -rf build dist *.egg-info .pytest_cache .ruff_cache
 
 test-build:
 	venv/bin/python -m compileall -q syllabreak test_readme.py
